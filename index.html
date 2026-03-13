@@ -7,100 +7,142 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="flex flex-col">
+<body class="flex flex-col bg-[#050505] text-[#d1d1d1]">
 
     <div id="erasure-flash"></div>
     <div id="scanlines"></div>
     <div id="crt-flicker"></div>
     <canvas id="memory-mist-canvas"></canvas>
-    <div id="bg-skyline" class="parallax-layer opacity-20" style="filter: sepia(1) hue-rotate(30deg);"></div>
+    
+    <div id="cabinet-bg"></div>
+    <div id="rolling-ladder">
+        <div class="absolute inset-0 flex flex-col justify-between py-4 opacity-50">
+            <script>for(let i=0;i<30;i++) document.write('<div class="w-full h-[2px] bg-black shadow-[0_1px_2px_rgba(255,255,255,0.1)]"></div>');</script>
+        </div>
+    </div>
+    <div id="falling-ash"></div>
 
-    <header>
-        <div class="flex items-center gap-6">
-            <div class="font-black text-3xl tracking-tighter text-white">D.U.E.</div>
-            <div class="text-[8px] opacity-40 leading-tight uppercase font-bold border-l border-white/20 pl-4">
+    <header class="bg-[#0a0a0a]/90 border-b border-[#704214]/50 relative z-30 backdrop-blur-sm">
+        <div class="flex items-center gap-8 py-2">
+            <div class="font-black text-4xl tracking-tighter text-white drop-shadow-[0_0_10px_rgba(242,230,208,0.3)]">D.U.E.</div>
+            <div class="text-[10px] md:text-xs opacity-50 leading-tight uppercase font-bold border-l border-[#704214] pl-6 text-[#f2e6d0]">
                 Workstation_04<br>
                 Total_Recovery_V5.0<br>
-                Status: Arrested
+                Status: Archiving
             </div>
         </div>
         <div class="flex items-center gap-8">
-            <div id="dist-nixie" class="nixie-tube text-[#f2e6d0]">99.99%</div>
-            <div class="flex items-center gap-3 bg-white/5 px-4 py-2 rounded">
-                <span class="text-[7px] uppercase font-bold tracking-widest opacity-60">Clearance Mode</span>
-                <input type="checkbox" id="clearance-toggle" class="w-4 h-4 accent-[#704214] cursor-pointer">
+            <div id="dist-nixie" class="nixie-tube text-[#f2e6d0] text-lg border-[#704214]">99.99%</div>
+            <div class="flex items-center gap-4 bg-black/50 px-5 py-3 rounded border border-[#704214]/30">
+                <span class="text-[9px] uppercase font-bold tracking-widest opacity-60 text-[#f2e6d0]">Clearance Mode</span>
+                <input type="checkbox" id="clearance-toggle" class="w-5 h-5 accent-[#704214] cursor-pointer">
             </div>
         </div>
     </header>
 
-    <main id="main-scroll-container">
-        <section class="h-[50vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
+    <main id="main-scroll-container" class="z-20">
+        <section class="h-[45vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
             <div id="hero-parallax" class="z-20">
-                <h1 class="text-4xl md:text-6xl font-black tracking-[0.5rem] md:tracking-[1rem] text-[#f2e6d0] opacity-90 mb-4 glitch-text uppercase">Zone 1 — Archive Floor</h1>
-                <p class="text-[12px] md:text-[14px] tracking-[0.8rem] text-[#704214] uppercase font-bold">(The Stacks)</p>
+                <h1 class="text-6xl md:text-8xl font-black tracking-[1rem] md:tracking-[1.5rem] text-[#f2e6d0] opacity-90 mb-6 uppercase drop-shadow-[0_0_20px_rgba(242,230,208,0.2)]">Zone 1 — The Stacks</h1>
+                <p class="text-sm md:text-base tracking-[1rem] text-[#704214] uppercase font-bold">(Archive Floor)</p>
             </div>
             
             <div class="suture" style="left: 15%; animation-delay: 0s; background: linear-gradient(to bottom, transparent, rgba(242, 230, 208, 0.4), transparent); box-shadow: 0 0 15px rgba(242, 230, 208, 0.4);"></div>
             <div class="suture" style="left: 85%; animation-delay: -5s; background: linear-gradient(to bottom, transparent, rgba(242, 230, 208, 0.4), transparent); box-shadow: 0 0 15px rgba(242, 230, 208, 0.4);"></div>
         </section>
 
-        <div class="max-w-6xl mx-auto px-6 pb-32 relative z-20">
-            <div class="bg-black/95 border border-[#704214]/30 backdrop-blur-md shadow-2xl relative">
+        <div class="w-11/12 max-w-7xl mx-auto pb-32 relative z-20">
+            <div class="bg-[#050505]/95 border border-[#704214]/40 backdrop-blur-md shadow-[0_0_50px_rgba(0,0,0,0.8)] relative">
                 
-                <nav class="flex border-b border-[#704214]/30 flex-wrap text-xs md:text-sm">
-                    <a href="index.html" class="tab-btn active" style="color: #f2e6d0; border-bottom: 2px solid #f2e6d0;">01. Zone 1</a>
-                    <a href="zone2.html" class="tab-btn">02. Zone 2</a>
-                    <a href="zone3.html" class="tab-btn">03. Zone 3</a>
-                    <a href="zone4.html" class="tab-btn">04. Zone 4</a>
-                    <a href="zone5.html" class="tab-btn">05. Zone 5</a>
-                    <a href="zone6.html" class="tab-btn">06. Zone 6</a>
+                <nav class="flex border-b border-[#704214]/40 flex-wrap text-sm md:text-base bg-[#0a0a0a]">
+                    <a href="index.html" class="tab-btn active px-8 py-5" style="color: #f2e6d0; border-bottom: 2px solid #f2e6d0; background: rgba(242,230,208,0.05);">01. Zone 1</a>
+                    <a href="zone2.html" class="tab-btn px-8 py-5">02. Zone 2</a>
+                    <a href="zone3.html" class="tab-btn px-8 py-5">03. Zone 3</a>
+                    <a href="zone4.html" class="tab-btn px-8 py-5">04. Zone 4</a>
+                    <a href="zone5.html" class="tab-btn px-8 py-5">05. Zone 5</a>
+                    <a href="zone6.html" class="tab-btn px-8 py-5">06. Zone 6</a>
                 </nav>
 
-                <div id="zone1" class="tab-content active p-10 md:p-16">
+                <div id="zone1" class="tab-content active p-12 md:p-20">
                     
-                    <div class="mb-12 border-b border-[#704214]/20 pb-8 text-center relative overflow-hidden">
-                        <div id="fragment-layer" class="absolute inset-0 opacity-30"></div>
-                        <p class="text-sm md:text-base leading-relaxed text-[#f2e6d0] font-serif italic max-w-3xl mx-auto relative z-10">
-                            Filing towers stretch 50 feet upward, disappearing entirely into the Memory Mist. The air is thick with the scent of vanilla, old paper, and wet copper. A low-frequency "Paper-Heartbeat" resonates through the floorboards.
+                    <div class="mb-16 border-b border-[#704214]/30 pb-12 text-center relative overflow-hidden">
+                        <h2 class="text-[#704214] font-black text-xl md:text-2xl tracking-[0.5em] uppercase mb-6">The Living Nervous System</h2>
+                        <p class="text-base md:text-xl leading-relaxed text-[#f2e6d0] font-serif italic max-w-5xl mx-auto relative z-10 drop-shadow-md">
+                            The Archive Floor is not a library. It is a biological entity. Monolithic, 50-foot-tall filing cabinets stretch upward, disappearing entirely into the Memory Mist. Every file housed here is a "narrative thread" that actively sustains reality. The air is thick with the scent of vanilla, old paper, and wet copper. Autonomous rolling ladders transit the aisles with independent intent.
                         </p>
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-12">
+                    <div class="grid md:grid-cols-2 gap-16">
                         
-                        <div class="border border-[#704214]/40 p-8 relative overflow-hidden bg-[#2a241a]/20">
-                            <div class="absolute top-2 right-4 text-[8px] text-[#f2e6d0] opacity-40 font-bold">ASSETS // PHYSICAL</div>
-                            <h3 class="text-[#f2e6d0] font-black text-2xl mb-6 tracking-tighter uppercase border-b border-[#704214]/30 pb-2">Active Vellum</h3>
-                            <p class="text-sm leading-relaxed text-gray-400">
-                                The primary storage medium. Translucent paper that pulses with a faint golden light. When emotionally charged, the vellum actively sweats <span class="text-red-900 font-bold">Blood-Ink</span>. Handle with extreme care; emotional resonance can cause paper cuts that bleed memories instead of blood.
-                            </p>
-                        </div>
-
-                        <div class="border border-[#704214]/40 p-8 relative overflow-hidden bg-red-900/5">
-                            <div class="absolute top-2 right-4 text-[8px] text-red-500 opacity-40 font-bold">WARNING // BIO_HAZARD</div>
-                            <h3 class="text-red-600 font-black text-2xl mb-6 tracking-tighter uppercase border-b border-red-900/30 pb-2">Identified Hazards</h3>
+                        <div class="border border-[#D4AF37]/30 p-10 relative overflow-hidden bg-[#1a1712]/60 paper-heartbeat group">
+                            <div class="absolute top-4 right-6 text-[10px] text-[#D4AF37] opacity-60 font-bold tracking-widest">ASSETS // ORGANIC_MEDIA</div>
                             
-                            <div class="p-4 border-l-2 border-red-600 bg-red-900/10 group cursor-help transition-all duration-300 hover:bg-red-900/30">
-                                <strong class="text-white uppercase text-xs tracking-widest block mb-2 group-hover:animate-pulse">Memory Parasites (Silver Moths)</strong>
-                                <p class="text-xs text-gray-400">
-                                    Colonies of silver moths that feed on archived Vellum. They devour specific conceptual data. Symptoms of a bite include the immediate loss of:
-                                </p>
-                                <ul class="list-disc list-inside text-[10px] text-gray-500 mt-2 space-y-1 ml-2">
-                                    <li>First names of loved ones.</li>
-                                    <li>Childhood color associations.</li>
-                                    <li>Facial recognition algorithms.</li>
-                                </ul>
+                            <h3 class="text-[#D4AF37] font-black text-3xl mb-8 tracking-tighter uppercase border-b border-[#D4AF37]/20 pb-4">Active Vellum</h3>
+                            
+                            <div class="space-y-8">
+                                <div>
+                                    <strong class="text-[#f2e6d0] uppercase tracking-widest block text-sm mb-2">The Paper-Heartbeat</strong>
+                                    <p class="text-sm md:text-base leading-relaxed text-gray-400">
+                                        Vellum files exhibit a rhythmic, heart-like pulse, causing a low-frequency hum to resonate through the floorboards. The ambient cabinet hum rises in pitch and volume depending on narrative density.
+                                    </p>
+                                </div>
+                                
+                                <div class="p-5 border-l-2 border-[#630000] bg-black/40">
+                                    <strong class="text-[#f2e6d0] uppercase tracking-widest block text-sm mb-2 sweating-ink">Environmental Reaction</strong>
+                                    <p class="text-sm md:text-base leading-relaxed text-gray-400">
+                                        When a narrative thread escalates, the corresponding files become physically hot to the touch. Under extreme emotional charge, the Active Vellum begins to physically "sweat" <span class="text-red-700 font-bold">Blood-Ink</span> off the page.
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
+                        <div class="space-y-8">
+                            
+                            <div class="border border-[#704214]/50 p-10 relative overflow-hidden bg-black/60 hover:border-gray-400 transition-colors duration-500">
+                                <div class="absolute top-4 right-6 text-[10px] text-gray-500 font-bold tracking-widest">WARNING // BIO_HAZARD</div>
+                                
+                                <div class="flex items-center gap-4 border-b border-[#704214]/30 pb-4 mb-6">
+                                    <svg width="40" height="40" viewBox="0 0 100 100" class="opacity-70">
+                                        <g fill="#a0aec0">
+                                            <path d="M50,30 Q45,50 50,80 Q55,50 50,30" fill="#4a5568"/> <path class="moth-wing-left" d="M48,40 Q20,10 5,45 Q30,70 48,60 Z" />
+                                            <path class="moth-wing-right" d="M52,40 Q80,10 95,45 Q70,70 52,60 Z" />
+                                        </g>
+                                    </svg>
+                                    <h3 class="text-gray-300 font-black text-2xl tracking-tighter uppercase">Memory Parasites</h3>
+                                </div>
+                                
+                                <strong class="text-[#f2e6d0] uppercase tracking-widest block text-sm mb-2">Silver Moths</strong>
+                                <p class="text-sm md:text-base text-gray-400 leading-relaxed mb-4">
+                                    Swarms that actively devour archived memories. A single bite results in the immediate, permanent extraction of specific conceptual data from the victim's mind.
+                                </p>
+                                <ul class="list-disc list-inside text-xs md:text-sm text-[#704214] space-y-2 ml-2 font-bold tracking-wide">
+                                    <li>Loss of first names (Loved Ones).</li>
+                                    <li>Erasure of childhood color associations.</li>
+                                    <li>Failure of facial recognition logic.</li>
+                                </ul>
+                            </div>
+
+                            <div class="border border-[#ff4400]/40 p-10 relative overflow-hidden bg-[#2a0b00]/30 group">
+                                <div class="absolute top-4 right-6 text-[10px] text-[#ff4400] font-bold tracking-widest opacity-60">WARNING // FILE_COLLAPSE</div>
+                                <h3 class="text-[#ff4400] font-black text-2xl mb-4 tracking-tighter uppercase border-b border-[#ff4400]/30 pb-4">Narrative Combustion</h3>
+                                
+                                <strong class="text-[#f2e6d0] uppercase tracking-widest block text-sm mb-2 group-hover:text-white transition-colors">"The Burn Out"</strong>
+                                <p class="text-sm md:text-base text-orange-200/60 leading-relaxed">
+                                    A rare, violent phenomenon. When a story terminates abruptly or unexpectedly in the field, its corresponding physical file undergoes total File Collapse. The result is immediate, explosive incineration, leaving behind nothing but drifting ash in the aisles.
+                                </p>
+                            </div>
+
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </main>
 
-    <footer>
-        <div class="tracking-widest opacity-40 uppercase font-bold text-[#f2e6d0]">Location: Zone 1 — Archive Floor (The Stacks)</div>
-        <div id="stability-display" class="font-mono text-[#704214]">SIGNAL_STABILITY: 99.99%</div>
+    <footer class="bg-[#050505] border-t border-[#704214]/50 py-4 px-8 flex justify-between items-center relative z-40">
+        <div class="tracking-widest opacity-50 uppercase font-bold text-[#f2e6d0] text-xs">Location: Zone 1 — Archive Floor (The Stacks)</div>
+        <div id="stability-display" class="font-mono text-[#704214] text-sm font-bold">SIGNAL_STABILITY: 99.99%</div>
     </footer>
 
     <script src="script.js"></script>
