@@ -123,3 +123,51 @@ footer {
     80% { transform: translate(2px, -2px); }
     100% { transform: translate(0); }
 }
+
+/* --- ZONE 3: CORRECTION CHAMBERS SPECIFICS --- */
+#liquid-logic-floor {
+    background: linear-gradient(45deg, #ffffff 25%, #e0e5ec 50%, #ffffff 75%);
+    background-size: 400% 400%;
+    animation: frozen-mercury 15s ease infinite;
+}
+
+@keyframes frozen-mercury {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Ghostly text shadow overlapping itself to represent aborted futures */
+.temporal-bleed {
+    position: relative;
+    display: inline-block;
+}
+.temporal-bleed::after {
+    content: "Agents frequently report hearing the overlapping voices of individuals from 'possible futures' that will now never happen due to the sutures.";
+    position: absolute;
+    left: 2px;
+    top: 1px;
+    color: rgba(0, 0, 0, 0.15);
+    z-index: -1;
+    filter: blur(1px);
+    animation: bleed-whisper 4s infinite alternate;
+}
+
+@keyframes bleed-whisper {
+    0% { transform: translateX(0) scale(1); opacity: 0.1; }
+    100% { transform: translateX(3px) scale(1.01); opacity: 0.4; }
+}
+
+/* Reality Scream Hover Effect */
+.reality-scream-trigger:hover {
+    animation: reality-scream-shake 0.1s infinite;
+    filter: invert(1);
+}
+
+@keyframes reality-scream-shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    25% { transform: translate(-1px, -2px) rotate(-1deg); }
+    50% { transform: translate(-3px, 0px) rotate(1deg); }
+    75% { transform: translate(3px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -1px) rotate(-1deg); }
+}
