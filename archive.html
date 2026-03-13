@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUE // STATION_04 - Archive Log</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="flex flex-col">
+
+    <div id="erasure-flash"></div>
+    <div id="scanlines"></div>
+    <div id="crt-flicker"></div>
+    <canvas id="memory-mist-canvas"></canvas>
+    <div id="bg-skyline" class="parallax-layer"></div>
+
+    <header>
+        <div class="flex items-center gap-6">
+            <div class="font-black text-3xl tracking-tighter text-white">D.U.E.</div>
+            <div class="text-[8px] opacity-40 leading-tight uppercase font-bold border-l border-white/20 pl-4">
+                Workstation_04<br>
+                Total_Recovery_V5.0<br>
+                Status: Arrested
+            </div>
+        </div>
+        <div class="flex items-center gap-8">
+            <div id="dist-nixie" class="nixie-tube">99.99%</div>
+            <div class="flex items-center gap-3 bg-white/5 px-4 py-2 rounded">
+                <span class="text-[7px] uppercase font-bold tracking-widest opacity-60">Clearance Mode</span>
+                <input type="checkbox" id="clearance-toggle" class="w-4 h-4 accent-red-600 cursor-pointer">
+            </div>
+        </div>
+    </header>
+
+    <main id="main-scroll-container">
+        <section class="h-[50vh] flex flex-col items-center justify-center text-center relative">
+            <div id="hero-parallax" class="z-20">
+                <h1 class="text-7xl font-black tracking-[2rem] text-white opacity-90 mb-4 ml-[2rem] glitch-text">PANGEA-EX</h1>
+                <p class="text-[10px] tracking-[0.6rem] opacity-40 uppercase font-bold">"The event did not end; it failed to compile."</p>
+            </div>
+            <div class="suture" style="left: 20%; animation-delay: 0s;"></div>
+            <div class="suture" style="left: 80%; animation-delay: -5s;"></div>
+        </section>
+
+        <div class="max-w-6xl mx-auto px-6 pb-32">
+            <div class="bg-black/90 border border-white/10 backdrop-blur-md shadow-2xl">
+                <nav class="flex border-b border-white/10">
+                    <a href="index.html" class="tab-btn">01. Monolith</a>
+                    <a href="archive.html" class="tab-btn active">02. Archive Log</a>
+                    <a href="dossier.html" class="tab-btn">03. The Dossier</a>
+                    <a href="stacks.html" class="tab-btn">04. The Stacks</a>
+                    <a href="breach.html" class="tab-btn">05. Breach</a>
+                </nav>
+
+                <div id="archive" class="tab-content active p-12">
+                    <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
+                        <div>
+                            <h2 class="text-xl font-bold text-white tracking-widest uppercase">Recovery Database</h2>
+                            <p class="text-[9px] opacity-40 uppercase mt-1">Suturing incomplete events into the timeline</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <input type="text" id="archive-search" placeholder="SEARCH_BY_ID..." 
+                                class="bg-transparent border border-white/20 text-[10px] px-4 py-2 outline-none text-white w-48 focus:border-red-500 transition-colors uppercase">
+                            <select id="archive-filter" class="bg-black border border-white/20 text-[10px] px-2 outline-none text-white uppercase">
+                                <option value="all">Filter: All</option>
+                                <option value="CRITICAL">Filter: Critical</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="event-display" class="max-h-[450px] overflow-y-auto border border-white/5 bg-black/50 custom-scrollbar">
+                        </div>
+
+                    <div class="flex gap-4 mt-8">
+                        <button id="generate-event" class="text-[10px] font-bold tracking-widest border border-white/20 px-6 py-3 hover:bg-white hover:text-black transition uppercase">Inject Narrative Entry</button>
+                        <button id="generate-batch" class="text-[10px] font-bold tracking-widest border border-white/20 px-6 py-3 hover:bg-white hover:text-black transition uppercase">Batch Recover (x10)</button>
+                        <button id="clear-archive" class="text-[10px] font-bold tracking-widest border border-red-900/40 text-red-900/60 px-6 py-3 hover:bg-red-900 hover:text-white transition uppercase">Purge Buffer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="document-modal" class="hidden fixed inset-0 flex items-center justify-center p-6">
+        <div class="modal-paper relative max-h-[90vh] overflow-y-auto">
+            <button id="close-modal" class="absolute top-6 right-8 text-black font-black uppercase text-[12px] border-b-2 border-black hover:opacity-50 transition">Close_Document</button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="tracking-widest opacity-40 uppercase font-bold">Archive_Index: 1979-10-31 // ARRESTED_STATE</div>
+        <div id="stability-display" class="font-mono">SIGNAL_STABILITY: 99.99%</div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
