@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUE // STATION_04 - Zone 3: Correction Chambers (The White-Out)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="flex flex-col bg-[#fcfcfc] text-[#050505]">
+
+    <div id="erasure-flash"></div>
+    <div id="scanlines" style="background: linear-gradient(rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.05) 50%); background-size: 100% 3px;"></div>
+    <div id="crt-flicker" style="background: rgba(0, 0, 0, 0.02);"></div>
+    
+    <div id="liquid-logic-floor" class="fixed inset-0 z-[1] pointer-events-none opacity-40 mix-blend-multiply"></div>
+
+    <header class="bg-[#f0f0f0] border-b border-gray-300 !text-black shadow-sm">
+        <div class="flex items-center gap-6">
+            <div class="font-black text-3xl tracking-tighter text-black">D.U.E.</div>
+            <div class="text-[8px] opacity-60 leading-tight uppercase font-bold border-l border-gray-400 pl-4">
+                Workstation_04<br>
+                Total_Recovery_V5.0<br>
+                Status: Clinical
+            </div>
+        </div>
+        <div class="flex items-center gap-8">
+            <div id="dist-nixie" class="nixie-tube bg-white border-gray-300 text-black text-shadow-none font-bold">99.99%</div>
+            <div class="flex items-center gap-3 bg-black/5 px-4 py-2 rounded">
+                <span class="text-[7px] uppercase font-bold tracking-widest opacity-80">Clearance Mode</span>
+                <input type="checkbox" id="clearance-toggle" class="w-4 h-4 accent-black cursor-pointer">
+            </div>
+        </div>
+    </header>
+
+    <main id="main-scroll-container" class="z-20">
+        <section class="h-[50vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
+            <div id="hero-parallax" class="z-20">
+                <h1 class="text-4xl md:text-6xl font-black tracking-[0.5rem] md:tracking-[1rem] text-black opacity-90 mb-4 uppercase drop-shadow-lg">Zone 3 — Correction Chambers</h1>
+                <p class="text-[12px] md:text-[14px] tracking-[0.8rem] text-gray-500 uppercase font-bold">(The White-Out)</p>
+            </div>
+            
+            <div class="suture" style="left: 30%; animation-delay: -2s; background: linear-gradient(to bottom, transparent, #D4AF37, transparent); box-shadow: 0 0 10px #D4AF37; width: 1px;"></div>
+            <div class="suture" style="left: 70%; animation-delay: -7s; background: linear-gradient(to bottom, transparent, #D4AF37, transparent); box-shadow: 0 0 10px #D4AF37; width: 1px;"></div>
+        </section>
+
+        <div class="max-w-6xl mx-auto px-6 pb-32 relative z-20">
+            <div class="bg-white/90 border border-gray-200 backdrop-blur-md shadow-[0_0_50px_rgba(0,0,0,0.1)] relative">
+                
+                <nav class="flex border-b border-gray-200 flex-wrap text-xs md:text-sm">
+                    <a href="index.html" class="tab-btn !text-gray-500 hover:!bg-gray-100">01. Zone 1</a>
+                    <a href="zone2.html" class="tab-btn !text-gray-500 hover:!bg-gray-100">02. Zone 2</a>
+                    <a href="zone3.html" class="tab-btn active !bg-gray-100 !text-black !border-black" style="border-bottom: 2px solid black;">03. Zone 3</a>
+                    <a href="zone4.html" class="tab-btn !text-gray-500 hover:!bg-gray-100">04. Zone 4</a>
+                    <a href="zone5.html" class="tab-btn !text-gray-500 hover:!bg-gray-100">05. Zone 5</a>
+                    <a href="zone6.html" class="tab-btn !text-gray-500 hover:!bg-gray-100">06. Zone 6</a>
+                </nav>
+
+                <div id="zone3" class="tab-content active p-10 md:p-16">
+                    
+                    <div class="mb-12 border-b border-gray-200 pb-8 text-center relative overflow-hidden">
+                        <p class="text-sm md:text-base leading-relaxed text-gray-800 font-serif italic max-w-3xl mx-auto">
+                            The Department's most feared location. A shadowless, blinding white void where the floor mimics the sensation of frozen mercury. Here, agents do not "fix" reality; they are tasked with forcing an ending.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        
+                        <div class="border border-gray-300 p-8 relative overflow-hidden bg-gray-50">
+                            <div class="absolute top-2 right-4 text-[8px] text-gray-400 font-bold">CLINICAL // PROCEDURE</div>
+                            <h3 class="text-black font-black text-xl mb-6 tracking-tighter uppercase border-b border-gray-300 pb-2">Operational Procedure</h3>
+                            
+                            <ul class="space-y-6">
+                                <li>
+                                    <strong class="text-black uppercase tracking-widest block text-xs mb-1">Surgical Layout</strong>
+                                    <p class="text-xs leading-relaxed text-gray-600">
+                                        Unfinished events are extracted and laid across the frozen-mercury floor like patients on an operating table.
+                                    </p>
+                                </li>
+                                <li>
+                                    <strong class="text-[#D4AF37] uppercase tracking-widest block text-xs mb-1">Temporal Sutures</strong>
+                                    <p class="text-xs leading-relaxed text-gray-600">
+                                        Specialized golden needles used to violently stitch narrative gaps together, binding interrupted pasts to forced futures.
+                                    </p>
+                                </li>
+                                <li class="reality-scream-trigger cursor-crosshair group p-2 border border-red-200 bg-red-50 hover:bg-red-100 transition-colors">
+                                    <strong class="text-red-700 uppercase tracking-widest block text-xs mb-1">Auditory Feedback (Hover)</strong>
+                                    <p class="text-xs leading-relaxed text-red-900/80">
+                                        During the reconnection process, reality emits a visceral, high-frequency "scream" as timelines are fused against their will.
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="border border-black p-8 relative overflow-hidden bg-white shadow-inner">
+                            <div class="absolute top-2 right-4 text-[8px] text-black font-bold">PSYCH // EVALUATION</div>
+                            <h3 class="text-black font-black text-xl mb-6 tracking-tighter uppercase border-b border-black pb-2">Agent Psych-Profile</h3>
+                            
+                            <div class="space-y-6">
+                                <div class="p-4 bg-black text-white">
+                                    <strong class="uppercase tracking-widest block text-[10px] mb-2 text-red-400">The Realization</strong>
+                                    <p class="text-xs leading-relaxed opacity-90 font-serif italic">
+                                        "We aren't healers. We're narrative executioners."
+                                    </p>
+                                    <p class="text-[10px] mt-2 opacity-60">
+                                        Agents stationed in the White-Out frequently experience severe perspective shifts, recognizing the lethal nature of forced narrative closure.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <strong class="text-black uppercase tracking-widest block text-xs mb-1">Side Effect: Temporal Bleed</strong>
+                                    <p class="text-xs leading-relaxed text-gray-600 temporal-bleed font-medium">
+                                        Agents frequently report hearing the overlapping voices of individuals from "possible futures" that will now never happen due to the sutures.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[#f0f0f0] border-t border-gray-300 !text-black shadow-sm">
+        <div class="tracking-widest opacity-60 uppercase font-bold text-black">Location: Zone 3 — Correction Chambers (The White-Out)</div>
+        <div id="stability-display" class="font-mono text-black font-bold">SIGNAL_STABILITY: 99.99%</div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
