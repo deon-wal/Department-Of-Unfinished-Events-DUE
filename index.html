@@ -7,33 +7,33 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="flex flex-col bg-[#050505] text-[#d1d1d1]">
+<body class="flex flex-col bg-[#020202] text-[#d1d1d1]">
 
     <div id="erasure-flash"></div>
     <div id="scanlines"></div>
     <div id="crt-flicker"></div>
-    <canvas id="memory-mist-canvas"></canvas>
+    <canvas id="memory-mist-canvas" class="opacity-40"></canvas>
     
-    <div id="cabinet-bg"></div>
+    <div id="cabinet-bg" class="opacity-70"></div>
     <div id="rolling-ladder">
-        <div class="absolute inset-0 flex flex-col justify-between py-4 opacity-50">
+        <div class="absolute inset-0 flex flex-col justify-between py-4 opacity-30">
             <script>for(let i=0;i<30;i++) document.write('<div class="w-full h-[2px] bg-black shadow-[0_1px_2px_rgba(255,255,255,0.1)]"></div>');</script>
         </div>
     </div>
     <div id="falling-ash"></div>
 
-    <header class="bg-[#0a0a0a]/90 border-b border-[#704214]/50 relative z-30 backdrop-blur-sm">
-        <div class="flex items-center gap-8 py-2">
-            <div class="font-black text-4xl tracking-tighter text-white drop-shadow-[0_0_10px_rgba(242,230,208,0.3)]">D.U.E.</div>
-            <div class="text-[10px] md:text-xs opacity-50 leading-tight uppercase font-bold border-l border-[#704214] pl-6 text-[#f2e6d0]">
+    <header class="bg-[#050505]/95 border-b border-[#704214]/50 relative z-30 backdrop-blur-md shadow-2xl">
+        <div class="flex items-center gap-8 py-3 px-6">
+            <div class="font-black text-4xl tracking-tighter text-white drop-shadow-[0_0_15px_rgba(242,230,208,0.4)]">D.U.E.</div>
+            <div class="text-[10px] md:text-xs opacity-60 leading-tight uppercase font-bold border-l border-[#704214] pl-6 text-[#f2e6d0]">
                 Workstation_04<br>
                 Total_Recovery_V5.0<br>
                 Status: Archiving
             </div>
         </div>
-        <div class="flex items-center gap-8">
-            <div id="dist-nixie" class="nixie-tube text-[#f2e6d0] text-lg border-[#704214]">99.99%</div>
-            <div class="flex items-center gap-4 bg-black/50 px-5 py-3 rounded border border-[#704214]/30">
+        <div class="flex items-center gap-8 pr-6">
+            <div id="dist-nixie" class="nixie-tube text-[#f2e6d0] text-lg border-[#704214] shadow-[0_0_10px_#704214]">99.99%</div>
+            <div class="flex items-center gap-4 bg-[#0a0a0a] px-5 py-3 rounded border border-[#704214]/30 shadow-inner">
                 <span class="text-[9px] uppercase font-bold tracking-widest opacity-60 text-[#f2e6d0]">Clearance Mode</span>
                 <input type="checkbox" id="clearance-toggle" class="w-5 h-5 accent-[#704214] cursor-pointer">
             </div>
@@ -41,21 +41,21 @@
     </header>
 
     <main id="main-scroll-container" class="z-20">
-        <section class="h-[35vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
-            <div id="hero-parallax" class="z-20">
-                <h1 class="text-6xl md:text-8xl font-black tracking-[1rem] md:tracking-[1.5rem] text-[#f2e6d0] opacity-90 mb-4 uppercase drop-shadow-[0_0_20px_rgba(242,230,208,0.2)]">Zone 1 — The Stacks</h1>
-                <p class="text-sm md:text-base tracking-[1rem] text-[#704214] uppercase font-bold">(Archive Floor)</p>
+        <section class="h-[40vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
+            <div id="hero-parallax" class="z-20 relative">
+                <h1 class="text-6xl md:text-8xl font-black tracking-[1rem] md:tracking-[1.5rem] text-[#f2e6d0] opacity-90 mb-4 uppercase" style="text-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(242,230,208,0.1);">Zone 1 — The Stacks</h1>
+                <p class="text-sm md:text-base tracking-[1rem] text-[#704214] uppercase font-bold bg-black/50 inline-block px-4 py-1 border border-[#704214]/30 backdrop-blur-sm">(Archive Floor)</p>
             </div>
             
             <div class="suture" style="left: 15%; animation-delay: 0s; background: linear-gradient(to bottom, transparent, rgba(242, 230, 208, 0.4), transparent); box-shadow: 0 0 15px rgba(242, 230, 208, 0.4);"></div>
             <div class="suture" style="left: 85%; animation-delay: -5s; background: linear-gradient(to bottom, transparent, rgba(242, 230, 208, 0.4), transparent); box-shadow: 0 0 15px rgba(242, 230, 208, 0.4);"></div>
         </section>
 
-        <div class="w-11/12 max-w-[1400px] mx-auto pb-32 relative z-20">
-            <div class="bg-[#050505]/95 border border-[#704214]/40 backdrop-blur-md shadow-[0_0_50px_rgba(0,0,0,0.8)] relative">
+        <div class="w-11/12 max-w-7xl mx-auto pb-32 relative z-20">
+            <div class="bg-[#050505]/95 border-t-2 border-l-2 border-r-2 border-[#704214]/30 backdrop-blur-xl shadow-[0_-10px_50px_rgba(0,0,0,0.9)] relative">
                 
-                <nav class="flex border-b border-[#704214]/40 flex-wrap text-sm md:text-base bg-[#0a0a0a] relative z-40">
-                    <a href="index.html" class="tab-btn active px-8 py-5" style="color: #f2e6d0; border-bottom: 2px solid #f2e6d0; background: rgba(242,230,208,0.05);">01. Zone 1</a>
+                <nav class="flex border-b-2 border-[#704214]/50 flex-wrap text-sm md:text-base bg-[#020202]">
+                    <a href="index.html" class="tab-btn active px-8 py-5" style="color: #f2e6d0; border-bottom: 2px solid #f2e6d0; background: linear-gradient(to top, rgba(242,230,208,0.1), transparent);">01. Zone 1</a>
                     <a href="zone2.html" class="tab-btn px-8 py-5">02. Zone 2</a>
                     <a href="zone3.html" class="tab-btn px-8 py-5">03. Zone 3</a>
                     <a href="zone4.html" class="tab-btn px-8 py-5">04. Zone 4</a>
@@ -63,88 +63,156 @@
                     <a href="zone6.html" class="tab-btn px-8 py-5">06. Zone 6</a>
                 </nav>
 
-                <div id="zone1" class="tab-content active p-8 md:p-16 cork-board min-h-[1000px] relative overflow-hidden flex flex-wrap justify-center items-center gap-8 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)]">
+                <div id="zone1" class="tab-content active p-8 md:p-16 relative overflow-hidden flex flex-col gap-16">
                     
-                    <div class="evidence-photo w-64 md:w-80 absolute top-12 left-12 z-20" style="transform: rotate(-3deg);">
-                        <div class="photo-pin"></div>
-                        <img src="https://picsum.photos/seed/archivehall/500/350" alt="Infinite Archive">
-                        <div class="evidence-caption">INFINITE ARCHIVE</div>
-                        <div class="absolute -bottom-16 -right-12 torn-paper p-4 w-56 transform rotate-6 z-10 shadow-lg">
-                            <div class="photo-pin"></div>
-                            <p class="font-mono text-xs text-black/80 leading-tight"><strong>The Living Nervous System:</strong> 50-ft filing cabinets disappear into Memory Mist. Smell of vanilla, old paper, wet copper.</p>
+                    <div class="flex flex-col lg:flex-row gap-12 items-center relative z-20 border-b border-[#704214]/20 pb-16">
+                        
+                        <div class="leather-book w-full max-w-[350px] h-[450px] flex-shrink-0 relative flex flex-col items-center justify-center shadow-[10px_10px_20px_rgba(0,0,0,0.9),_inset_0_0_50px_rgba(0,0,0,0.8)]" style="transform: rotate(-1deg);">
+                            <div class="brass-clasp absolute right-[-15px] top-[45%] w-[30px] h-[60px] rounded-r-lg shadow-lg">
+                                <div class="w-2 h-2 rounded-full bg-[#5c4a1e] absolute top-2 right-2 shadow-inner"></div>
+                                <div class="w-2 h-2 rounded-full bg-[#5c4a1e] absolute bottom-2 right-2 shadow-inner"></div>
+                            </div>
+                            <div class="absolute top-1/4 w-32 h-32 opacity-30">
+                                <svg viewBox="0 0 100 100" class="w-full h-full text-[#c5a059]">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M50 5 L60 40 L95 50 L60 60 L50 95 L40 60 L5 50 L40 40 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div class="text-center mt-32 px-8">
+                                <h2 class="font-serif text-[#c5a059] text-xl font-bold uppercase tracking-[0.2em] mb-4">The Department<br>of<br>Unfinished Events</h2>
+                                <p class="font-mono text-[#c5a059] text-[9px] tracking-widest opacity-60 uppercase">Master Index // Active Vellum</p>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 bg-black/40 p-10 border border-[#704214]/20 shadow-inner">
+                            <div class="inline-block bg-[#D4AF37]/10 border border-[#D4AF37]/30 px-3 py-1 mb-6">
+                                <span class="text-[#D4AF37] text-xs uppercase font-black tracking-widest">Reference: Bible Addendum // Visual Atlas</span>
+                            </div>
+                            <h2 class="text-[#f2e6d0] font-black text-3xl tracking-[0.3em] uppercase mb-6 border-b border-[#704214]/30 pb-4 text-shadow-glow">The Living Nervous System</h2>
+                            <p class="text-lg leading-relaxed text-[#d1d1d1] font-serif italic mb-6">
+                                The Archive Floor is not a library. It is a biological entity. Monolithic, 50-foot-tall filing cabinets stretch upward, disappearing entirely into the Memory Mist.
+                            </p>
+                            <p class="text-base leading-relaxed text-gray-400">
+                                Every file housed here is a "narrative thread" that actively sustains reality. The air is thick with the scent of vanilla, old paper, and wet copper. Autonomous rolling ladders transit the aisles with independent intent, tracing the pathways of the World's Nervous System.
+                            </p>
                         </div>
                     </div>
 
-                    <div class="evidence-photo w-56 absolute top-[40%] left-8 z-30" style="transform: rotate(4deg);">
-                        <div class="photo-pin"></div>
-                        <img src="https://picsum.photos/seed/inksweat1/400/300" alt="The Ink Sweats">
-                        <div class="evidence-caption">THE INK SWEATS</div>
-                        <div class="absolute -right-24 top-12 w-32 h-32 evidence-photo p-2" style="transform: rotate(-8deg);">
-                            <div class="photo-pin"></div>
-                            <div class="w-full h-full bg-[#e8e3d9] flex items-center justify-center">
-                                <div class="w-20 h-20 bg-black/80 blur-[2px]" style="clip-path: path('M10,30 A20,20,0,0,1,50,30 A20,20,0,0,1,90,30 Q90,60,50,90 Q10,60,10,30 Z'); transform: scale(1.2);"></div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-20 border-b border-[#704214]/20 pb-16">
+                        
+                        <div class="bg-[#0f0e0c] border border-[#D4AF37]/30 p-10 relative shadow-[0_10px_30px_rgba(0,0,0,0.8)] paper-heartbeat group flex flex-col">
+                            <div class="absolute top-4 right-6 text-[10px] text-[#D4AF37] opacity-60 font-bold tracking-widest">ASSETS // ORGANIC_MEDIA</div>
+                            
+                            <h3 class="text-[#D4AF37] font-black text-3xl mb-8 tracking-tighter uppercase border-b border-[#D4AF37]/20 pb-4">Active Vellum</h3>
+                            
+                            <div class="space-y-8 flex-1">
+                                <div>
+                                    <strong class="text-[#f2e6d0] uppercase tracking-widest block text-sm mb-2">The Paper-Heartbeat</strong>
+                                    <p class="text-sm md:text-base leading-relaxed text-gray-400">
+                                        Vellum files exhibit a rhythmic, heart-like pulse, causing a low-frequency hum to resonate through the floorboards. The ambient cabinet hum rises in pitch and volume depending on narrative density.
+                                    </p>
+                                </div>
+                                
+                                <div class="p-6 border-l-2 border-[#630000] bg-black/60 relative">
+                                    <strong class="text-[#f2e6d0] uppercase tracking-widest block text-sm mb-2 sweating-ink">Environmental Reaction</strong>
+                                    <p class="text-sm md:text-base leading-relaxed text-gray-400">
+                                        Files become physically hot to the touch. Under extreme emotional charge, the Active Vellum begins to physically "sweat" <span class="text-red-700 font-bold">Blood-Ink</span> off the page.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="evidence-photo w-48 self-center mt-8" style="transform: rotate(-2deg); box-shadow: 0 10px 20px rgba(0,0,0,0.9);">
+                                <img src="https://picsum.photos/seed/inkblood2/400/300" alt="The Ink Sweats">
+                                <div class="evidence-caption">THE INK SWEATS</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-12 flex flex-col">
+                            
+                            <div class="filing-cabinet w-full h-32 p-6 flex flex-col items-center justify-center shadow-[inset_0_0_20px_rgba(0,0,0,0.9)] bg-[#11161a] border-2 border-black relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+                                <div class="brass-label-holder w-48 h-10 mb-4 flex items-center justify-center bg-[#1a2024] shadow-[0_2px_5px_rgba(0,0,0,0.8)] relative">
+                                    <div class="w-2 h-2 rounded-full bg-[#3d2e14] absolute left-2"></div>
+                                    <div class="w-2 h-2 rounded-full bg-[#3d2e14] absolute right-2"></div>
+                                    <div class="bg-[#e8e3d9] w-40 h-6 text-center font-mono text-xs text-black font-bold pt-1">AISLE 402 - HAZARDS</div>
+                                </div>
+                                <div class="brass-handle w-56 h-6 rounded-full border-b-[6px] border-[#8a6b1c] shadow-[0_5px_10px_rgba(0,0,0,0.8)]"></div>
+                            </div>
+
+                            <div class="bg-[#1a0808] border border-red-900/50 p-10 relative shadow-[0_10px_30px_rgba(0,0,0,0.9)] flex-1">
+                                <div class="absolute top-4 right-6 text-[10px] text-red-500/60 font-bold tracking-widest">WARNING // BIO_HAZARD</div>
+                                
+                                <div class="flex items-center gap-4 border-b border-red-900/40 pb-4 mb-6">
+                                    <svg width="35" height="35" viewBox="0 0 100 100" class="opacity-70">
+                                        <g fill="#a0aec0">
+                                            <path d="M50,30 Q45,50 50,80 Q55,50 50,30" fill="#cbd5e0"/>
+                                            <path class="moth-wing-left" d="M48,40 Q20,10 5,45 Q30,70 48,60 Z" />
+                                            <path class="moth-wing-right" d="M52,40 Q80,10 95,45 Q70,70 52,60 Z" />
+                                        </g>
+                                    </svg>
+                                    <h3 class="text-red-500 font-black text-2xl tracking-tighter uppercase drop-shadow-md">Memory Parasites</h3>
+                                </div>
+                                
+                                <div class="space-y-6">
+                                    <div>
+                                        <strong class="text-[#f2e6d0] uppercase tracking-widest block text-sm mb-2">Silver Moths</strong>
+                                        <p class="text-sm md:text-base text-red-200/70 leading-relaxed mb-4">
+                                            Swarms that actively devour archived memories. A single bite results in immediate loss of first names, childhood color associations, and facial recognition logic.
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="border-t border-red-900/30 pt-6">
+                                        <div class="absolute right-6 mt-2 text-[10px] text-[#ff4400] font-bold tracking-widest opacity-60">WARNING // FILE_COLLAPSE</div>
+                                        <h3 class="text-[#ff4400] font-black text-xl mb-2 tracking-tighter uppercase">Narrative Combustion</h3>
+                                        <strong class="text-orange-300 uppercase tracking-widest block text-xs mb-2">"The Burn Out"</strong>
+                                        <p class="text-sm md:text-base text-orange-200/60 leading-relaxed">
+                                            When a story terminates abruptly, its physical file undergoes File Collapse. The result is immediate, explosive incineration, leaving behind drifting ash.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="absolute bottom-24 left-16 z-20 torn-paper p-6 w-[350px]" style="transform: rotate(-2deg);">
-                        <div class="photo-pin" style="top: 10px;"></div>
-                        <h4 class="font-black text-lg uppercase tracking-tighter border-b-2 border-black/30 mb-2">Ref: #814-VOID</h4>
-                        <p class="font-mono text-xs font-semibold text-black/80 mb-2"><strong>Hazard: Silver Moths</strong></p>
-                        <p class="font-mono text-[10px] text-black/70 mb-2">Memory parasites devour archived memories. Bites result in immediate loss of first names, childhood colors, facial recognition.</p>
-                        <p class="font-mono text-[10px] text-black/70 bg-black/10 p-2">"Agent Miller lost to Aisle 402. Vellum file transcribed his movements before he vanished."</p>
-                        <div class="evidence-photo w-32 absolute -bottom-12 -right-16 z-30" style="transform: rotate(12deg);">
-                            <div class="photo-pin"></div>
-                            <img src="https://picsum.photos/seed/ashfire/200/200" alt="Narrative Combustion">
-                            <div class="evidence-caption text-[8px]">NARRATIVE COMBUSTION</div>
+                    <div class="flex flex-col lg:flex-row gap-16 items-start justify-center mt-4 relative z-20">
+                        
+                        <div class="flex-1 bg-black/60 border border-[#704214]/20 p-10 w-full">
+                            <h2 class="text-[#704214] font-black text-2xl tracking-[0.3em] uppercase mb-6 border-b border-[#704214]/30 pb-4">Personnel Directives</h2>
+                            <strong class="text-[#D4AF37] uppercase tracking-widest block text-lg mb-3">The Archivists</strong>
+                            <p class="text-base leading-relaxed text-gray-300 mb-8 font-medium">
+                                Agents stationed in Zone 1 are strictly forbidden from speaking aloud. Verbalizing thoughts causes acoustic resonance, which can accidentally intertwine nearby narrative threads—a catastrophic event known as <span class="text-red-500 font-bold">Cross-Contamination</span>.
+                            </p>
+                            
+                            <div class="bg-black/50 p-6 border-l-4 border-[#D4AF37]">
+                                <strong class="text-[#f2e6d0] uppercase tracking-widest block text-sm mb-2">Mandatory Gear: Brass Thimbles</strong>
+                                <p class="text-base text-gray-400 leading-relaxed">
+                                    A papercut from Active Vellum does not draw blood; it draws your earliest childhood memory. Ten papercuts result in complete ego-death.
+                                </p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="leather-book w-[350px] md:w-[450px] h-[500px] md:h-[600px] relative z-40 mx-auto flex flex-col items-center justify-center shadow-[20px_20px_30px_rgba(0,0,0,0.9),_inset_0_0_50px_rgba(0,0,0,0.8)]" style="transform: rotate(1deg);">
-                        <div class="brass-clasp absolute right-[-15px] top-[45%] w-[30px] h-[60px] rounded-r-lg shadow-lg">
-                            <div class="w-2 h-2 rounded-full bg-[#5c4a1e] absolute top-2 right-2 shadow-inner"></div>
-                            <div class="w-2 h-2 rounded-full bg-[#5c4a1e] absolute bottom-2 right-2 shadow-inner"></div>
-                        </div>
-                        <div class="absolute top-1/4 w-32 h-32 opacity-30">
-                            <svg viewBox="0 0 100 100" class="w-full h-full text-[#c5a059] drop-shadow-[0_2px_2px_rgba(0,0,0,1)]">
-                                <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
-                                <path d="M50 5 L60 40 L95 50 L60 60 L50 95 L40 60 L5 50 L40 40 Z" fill="none" stroke="currentColor" stroke-width="2"/>
-                                <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
-                            </svg>
-                        </div>
-                        <div class="text-center mt-32 px-12">
-                            <h2 class="font-serif text-[#c5a059] text-xl md:text-2xl font-bold uppercase tracking-[0.3em] drop-shadow-[0_2px_4px_rgba(0,0,0,1)] mb-4" style="text-shadow: 0px 2px 2px rgba(0,0,0,1), 0 0 10px rgba(197,160,89,0.2);">
-                                The Department<br>of<br>Unfinished Events
-                            </h2>
-                            <p class="font-mono text-[#c5a059] text-[9px] tracking-widest opacity-60 uppercase">Master Index // Active Vellum</p>
-                        </div>
-                    </div>
-
-                    <div class="evidence-photo w-56 absolute top-16 right-32 z-30" style="transform: rotate(5deg);">
-                        <div class="photo-pin"></div>
-                        <img src="https://picsum.photos/seed/ladderarchive/400/500" alt="The Stacks">
-                    </div>
-                    
-                    <div class="filing-cabinet w-64 h-48 absolute top-8 right-8 z-10 p-6 flex flex-col items-center justify-center shadow-[inset_0_0_20px_rgba(0,0,0,0.9)]">
-                        <div class="brass-label-holder w-32 h-10 mb-6 flex items-center justify-center bg-[#1a2024] shadow-[0_2px_5px_rgba(0,0,0,0.8)] relative">
-                            <div class="w-2 h-2 rounded-full bg-[#3d2e14] absolute left-1"></div>
-                            <div class="w-2 h-2 rounded-full bg-[#3d2e14] absolute right-1"></div>
-                            <div class="bg-[#e8e3d9] w-24 h-6 text-center font-mono text-[8px] text-black font-bold pt-1">AISLE 402</div>
-                        </div>
-                        <div class="brass-handle w-40 h-8 rounded-full border-b-8 border-[#8a6b1c] shadow-[0_5px_10px_rgba(0,0,0,0.8)]"></div>
-                    </div>
-
-                    <div class="evidence-photo w-48 absolute bottom-32 right-12 z-20" style="transform: rotate(-3deg);">
-                        <div class="photo-pin"></div>
-                        <img src="https://picsum.photos/seed/copperspool/400/400" alt="Copper Wire">
-                        <div class="evidence-caption text-[9px]">THE WORLD'S NERVOUS SYSTEM</div>
-                    </div>
-
-                    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50">
-                        <div class="brass-plaque px-12 py-4 flex flex-col items-center justify-center relative shadow-[0_10px_20px_rgba(0,0,0,0.9)]">
-                            <div class="w-3 h-3 rounded-full bg-[#3d2e14] absolute left-3 shadow-inner"></div>
-                            <div class="w-3 h-3 rounded-full bg-[#3d2e14] absolute right-3 shadow-inner"></div>
-                            <h3 class="font-serif font-black text-[#3d2e14] text-sm md:text-base tracking-widest text-center" style="text-shadow: 0 1px 1px rgba(255,255,255,0.4);">BIBLE ADDENDUM:<br>VISUAL ATLAS OF THE FIVE ZONES</h3>
+                        <div class="relative w-full lg:w-[450px] flex-shrink-0" style="transform: rotate(2deg);">
+                            <div class="bg-[#e8e3d9] text-[#1a1a1a] p-10 shadow-[10px_20px_30px_rgba(0,0,0,0.9)] border border-[#d3cbb8] relative overflow-hidden">
+                                <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: repeating-linear-gradient(transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);"></div>
+                                
+                                <div class="border-b-2 border-black pb-4 mb-6 flex justify-between items-end relative z-10">
+                                    <h4 class="font-black text-2xl uppercase tracking-tighter">Incident Log</h4>
+                                    <span class="font-mono text-sm font-bold bg-black text-white px-2 py-1">REF: #814-VOID</span>
+                                </div>
+                                
+                                <div class="font-mono text-base leading-relaxed space-y-4 font-bold text-black/80 relative z-10">
+                                    <p>> DATE: 1979-10-31<br>> SUBJECT: Thread Anomalies</p>
+                                    <p>We lost Agent Miller to Aisle 402 today.</p>
+                                    <p>He found a blank Vellum file that refused to be categorized. When he opened it to check the index, the Vellum began writing itself in real-time. It was transcribing his exact physical movements as he read it.</p>
+                                    <p class="bg-[#704214] text-[#f2e6d0] p-4 text-shadow-none">
+                                        "Miller's eyes widen. He realizes the file is not recording him; it is dictating him."
+                                    </p>
+                                    <p>He closed the file, but the ink had already sweat through the cover. He walked into the Memory Mist and didn't come back. Do not attempt retrieval.</p>
+                                </div>
+                                
+                                <div class="absolute bottom-4 right-4 w-32 h-32 rounded-full border-[4px] border-[#4a2e15] opacity-30 pointer-events-none" style="filter: blur(1px); transform: scaleY(0.8) rotate(15deg);"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -153,9 +221,9 @@
         </div>
     </main>
 
-    <footer class="bg-[#050505] border-t border-[#704214]/50 py-4 px-8 flex justify-between items-center relative z-40">
-        <div class="tracking-widest opacity-50 uppercase font-bold text-[#f2e6d0] text-xs">Location: Zone 1 — Archive Floor (The Stacks)</div>
-        <div id="stability-display" class="font-mono text-[#704214] text-sm font-bold">SIGNAL_STABILITY: 99.99%</div>
+    <footer class="bg-[#020202] border-t border-[#704214]/50 py-5 px-8 flex justify-between items-center relative z-40 shadow-[0_-5px_20px_rgba(0,0,0,0.8)]">
+        <div class="tracking-widest opacity-60 uppercase font-bold text-[#f2e6d0] text-xs">Location: Zone 1 — Archive Floor (The Stacks)</div>
+        <div id="stability-display" class="font-mono text-[#704214] text-sm font-bold drop-shadow-[0_0_5px_rgba(112,66,20,0.8)]">SIGNAL_STABILITY: 99.99%</div>
     </footer>
 
     <script src="script.js"></script>
