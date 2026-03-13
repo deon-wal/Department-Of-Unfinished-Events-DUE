@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUE // STATION_04 - Zone 2: Field Operations (Flickering Streets)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific inline styles for Zone 2's new phenomena */
+        .probability-puddle {
+            background: radial-gradient(circle at center, rgba(139, 163, 171, 0.15) 0%, transparent 70%);
+            box-shadow: inset 0 0 20px rgba(139, 163, 171, 0.05);
+            animation: gravity-well-pulse 4s ease-in-out infinite;
+        }
+        @keyframes gravity-well-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.02); opacity: 1; box-shadow: inset 0 0 40px rgba(139, 163, 171, 0.2); }
+        }
+        .stasis-flicker {
+            animation: frozen-flicker 3s infinite;
+        }
+        @keyframes frozen-flicker {
+            0%, 40% { opacity: 1; filter: brightness(1); }
+            41% { opacity: 0.4; filter: brightness(2); }
+            42%, 100% { opacity: 0.4; filter: brightness(2); } /* Freezes mid-flicker */
+        }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <div id="erasure-flash"></div>
+    <div id="scanlines"></div>
+    <div id="crt-flicker"></div>
+    <div id="static-fog" class="fixed inset-0 z-[2] pointer-events-none opacity-20 mix-blend-screen" style="background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
+    
+    <div id="bg-skyline" class="parallax-layer render-distance-fail opacity-30" style="filter: sepia(0.5) hue-rotate(180deg) blur(4px);"></div>
+
+    <header>
+        <div class="flex items-center gap-6">
+            <div class="font-black text-3xl tracking-tighter text-white">D.U.E.</div>
+            <div class="text-[8px] opacity-40 leading-tight uppercase font-bold border-l border-white/20 pl-4">
+                Workstation_04<br>
+                Total_Recovery_V5.0<br>
+                Status: Arrested
+            </div>
+        </div>
+        <div class="flex items-center gap-8">
+            <div id="dist-nixie" class="nixie-tube text-[#8ba3ab]">99.99%</div>
+            <div class="flex items-center gap-3 bg-white/5 px-4 py-2 rounded">
+                <span class="text-[7px] uppercase font-bold tracking-widest opacity-60">Clearance Mode</span>
+                <input type="checkbox" id="clearance-toggle" class="w-4 h-4 accent-[#8ba3ab] cursor-pointer">
+            </div>
+        </div>
+    </header>
+
+    <main id="main-scroll-container">
+        <section class="h-[50vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
+            <div id="hero-parallax" class="z-20">
+                <h1 class="text-4xl md:text-6xl font-black tracking-[0.5rem] md:tracking-[1rem] text-[#8ba3ab] opacity-90 mb-4 building-stutter uppercase">Zone 2 — Field Operations</h1>
+                <p class="text-[12px] md:text-[14px] tracking-[0.8rem] text-gray-500 uppercase font-bold">(Flickering Streets)</p>
+            </div>
+        </section>
+
+        <div class="max-w-6xl mx-auto px-6 pb-32 relative z-20">
+            <div class="bg-[#0a0f12]/95 border border-[#8ba3ab]/30 backdrop-blur-md shadow-2xl relative">
+                
+                <nav class="flex border-b border-[#8ba3ab]/30 flex-wrap text-xs md:text-sm">
+                    <a href="index.html" class="tab-btn">01. Zone 1</a>
+                    <a href="zone2.html" class="tab-btn active" style="color: #8ba3ab; border-bottom: 2px solid #8ba3ab;">02. Zone 2</a>
+                    <a href="zone3.html" class="tab-btn">03. Zone 3</a>
+                    <a href="zone4.html" class="tab-btn">04. Zone 4</a>
+                    <a href="zone5.html" class="tab-btn">05. Zone 5</a>
+                    <a href="zone6.html" class="tab-btn">06. Zone 6</a>
+                </nav>
+
+                <div id="zone2" class="tab-content active p-10 md:p-16">
+                    
+                    <div class="mb-12 border-b border-[#8ba3ab]/20 pb-8 text-center relative overflow-hidden">
+                        <p class="text-sm md:text-base leading-relaxed text-gray-400 font-serif italic max-w-3xl mx-auto building-stutter">
+                            The front lines. This zone is defined by active narrative instability and localized reality glitches. Agents deployed here must navigate a crumbling urban sprawl where cause and effect no longer align.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        
+                        <div class="border border-[#8ba3ab]/40 p-8 relative overflow-hidden bg-[#121a20]/50">
+                            <div class="absolute top-2 right-4 text-[8px] text-[#8ba3ab] opacity-40 font-bold">REPORT // ENVIRONMENT</div>
+                            <h3 class="text-[#8ba3ab] font-black text-xl mb-6 tracking-tighter uppercase border-b border-[#8ba3ab]/30 pb-2">Environmental Effects</h3>
+                            
+                            <ul class="space-y-6">
+                                <li>
+                                    <strong class="text-gray-300 uppercase tracking-widest block text-xs mb-1 stasis-flicker">Stasis</strong>
+                                    <p class="text-xs leading-relaxed text-gray-500">
+                                        Streetlights occasionally freeze in mid-flicker, leaving pockets of the street suspended indefinitely between light and dark.
+                                    </p>
+                                </li>
+                                <li>
+                                    <strong class="text-gray-300 uppercase tracking-widest block text-xs mb-1">Recursive Loops</strong>
+                                    <p class="text-xs leading-relaxed text-gray-500">
+                                        Vehicles repeat the same turn indefinitely. Pedestrians can be observed passing through the same doorway hundreds of times. Do not intercept loopers.
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="border border-gray-600 p-8 relative overflow-hidden bg-black/40">
+                            <div class="absolute top-2 right-4 text-[8px] text-gray-500 opacity-60 font-bold">REPORT // POPULATION</div>
+                            <h3 class="text-gray-300 font-black text-xl mb-6 tracking-tighter uppercase border-b border-gray-600 pb-2">Civilian Conditions</h3>
+                            
+                            <ul class="space-y-4">
+                                <li class="p-3 border-l-2 border-gray-700 bg-white/5">
+                                    <strong class="text-gray-400 uppercase tracking-widest block text-[10px] mb-1">Flat-Face Syndrome</strong>
+                                    <p class="text-[10px] text-gray-500">Featureless facial topography caused by severe narrative erosion.</p>
+                                </li>
+                                <li class="p-3 border-l-2 border-gray-700 bg-white/5">
+                                    <strong class="text-gray-400 uppercase tracking-widest block text-[10px] mb-1">Loopers</strong>
+                                    <p class="text-[10px] text-gray-500">Individuals caught entirely within a localized temporal or behavioral cycle.</p>
+                                </li>
+                                <li class="p-3 border-l-2 border-gray-700 bg-white/5">
+                                    <strong class="text-gray-400 uppercase tracking-widest block text-[10px] mb-1">Memory Drain</strong>
+                                    <p class="text-[10px] text-gray-500">The gradual, physical leaching of a civilian's personal history into the surrounding environment.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="border border-blue-900/40 p-8 probability-puddle relative group cursor-crosshair">
+                        <div class="absolute top-2 right-4 text-[8px] text-blue-400 opacity-60 font-bold">ANOMALY // GRAVITY_WELL</div>
+                        <h3 class="text-blue-300 font-black text-xl mb-4 tracking-tighter uppercase border-b border-blue-900/30 pb-2">Probability Puddles</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed max-w-4xl">
+                            Agents have identified specific intersections where events accumulate like gravity wells. These anomalous zones draw in extreme coincidences, escalating conflicts, and high-stakes narrative tension. Approaching a Probability Puddle drastically increases the likelihood of a localized reality collapse.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="tracking-widest opacity-40 uppercase font-bold text-[#8ba3ab]">Location: Zone 2 — Field Operations (Flickering Streets)</div>
+        <div id="stability-display" class="font-mono text-gray-500">SIGNAL_STABILITY: 64.12%</div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
