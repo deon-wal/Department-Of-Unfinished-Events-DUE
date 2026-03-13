@@ -230,3 +230,22 @@ footer {
     0%, 100% { opacity: 0.3; }
     50% { opacity: 0.8; box-shadow: 0 0 10px red; }
 }
+/* --- ZONE 5: DIRECTORATE CORE SPECIFICS --- */
+.tape-rewind-container {
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.tape-data {
+    animation: rewind-tape 0.8s linear infinite reverse; /* Reverse makes it look like it's rewinding */
+}
+
+.tape-track {
+    animation: rewind-tape 0.2s linear infinite reverse;
+    border-top: 1px dashed rgba(255, 170, 0, 0.3);
+}
+
+@keyframes rewind-tape {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* Scrolls halfway, seamless loop due to 200% width */
+}
