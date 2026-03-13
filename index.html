@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUE // STATION_04 - Monolith</title>
+    <title>DUE // STATION_04 - Zone 1: Archive Floor (The Stacks)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,7 +13,7 @@
     <div id="scanlines"></div>
     <div id="crt-flicker"></div>
     <canvas id="memory-mist-canvas"></canvas>
-    <div id="bg-skyline" class="parallax-layer"></div>
+    <div id="bg-skyline" class="parallax-layer opacity-20" style="filter: sepia(1) hue-rotate(30deg);"></div>
 
     <header>
         <div class="flex items-center gap-6">
@@ -25,52 +25,73 @@
             </div>
         </div>
         <div class="flex items-center gap-8">
-            <div id="dist-nixie" class="nixie-tube">99.99%</div>
+            <div id="dist-nixie" class="nixie-tube text-[#f2e6d0]">99.99%</div>
             <div class="flex items-center gap-3 bg-white/5 px-4 py-2 rounded">
                 <span class="text-[7px] uppercase font-bold tracking-widest opacity-60">Clearance Mode</span>
-                <input type="checkbox" id="clearance-toggle" class="w-4 h-4 accent-red-600 cursor-pointer">
+                <input type="checkbox" id="clearance-toggle" class="w-4 h-4 accent-[#704214] cursor-pointer">
             </div>
         </div>
     </header>
 
     <main id="main-scroll-container">
-        <section class="h-[50vh] flex flex-col items-center justify-center text-center relative">
+        <section class="h-[50vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
             <div id="hero-parallax" class="z-20">
-                <h1 class="text-7xl font-black tracking-[2rem] text-white opacity-90 mb-4 ml-[2rem] glitch-text">PANGEA-EX</h1>
-                <p class="text-[10px] tracking-[0.6rem] opacity-40 uppercase font-bold">"The event did not end; it failed to compile."</p>
+                <h1 class="text-4xl md:text-6xl font-black tracking-[0.5rem] md:tracking-[1rem] text-[#f2e6d0] opacity-90 mb-4 glitch-text uppercase">Zone 1 — Archive Floor</h1>
+                <p class="text-[12px] md:text-[14px] tracking-[0.8rem] text-[#704214] uppercase font-bold">(The Stacks)</p>
             </div>
-            <div class="suture" style="left: 20%; animation-delay: 0s;"></div>
-            <div class="suture" style="left: 80%; animation-delay: -5s;"></div>
+            
+            <div class="suture" style="left: 15%; animation-delay: 0s; background: linear-gradient(to bottom, transparent, rgba(242, 230, 208, 0.4), transparent); box-shadow: 0 0 15px rgba(242, 230, 208, 0.4);"></div>
+            <div class="suture" style="left: 85%; animation-delay: -5s; background: linear-gradient(to bottom, transparent, rgba(242, 230, 208, 0.4), transparent); box-shadow: 0 0 15px rgba(242, 230, 208, 0.4);"></div>
         </section>
 
-        <div class="max-w-6xl mx-auto px-6 pb-32">
-            <div class="bg-black/90 border border-white/10 backdrop-blur-md shadow-2xl">
-                <nav class="flex border-b border-white/10">
-                    <a href="index.html" class="tab-btn active">01. Monolith</a>
-                    <a href="archive.html" class="tab-btn">02. Archive Log</a>
-                    <a href="dossier.html" class="tab-btn">03. The Dossier</a>
-                    <a href="stacks.html" class="tab-btn">04. The Stacks</a>
-                    <a href="breach.html" class="tab-btn">05. Breach</a>
+        <div class="max-w-6xl mx-auto px-6 pb-32 relative z-20">
+            <div class="bg-black/95 border border-[#704214]/30 backdrop-blur-md shadow-2xl relative">
+                
+                <nav class="flex border-b border-[#704214]/30 flex-wrap text-xs md:text-sm">
+                    <a href="index.html" class="tab-btn active" style="color: #f2e6d0; border-bottom: 2px solid #f2e6d0;">01. Zone 1</a>
+                    <a href="zone2.html" class="tab-btn">02. Zone 2</a>
+                    <a href="zone3.html" class="tab-btn">03. Zone 3</a>
+                    <a href="zone4.html" class="tab-btn">04. Zone 4</a>
+                    <a href="zone5.html" class="tab-btn">05. Zone 5</a>
+                    <a href="zone6.html" class="tab-btn">06. Zone 6</a>
                 </nav>
 
-                <div id="monolith" class="tab-content active p-16">
-                    <div class="max-w-3xl">
-                        <h2 class="text-3xl font-bold mb-8 tracking-[0.8rem] text-white uppercase border-b border-white/10 pb-4">Terminal Overview</h2>
-                        <p class="text-lg leading-relaxed text-gray-400 font-serif italic mb-8">
-                            Station_04 acts as the final buffer for narrative fragments that failed to manifest during the 
-                            <span class="redacted" title="Lore: 1979 Halloween Sequence">1979 Halloween Sequence</span>. 
-                            The architecture of Pangea-EX remains 14% uncompiled. 
+                <div id="zone1" class="tab-content active p-10 md:p-16">
+                    
+                    <div class="mb-12 border-b border-[#704214]/20 pb-8 text-center relative overflow-hidden">
+                        <div id="fragment-layer" class="absolute inset-0 opacity-30"></div>
+                        <p class="text-sm md:text-base leading-relaxed text-[#f2e6d0] font-serif italic max-w-3xl mx-auto relative z-10">
+                            Filing towers stretch 50 feet upward, disappearing entirely into the Memory Mist. The air is thick with the scent of vanilla, old paper, and wet copper. A low-frequency "Paper-Heartbeat" resonates through the floorboards.
                         </p>
-                        <div class="grid grid-cols-2 gap-8 text-[11px] uppercase tracking-widest opacity-60 font-bold">
-                            <div class="p-4 border border-white/5 bg-white/5">
-                                Current Load: 12.4TB Vellum<br>
-                                Suture Health: Nominal
-                            </div>
-                            <div class="p-4 border border-white/5 bg-white/5">
-                                Ink Density: 0.04mg/px<br>
-                                Observers: Aiden [Recursive]
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-12">
+                        
+                        <div class="border border-[#704214]/40 p-8 relative overflow-hidden bg-[#2a241a]/20">
+                            <div class="absolute top-2 right-4 text-[8px] text-[#f2e6d0] opacity-40 font-bold">ASSETS // PHYSICAL</div>
+                            <h3 class="text-[#f2e6d0] font-black text-2xl mb-6 tracking-tighter uppercase border-b border-[#704214]/30 pb-2">Active Vellum</h3>
+                            <p class="text-sm leading-relaxed text-gray-400">
+                                The primary storage medium. Translucent paper that pulses with a faint golden light. When emotionally charged, the vellum actively sweats <span class="text-red-900 font-bold">Blood-Ink</span>. Handle with extreme care; emotional resonance can cause paper cuts that bleed memories instead of blood.
+                            </p>
+                        </div>
+
+                        <div class="border border-[#704214]/40 p-8 relative overflow-hidden bg-red-900/5">
+                            <div class="absolute top-2 right-4 text-[8px] text-red-500 opacity-40 font-bold">WARNING // BIO_HAZARD</div>
+                            <h3 class="text-red-600 font-black text-2xl mb-6 tracking-tighter uppercase border-b border-red-900/30 pb-2">Identified Hazards</h3>
+                            
+                            <div class="p-4 border-l-2 border-red-600 bg-red-900/10 group cursor-help transition-all duration-300 hover:bg-red-900/30">
+                                <strong class="text-white uppercase text-xs tracking-widest block mb-2 group-hover:animate-pulse">Memory Parasites (Silver Moths)</strong>
+                                <p class="text-xs text-gray-400">
+                                    Colonies of silver moths that feed on archived Vellum. They devour specific conceptual data. Symptoms of a bite include the immediate loss of:
+                                </p>
+                                <ul class="list-disc list-inside text-[10px] text-gray-500 mt-2 space-y-1 ml-2">
+                                    <li>First names of loved ones.</li>
+                                    <li>Childhood color associations.</li>
+                                    <li>Facial recognition algorithms.</li>
+                                </ul>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -78,8 +99,8 @@
     </main>
 
     <footer>
-        <div class="tracking-widest opacity-40 uppercase font-bold">Archive_Index: 1979-10-31 // ARRESTED_STATE</div>
-        <div id="stability-display" class="font-mono">SIGNAL_STABILITY: 99.99%</div>
+        <div class="tracking-widest opacity-40 uppercase font-bold text-[#f2e6d0]">Location: Zone 1 — Archive Floor (The Stacks)</div>
+        <div id="stability-display" class="font-mono text-[#704214]">SIGNAL_STABILITY: 99.99%</div>
     </footer>
 
     <script src="script.js"></script>
