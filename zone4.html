@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUE // STATION_04 - Zone 4: Observation Deck (The God-Eye)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="flex flex-col bg-[#02060d] text-cyan-100">
+
+    <div id="erasure-flash"></div>
+    <div id="scanlines"></div>
+    <div id="crt-flicker"></div>
+    <canvas id="memory-mist-canvas" class="opacity-20"></canvas>
+    
+    <div id="horizon-loading-bar"></div>
+    <div id="bg-skyline" class="parallax-layer opacity-40" style="filter: sepia(1) hue-rotate(180deg) brightness(0.5);"></div>
+
+    <div class="processing-storm-error absolute top-[20%] left-[15%] z-0 pointer-events-none opacity-20">
+        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" stroke="#FF3131" stroke-width="2">
+            <polygon points="50,10 90,90 10,90" />
+            <text x="50%" y="65%" text-anchor="middle" fill="#FF3131" font-size="20" font-family="monospace" font-weight="bold">!</text>
+        </svg>
+    </div>
+
+    <header class="bg-[#040a14] border-b border-cyan-900/50 relative z-30">
+        <div class="flex items-center gap-6">
+            <div class="font-black text-3xl tracking-tighter text-cyan-500 text-shadow-glow">D.U.E.</div>
+            <div class="text-[8px] opacity-40 leading-tight uppercase font-bold border-l border-cyan-800 pl-4 text-cyan-300">
+                Workstation_04<br>
+                Total_Recovery_V5.0<br>
+                Status: Monitoring
+            </div>
+        </div>
+        <div class="flex items-center gap-8">
+            <div id="dist-nixie" class="nixie-tube !text-cyan-400 !border-cyan-900 !text-shadow-cyan">99.99%</div>
+            <div class="flex items-center gap-3 bg-cyan-900/20 px-4 py-2 rounded border border-cyan-900/30">
+                <span class="text-[7px] uppercase font-bold tracking-widest text-cyan-600">Clearance Mode</span>
+                <input type="checkbox" id="clearance-toggle" class="w-4 h-4 accent-cyan-500 cursor-pointer">
+            </div>
+        </div>
+    </header>
+
+    <main id="main-scroll-container" class="z-20">
+        <section class="h-[50vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
+            <div id="hero-parallax" class="z-20">
+                <h1 class="text-4xl md:text-6xl font-black tracking-[0.5rem] md:tracking-[1rem] text-cyan-50 opacity-90 mb-4 uppercase text-shadow-cyan-heavy">Zone 4 — Observation Deck</h1>
+                <p class="text-[12px] md:text-[14px] tracking-[0.8rem] text-cyan-600 uppercase font-bold">(The God-Eye)</p>
+            </div>
+        </section>
+
+        <div class="max-w-6xl mx-auto px-6 pb-32 relative z-20">
+            <div class="bg-[#050b14]/90 border border-cyan-900/50 backdrop-blur-md shadow-[0_0_30px_rgba(0,255,255,0.05)] relative">
+                
+                <nav class="flex border-b border-cyan-900/50 flex-wrap text-xs md:text-sm">
+                    <a href="index.html" class="tab-btn">01. Zone 1</a>
+                    <a href="zone2.html" class="tab-btn">02. Zone 2</a>
+                    <a href="zone3.html" class="tab-btn">03. Zone 3</a>
+                    <a href="zone4.html" class="tab-btn active" style="color: #22d3ee; border-bottom: 2px solid #22d3ee; background: rgba(34, 211, 238, 0.05);">04. Zone 4</a>
+                    <a href="zone5.html" class="tab-btn">05. Zone 5</a>
+                    <a href="zone6.html" class="tab-btn">06. Zone 6</a>
+                </nav>
+
+                <div id="zone4" class="tab-content active p-10 md:p-16">
+                    
+                    <div class="mb-12 border border-cyan-500/30 bg-cyan-950/20 p-8 relative overflow-hidden group">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-cyan-500"></div>
+                        <h3 class="text-cyan-400 font-black text-xs tracking-[0.3em] uppercase mb-4 opacity-70">Classified // Ultimate Perspective Shift</h3>
+                        <p class="text-base md:text-lg leading-relaxed text-cyan-50 font-serif italic relative z-10">
+                            "The grand illusion of Field Operations is that we are a subterranean agency hiding beneath the city. Stepping onto the God-Eye balcony shatters this immediately. The Department does not exist within the city. <strong class="text-white text-shadow-cyan font-bold not-italic">The city exists within the Department.</strong>"
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        
+                        <div class="border border-cyan-900/60 p-8 relative overflow-hidden bg-[#07111f]">
+                            <div class="absolute top-2 right-4 text-[8px] text-cyan-700 font-bold">SYSTEM // TELEMETRY</div>
+                            <h3 class="text-cyan-400 font-black text-xl mb-8 tracking-tighter uppercase border-b border-cyan-900/60 pb-2">Monitoring Instruments</h3>
+                            
+                            <div class="space-y-8">
+                                <div class="flex items-center gap-6 p-4 bg-black/40 border border-cyan-900/30">
+                                    <div class="w-24 h-24 flex-shrink-0 relative">
+                                        <svg viewBox="0 0 200 120" class="w-full h-full drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">
+                                            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#0f344d" stroke-width="15" stroke-linecap="round"/>
+                                            <path d="M 136 43 A 80 80 0 0 1 180 100" fill="none" stroke="#FF3131" stroke-width="15" stroke-linecap="round" opacity="0.6"/>
+                                            <path d="M 20 100 L 35 100 M 100 20 L 100 35 M 180 100 L 165 100 M 43 43 L 54 54 M 157 43 L 146 54" stroke="#22d3ee" stroke-width="2"/>
+                                            <g class="barometer-needle" style="transform-origin: 100px 100px;">
+                                                <line x1="100" y1="100" x2="40" y2="40" stroke="#FF3131" stroke-width="3" stroke-linecap="round"/>
+                                                <circle cx="100" cy="100" r="6" fill="#22d3ee"/>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <strong class="text-cyan-300 uppercase tracking-widest block text-xs mb-1">Probability Barometer</strong>
+                                        <p class="text-[10px] leading-relaxed text-cyan-600/80">Measuring the likelihood of localized narrative divergence in real-time.</p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <strong class="text-cyan-300 uppercase tracking-widest block text-xs mb-1">Narrative Density Maps</strong>
+                                    <p class="text-xs leading-relaxed text-cyan-600/80">
+                                        Holographic topography visualizing where reality is "thickest" (stable) or "thinning" (prone to tearing).
+                                    </p>
+                                </div>
+                                
+                                <div class="border-l-2 border-[#D4AF37] pl-4">
+                                    <strong class="text-[#D4AF37] uppercase tracking-widest block text-xs mb-1">The Doomsday Clock</strong>
+                                    <p class="text-xs leading-relaxed text-yellow-600/70">
+                                        A 13-hour mechanical clock tracking the countdown to total narrative structural failure. It is currently frozen, violently vibrating at 12:59:59.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-red-900/30 p-8 relative overflow-hidden bg-[#1f0707]/30">
+                            <div class="absolute top-2 right-4 text-[8px] text-red-500/50 font-bold">WARNING // MATTE_CEILING</div>
+                            <h3 class="text-red-400 font-black text-xl mb-6 tracking-tighter uppercase border-b border-red-900/30 pb-2">Processing Storms</h3>
+                            
+                            <p class="text-xs leading-relaxed text-red-200/60 mb-6">
+                                The sky above the God-Eye is a Matte Ceiling. During periods of high instability, the sky glitches, revealing the Department's underlying interface. Do not stare directly into the Code; ocular bleeding will occur.
+                            </p>
+
+                            <ul class="space-y-4">
+                                <li class="p-3 border border-red-900/50 bg-black/50">
+                                    <strong class="text-red-300 uppercase tracking-widest block text-[10px] mb-1">Rotating Hourglass Icons</strong>
+                                    <p class="text-[10px] text-red-500/60">Massive, pixelated cursors suspended in the atmospheric layer, indicating a stalled reality thread.</p>
+                                </li>
+                                <li class="p-3 border border-red-900/50 bg-black/50">
+                                    <strong class="text-red-300 uppercase tracking-widest block text-[10px] mb-1">Red Error Triangles</strong>
+                                    <p class="text-[10px] text-red-500/60">Colossal geometric warnings piercing the cloud layer over highly unstable city sectors.</p>
+                                </li>
+                                <li class="p-3 border border-red-900/50 bg-black/50 relative overflow-hidden">
+                                    <div class="absolute bottom-0 left-0 h-1 bg-red-600 opacity-50" style="width: 70%; animation: load-pulse 2s infinite;"></div>
+                                    <strong class="text-red-300 uppercase tracking-widest block text-[10px] mb-1">Massive Loading Bars</strong>
+                                    <p class="text-[10px] text-red-500/60">Stretching horizontally across the entire visible horizon, attempting to compile the next hour of existence.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[#040a14] border-t border-cyan-900/50 text-cyan-600">
+        <div class="tracking-widest opacity-60 uppercase font-bold text-cyan-700">Location: Zone 4 — Observation Deck (The God-Eye)</div>
+        <div id="stability-display" class="font-mono text-cyan-500 font-bold">SIGNAL_STABILITY: 99.99%</div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
