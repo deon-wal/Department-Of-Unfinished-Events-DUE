@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUE // STATION_04 - Zone 5: Directorate Core (The Concrete Heart)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="flex flex-col bg-black text-[#a3a3a3]">
+
+    <div id="erasure-flash"></div>
+    <div id="scanlines" style="opacity: 0.8;"></div>
+    <div id="crt-flicker"></div>
+    
+    <div class="fixed inset-0 z-[1] pointer-events-none" style="box-shadow: inset 0 0 150px 100px #000;"></div>
+
+    <header class="bg-[#050505] border-b border-[#333] relative z-30">
+        <div class="flex items-center gap-6">
+            <div class="font-black text-3xl tracking-tighter text-[#555]">D.U.E.</div>
+            <div class="text-[8px] opacity-40 leading-tight uppercase font-bold border-l border-[#333] pl-4 text-[#777]">
+                Workstation_04<br>
+                Total_Recovery_V5.0<br>
+                Status: Rewinding
+            </div>
+        </div>
+        <div class="flex items-center gap-8">
+            <div id="dist-nixie" class="nixie-tube !text-[#ffaa00] !border-[#ffaa00]/30 !text-shadow-none animate-pulse">ERR: 99% CORRUPT</div>
+            <div class="flex items-center gap-3 bg-black px-4 py-2 rounded border border-[#333]">
+                <span class="text-[7px] uppercase font-bold tracking-widest text-[#777]">Clearance Mode</span>
+                <input type="checkbox" id="clearance-toggle" class="w-4 h-4 accent-[#ffaa00] cursor-pointer" disabled>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-scroll-container" class="z-20">
+        <section class="h-[40vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
+            <div class="z-20">
+                <h1 class="text-4xl md:text-6xl font-black tracking-[0.5rem] md:tracking-[1rem] text-[#888] opacity-90 mb-4 uppercase">Zone 5 — Directorate Core</h1>
+                <p class="text-[12px] md:text-[14px] tracking-[0.8rem] text-[#ffaa00] uppercase font-bold">(The Concrete Heart)</p>
+            </div>
+        </section>
+
+        <div class="max-w-6xl mx-auto px-6 pb-32 relative z-20">
+            <div class="bg-[#020202] border-2 border-[#1a1a1a] shadow-2xl relative">
+                
+                <nav class="flex border-b border-[#1a1a1a] flex-wrap text-xs md:text-sm bg-[#050505]">
+                    <a href="index.html" class="tab-btn">01. Zone 1</a>
+                    <a href="zone2.html" class="tab-btn">02. Zone 2</a>
+                    <a href="zone3.html" class="tab-btn">03. Zone 3</a>
+                    <a href="zone4.html" class="tab-btn">04. Zone 4</a>
+                    <a href="zone5.html" class="tab-btn active" style="color: #ffaa00; border-bottom: 2px solid #ffaa00; background: #0a0a0a;">05. Zone 5</a>
+                    <a href="zone6.html" class="tab-btn">06. Zone 6</a>
+                </nav>
+
+                <div id="zone5" class="tab-content active p-10 md:p-16">
+                    
+                    <div class="mb-12 border-b border-[#1a1a1a] pb-8 text-center relative overflow-hidden">
+                        <p class="text-sm md:text-base leading-relaxed text-[#666] font-serif italic max-w-3xl mx-auto">
+                            The absolute center of the Department. A windowless, clockless vault operating in total sensory deprivation. There is no natural light, and no markers of time. Only the sound of the Drive.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        
+                        <div class="border border-[#1a1a1a] p-8 relative overflow-hidden bg-[#050505]">
+                            <div class="absolute top-2 right-4 text-[8px] text-[#444] font-bold">ASSET // THE_MEDIUM</div>
+                            <h3 class="text-[#888] font-black text-xl mb-6 tracking-tighter uppercase border-b border-[#1a1a1a] pb-2">The Magnetic Record</h3>
+                            
+                            <ul class="space-y-6">
+                                <li>
+                                    <strong class="text-[#aaa] uppercase tracking-widest block text-xs mb-1">Miles of Tape</strong>
+                                    <p class="text-xs leading-relaxed text-[#666]">
+                                        The physical manifestation of existence. Millions of miles of magnetic tape stretching endlessly into the darkness, hissing with the friction of uncompressed reality.
+                                    </p>
+                                </li>
+                                <li>
+                                    <strong class="text-[#ffaa00] uppercase tracking-widest block text-xs mb-1">The World-Drive</strong>
+                                    <p class="text-xs leading-relaxed text-[#666]">
+                                        A massive, continuous recording device designed to capture the progression of reality in real-time. It is the heart of the Department. And it is failing.
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="border border-red-900/20 p-8 relative overflow-hidden bg-[#0a0000]">
+                            <div class="absolute top-2 right-4 text-[8px] text-red-500/40 font-bold">SYSTEM_CRITICAL // CORRUPTION</div>
+                            <h3 class="text-red-500/80 font-black text-xl mb-6 tracking-tighter uppercase border-b border-red-900/20 pb-2">The Failure State</h3>
+                            
+                            <div class="space-y-6">
+                                <div>
+                                    <strong class="text-red-400 uppercase tracking-widest block text-xs mb-1">Constant Rewind</strong>
+                                    <p class="text-xs leading-relaxed text-[#777]">
+                                        Because the universe is <span class="text-red-500 font-bold">99% corrupted</span>, the system cannot commit new data to permanent storage. The World-Drive is forced to constantly rewind in a desperate search for a stable "save point."
+                                    </p>
+                                </div>
+                                
+                                <div class="border-l-2 border-red-600 pl-4 py-1">
+                                    <strong class="text-[#ffaa00] uppercase tracking-widest block text-[10px] mb-1 glitch-text">The Result: The Loops</strong>
+                                    <p class="text-[10px] leading-relaxed text-[#777]">
+                                        This mechanical rewinding is the direct cause of the recurring events and narrative repetition experienced by agents in the field. When the tape snaps back, so does reality.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 border border-[#1a1a1a] bg-[#020202] p-4 relative overflow-hidden h-32 flex flex-col justify-center">
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;utf8,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22 opacity=%220.05%22/%3E%3C/svg%3E')] pointer-events-none"></div>
+                        <div class="text-[8px] text-[#ffaa00] uppercase font-mono tracking-widest absolute top-2 left-4 opacity-50 z-10">WORLD_DRIVE // SPOOL_STATUS: REWINDING</div>
+                        
+                        <div class="w-full h-12 relative flex items-center tape-rewind-container overflow-hidden opacity-80">
+                            <div class="tape-track h-0.5 bg-[#ffaa00] absolute w-[200%] top-2"></div>
+                            <div class="tape-track h-1 bg-[#333] absolute w-[200%] top-5"></div>
+                            <div class="tape-track h-0.5 bg-[#ffaa00] absolute w-[200%] bottom-2"></div>
+                            
+                            <div class="tape-data flex gap-4 absolute w-[200%]">
+                                <div class="h-8 w-2 bg-[#ffaa00] opacity-40"></div>
+                                <div class="h-8 w-6 bg-[#ffaa00] opacity-20"></div>
+                                <div class="h-8 w-1 bg-red-600 opacity-60"></div>
+                                <div class="h-8 w-12 bg-[#ffaa00] opacity-10"></div>
+                                <div class="h-8 w-3 bg-[#ffaa00] opacity-30"></div>
+                                <div class="h-8 w-2 bg-red-600 opacity-80"></div>
+                                <div class="h-8 w-8 bg-[#ffaa00] opacity-20"></div>
+                                <div class="h-8 w-4 bg-[#ffaa00] opacity-40"></div>
+                                <div class="h-8 w-1 bg-red-600 opacity-60"></div>
+                                <div class="h-8 w-12 bg-[#ffaa00] opacity-10"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[#020202] border-t border-[#1a1a1a] text-[#555]">
+        <div class="tracking-widest opacity-40 uppercase font-bold">Location: Zone 5 — Directorate Core (The Concrete Heart)</div>
+        <div class="font-mono text-red-600 font-bold animate-pulse">SIGNAL_STABILITY: 0.01%</div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
