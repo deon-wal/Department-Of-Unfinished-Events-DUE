@@ -3,391 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUE // STATION_04 - Zone 4: Observation Deck (The God-Eye)</title>
+    <meta name="description" content="Observation Deck access for the Department of Unfinished Events.">
+    <title>DUE // STATION_04 - Zone 4: Observation Deck</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Enhancement 1: Custom Keyframes for God-Eye Vibrations */
-        @keyframes jitter {
-            0% { transform: translate(0,0); }
-            20% { transform: translate(-1px, 1px); }
-            40% { transform: translate(-1px, -1px); }
-            60% { transform: translate(1px, 1px); }
-            80% { transform: translate(1px, -1px); }
-            100% { transform: translate(0,0); }
-        }
-        .vibrate-heavy { animation: jitter 0.1s infinite; }
-        
-        /* Enhancement 2: Red Alert Pulse */
-        @keyframes pulse-red {
-            0%, 100% { box-shadow: 0 0 5px rgba(255, 49, 49, 0.2); }
-            50% { box-shadow: 0 0 20px rgba(255, 49, 49, 0.5); }
-        }
-        .alert-node { animation: pulse-red 2s infinite; }
-
-        /* Enhancement 3: Glassmorphism depth */
-        .glass-panel { backdrop-filter: blur(12px); background: rgba(5, 11, 20, 0.85); }
-
-        /* Enhancement 4: Vertical Text decoration */
-        .vertical-text { writing-mode: vertical-rl; text-orientation: mixed; }
-    </style>
 </head>
-<body class="flex flex-col bg-[#02060d] text-cyan-100 cursor-crosshair selection:bg-cyan-500/30 selection:text-cyan-100">
 
-    <div id="erasure-flash" aria-hidden="true"></div>
+<body class="bg-obsidian terminal-mode">
+
     <div id="scanlines" aria-hidden="true"></div>
-    <div id="crt-flicker" aria-hidden="true"></div>
-    <canvas id="memory-mist-canvas" class="opacity-20" aria-hidden="true"></canvas>
-    <div id="horizon-loading-bar"></div>
-    <div id="bg-skyline" class="parallax-layer opacity-40" style="filter: sepia(1) hue-rotate(180deg) brightness(0.5);"></div>
+    <div id="vignette" aria-hidden="true"></div>
+    <div id="static-overlay" aria-hidden="true"></div>
+    <div id="horizon-bar-fx"></div>
 
-    <div class="fixed inset-0 pointer-events-none opacity-[0.03] z-[100] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+    <div class="hud-frame">
+        <svg width="100%" height="100%" preserveAspectRatio="none">
+            <rect width="100%" height="100%" fill="none" stroke="rgba(34, 211, 238, 0.1)" stroke-width="2"/>
+            <path d="M0 40 L40 0 Mcalc(100% - 40px) 0 L100% 40 M100% calc(100% - 40px) Lcalc(100% - 40px) 100% M40 100% L0 calc(100% - 40px)" stroke="rgba(34, 211, 238, 0.3)" fill="none"/>
+        </svg>
+    </div>
 
-    <header class="bg-[#040a14] border-b border-cyan-900/50 relative z-30 p-4 flex justify-between items-center">
-        <div class="flex items-center gap-6">
-            <div class="font-black text-3xl tracking-tighter text-cyan-500 text-shadow-glow">D.U.E.</div>
-            <div class="hidden md:block text-[7px] text-cyan-700 font-mono">
-                LAT: 40.7128° N<br>LONG: 74.0060° W
+    <header class="top-nav px-8 py-6 flex justify-between items-center relative z-50 border-b border-cyan-950">
+        <div class="nav-left flex items-center gap-10">
+            <div class="logo-wrap">
+                <div class="logo text-4xl font-black tracking-tighter text-cyan-500">D.U.E.</div>
+                <div class="text-[8px] uppercase tracking-[0.4em] text-cyan-800">Observation_Unit</div>
             </div>
-            <div class="text-[8px] opacity-40 leading-tight uppercase font-bold border-l border-cyan-800 pl-4 text-cyan-300">
-                Workstation_04<br>
-                Total_Recovery_V5.0<br>
-                Status: <span class="animate-pulse text-green-400">Monitoring</span>
+            
+            <div class="status-block hidden md:block border-l border-cyan-900 pl-8 font-mono">
+                <div class="flex flex-col gap-1">
+                    <span class="text-[10px] text-cyan-700">LAT: 40.7128° N</span>
+                    <span class="text-[10px] text-cyan-700">LONG: 74.0060° W</span>
+                    <span class="text-[9px] text-green-500 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                        SYSTEM_LINK_ACTIVE
+                    </span>
+                </div>
             </div>
         </div>
-        <div class="flex items-center gap-8">
-            <div id="dist-nixie" class="nixie-tube !text-cyan-400 !border-cyan-900 !text-shadow-cyan tabular-nums tracking-widest text-xl cursor-help hover:scale-110 transition-transform">99.99%</div>
-            <div class="flex items-center gap-3 bg-cyan-900/20 px-4 py-2 rounded border border-cyan-900/30 hover:border-cyan-500 transition-colors">
-                <span class="text-[7px] uppercase font-bold tracking-widest text-cyan-600">Clearance Mode</span>
-                <input type="checkbox" id="clearance-toggle" class="w-4 h-4 accent-cyan-500 cursor-pointer">
+
+        <div class="nixie-wrapper text-center">
+            <div id="dist-nixie" class="nixie-tube text-5xl text-orange-500 tabular-nums">99.99%</div>
+            <div class="text-[9px] font-bold text-orange-900 uppercase tracking-widest mt-1">Reality_Stability</div>
+        </div>
+
+        <div class="nav-right flex items-center gap-8">
+            <div class="clock-wrap font-mono text-right">
+                <div id="system-time" class="text-xl text-cyan-400">21:53:41</div>
+                <div class="text-[8px] text-cyan-900 uppercase">Local_Station_Time</div>
+            </div>
+            
+            <div class="clearance-control flex flex-col items-center">
+                <label class="clearance-switch relative inline-block w-12 h-6">
+                    <input type="checkbox" id="clearance-toggle" class="opacity-0 w-0 h-0">
+                    <span class="slider absolute cursor-pointer inset-0 bg-cyan-950 border border-cyan-800 rounded-full transition-all"></span>
+                </label>
+                <span class="text-[7px] font-black text-cyan-700 mt-2 uppercase">Override</span>
             </div>
         </div>
     </header>
 
-    <main id="main-scroll-container" class="z-20 relative">
-        <div class="absolute left-4 top-1/4 vertical-text text-[8px] text-cyan-900 font-bold tracking-[0.5em] uppercase">Observation_Protocol_Active</div>
-        <div class="absolute right-4 top-1/4 vertical-text text-[8px] text-cyan-900 font-bold tracking-[0.5em] uppercase">System_Reality_Sync_98%</div>
-
-        <section class="h-[60vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
-            <div id="hero-parallax" class="z-20">
-                <h1 class="text-4xl md:text-7xl font-black tracking-[0.5rem] md:tracking-[1.5rem] text-cyan-50 opacity-90 mb-4 uppercase text-shadow-cyan-heavy">Zone 4 — Observation Deck</h1>
-                <p class="text-[12px] md:text-[16px] tracking-[1rem] text-cyan-600 uppercase font-bold opacity-80">(The God-Eye)</p>
-                <div class="mt-4 flex justify-center gap-4 text-[9px] text-cyan-900 font-mono">
-                    <span>Sector: HIGH_VANTAGE</span>
-                    <span>Level: 004</span>
-                    <span>Access: OVERSEER</span>
-                </div>
+    <main id="main-scroll-container" class="relative z-10">
+        
+        <section class="hero-gate min-h-[80vh] flex flex-col items-center justify-center relative overflow-hidden">
+            <div class="parallax-title text-center z-20">
+                <h1 class="glitch-text text-6xl md:text-[10rem] font-black tracking-tighter leading-none text-white opacity-90 mb-4" data-text="ZONE 04">ZONE 04</h1>
+                <h2 class="sub-title text-xl md:text-3xl font-light tracking-[1.5em] text-cyan-500 opacity-60 uppercase">The God-Eye</h2>
+            </div>
+            <div class="scroll-indicator absolute bottom-10 animate-bounce text-cyan-900 text-2xl">▼</div>
+            
+            <div class="absolute inset-0 z-0 opacity-10 flex items-center justify-center">
+                <svg width="800" height="800" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" stroke="currentColor" fill="none" stroke-width="0.1" />
+                    <circle cx="50" cy="50" r="35" stroke="currentColor" fill="none" stroke-width="0.1" />
+                    <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" stroke-width="0.1" />
+                    <line x1="50" y1="0" x2="50" y2="100" stroke="currentColor" stroke-width="0.1" />
+                </svg>
             </div>
         </section>
 
-        <div class="max-w-7xl mx-auto px-6 pb-32 relative z-20">
-            <div class="glass-panel border border-cyan-900/50 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
-                
-                <nav class="flex border-b border-cyan-900/50 flex-wrap text-xs md:text-sm bg-black/20" role="navigation">
-                    <a href="index.html" class="tab-btn p-5 hover:bg-cyan-500/5 transition-all">01. Zone 1</a>
-                    <a href="zone2.html" class="tab-btn p-5 hover:bg-cyan-500/5 transition-all">02. Zone 2</a>
-                    <a href="zone3.html" class="tab-btn p-5 hover:bg-cyan-500/5 transition-all">03. Zone 3</a>
-                    <a href="zone4.html" class="tab-btn p-5 active border-b-2 border-cyan-400 bg-cyan-400/5 text-cyan-300">04. Zone 4</a>
-                    <a href="zone5.html" class="tab-btn p-5 hover:bg-cyan-500/5 transition-all">05. Zone 5</a>
-                    <a href="zone6.html" class="tab-btn p-5 hover:bg-cyan-500/5 transition-all">06. Zone 6</a>
-                </nav>
-
-                <div id="zone4-content" class="p-8 md:p-20">
-                    
-                    <div class="mb-16 border-l-4 border-cyan-500 bg-cyan-950/10 p-10 relative group">
-                        <svg class="absolute top-0 right-0 p-2 opacity-20" width="40" height="40" viewBox="0 0 40 40"><path d="M0 0h40v2H0zM38 0v40h2V0z" fill="currentColor"/></svg>
-                        <h3 class="text-cyan-500 font-black text-xs tracking-[0.4em] uppercase mb-6">Classified // Ultimate Perspective Shift</h3>
-                        <p class="text-lg md:text-2xl leading-relaxed text-cyan-100 font-serif italic">
-                            "The grand illusion of Field Operations is that we are a subterranean agency hiding beneath the city. Stepping onto the God-Eye balcony shatters this immediately. The Department does not exist within the city. <strong class="text-white text-shadow-cyan font-bold not-italic underline decoration-cyan-500/50">The city exists within the Department.</strong>"
-                        </p>
-                    </div>
-
-                    <div class="grid lg:grid-cols-3 gap-8 mb-16">
-                        
-                        <div class="border border-cyan-900/60 p-8 bg-[#07111f] hover:border-cyan-400 transition-all duration-500 group">
-                            <h4 class="text-cyan-400 font-bold text-sm mb-6 uppercase tracking-widest">Probability Barometer</h4>
-                            <div class="relative py-4">
-                                <svg viewBox="0 0 200 120" class="w-full drop-shadow-lg">
-                                    <defs>
-                                        <linearGradient id="gauge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" style="stop-color:#083344" />
-                                            <stop offset="100%" style="stop-color:#22d3ee" />
-                                        </linearGradient>
-                                    </defs>
-                                    <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gauge-grad)" stroke-width="12" stroke-linecap="round"/>
-                                    <g class="origin-[100px_100px] animate-[jitter_2s_infinite]">
-                                        <line x1="100" y1="100" x2="40" y2="40" stroke="#FF3131" stroke-width="3" />
-                                    </g>
-                                    <circle cx="100" cy="100" r="6" fill="#22d3ee"/>
-                                </svg>
-                            </div>
-                            <p class="text-[10px] text-cyan-700 mt-4 leading-relaxed font-mono">SENSITIVITY: 0.0004μ<br>DIVERGENCE: NOMINAL</p>
-                        </div>
-
-                        <div class="border border-yellow-900/30 p-8 bg-yellow-950/5 vibrate-heavy">
-                            <h4 class="text-yellow-500 font-bold text-sm mb-6 uppercase tracking-widest">The Doomsday Clock</h4>
-                            <div class="flex items-center justify-center h-24">
-                                <div class="text-4xl font-black text-yellow-500 text-shadow-glow tracking-tighter tabular-nums">12:59:59</div>
-                            </div>
-                            <div class="h-1 bg-yellow-900/30 w-full mt-4">
-                                <div class="h-full bg-yellow-500 animate-pulse" style="width: 99%"></div>
-                            </div>
-                            <p class="text-[10px] text-yellow-700 mt-4 uppercase font-bold tracking-tighter text-center">Caution: Vibrational Stress Detected</p>
-                        </div>
-
-                        <div class="border border-cyan-900/60 p-8 bg-[#07111f]">
-                            <h4 class="text-cyan-400 font-bold text-sm mb-6 uppercase tracking-widest">Density Map</h4>
-                            <div class="space-y-3">
-                                <div class="flex justify-between text-[10px]"><span>Reality Thickness</span><span class="text-cyan-400">9.4 g/cm³</span></div>
-                                <div class="w-full h-1 bg-cyan-900"><div class="h-full bg-cyan-500" style="width: 85%"></div></div>
-                                <div class="flex justify-between text-[10px]"><span>Linguistic Stability</span><span class="text-cyan-400">Stable</span></div>
-                                <div class="w-full h-1 bg-cyan-900"><div class="h-full bg-cyan-500" style="width: 92%"></div></div>
-                                <div class="flex justify-between text-[10px]"><span>Ontological Load</span><span class="text-red-500">CRITICAL</span></div>
-                                <div class="w-full h-1 bg-cyan-900"><div class="h-full bg-red-500" style="width: 98%"></div></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-16">
-                        <h3 class="text-red-500 font-black text-xl mb-8 tracking-tighter uppercase flex items-center gap-4">
-                            <span class="w-8 h-[2px] bg-red-900"></span>
-                            Atmospheric Processing Errors
-                        </h3>
-                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="p-6 border border-red-900/30 bg-red-950/5 hover:bg-red-950/10 transition-colors">
-                                <div class="w-8 h-8 bg-red-500/20 mb-4 clip-triangle animate-bounce"></div>
-                                <h5 class="text-red-400 text-xs font-bold uppercase mb-2">Red Error Triangles</h5>
-                                <p class="text-[11px] text-red-700 leading-relaxed">Massive geometric artifacts appearing over unstable city sectors. Collision with clouds causes pixelated rain.</p>
-                            </div>
-                            <div class="p-6 border border-red-900/30 bg-red-950/5">
-                                <div class="w-8 h-8 border-2 border-red-500/20 mb-4 animate-spin"></div>
-                                <h5 class="text-red-400 text-xs font-bold uppercase mb-2">Hourglass Stalls</h5>
-                                <p class="text-[11px] text-red-700 leading-relaxed">30-meter tall spinning cursors that freeze local time for pedestrians within a 500m radius.</p>
-                            </div>
-                            <div class="p-6 border border-red-900/30 bg-red-950/5 relative overflow-hidden">
-                                <div class="absolute top-0 right-0 p-2 text-[8px] text-red-900 font-mono">STATUS: LOADING...</div>
-                                <h5 class="text-red-400 text-xs font-bold uppercase mb-2">The Horizon Bar</h5>
-                                <p class="text-[11px] text-red-700 leading-relaxed">A pink line of light that spans the entire eastern horizon. When it fills, the next hour of history is written.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-16 overflow-x-auto">
-                        <table class="w-full text-left text-[10px] font-mono border-collapse">
-                            <thead>
-                                <tr class="border-b border-cyan-900 text-cyan-600 uppercase">
-                                    <th class="py-3 px-4">Sector ID</th>
-                                    <th class="py-3 px-4">Local Variance</th>
-                                    <th class="py-3 px-4">Compiling Status</th>
-                                    <th class="py-3 px-4">Stability Index</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-cyan-400/80">
-                                <tr class="border-b border-cyan-900/30 hover:bg-cyan-500/5 transition-colors">
-                                    <td class="py-3 px-4">SEC_001 (Market)</td>
-                                    <td class="py-3 px-4">+0.002%</td>
-                                    <td class="py-3 px-4 text-green-500 font-bold">READY</td>
-                                    <td class="py-3 px-4">0.998</td>
-                                </tr>
-                                <tr class="border-b border-cyan-900/30 hover:bg-cyan-500/5 transition-colors">
-                                    <td class="py-3 px-4">SEC_007 (Docks)</td>
-                                    <td class="py-3 px-4">-1.420%</td>
-                                    <td class="py-3 px-4 text-yellow-500">BUFFERING</td>
-                                    <td class="py-3 px-4">0.712</td>
-                                </tr>
-                                <tr class="border-b border-cyan-900/30 hover:bg-red-500/5 transition-colors">
-                                    <td class="py-3 px-4 text-red-400 font-bold">SEC_013 (Void)</td>
-                                    <td class="py-3 px-4 text-red-400">ERROR</td>
-                                    <td class="py-3 px-4 text-red-500 blink">FAILED</td>
-                                    <td class="py-3 px-4 text-red-400">0.000</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="mt-8 border border-cyan-900/60 bg-[#040a14] p-8 relative overflow-hidden border-t-4 border-t-cyan-400 shadow-2xl">
-                        <div class="absolute top-2 right-4 text-[8px] text-cyan-700 font-bold">LOG // ANOMALY_FEED_V4.2</div>
-                        <h3 class="text-cyan-400 font-black text-xl mb-6 tracking-tighter uppercase border-b border-cyan-900/60 pb-2">Full Diagnostic Ticker</h3>
-                        <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8 text-[9px] text-cyan-500/70 font-mono">
-                            <li class="border-l border-cyan-800 pl-2 hover:text-cyan-300 transition-colors">ERR 01: Sector 7 gravity inversion (9.8m/s² -> -2.1m/s²)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 02: Deja vu loop detected (Repeat interval: 14s)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 03: Colors bleeding to grayscale in Art District</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 04: Spontaneous architecture (Library spawned in park)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 05: Time dilation (+0.04s per clock cycle)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 06: NPC pathfinding error (Crowds walking into walls)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 07: Audio desync (Footsteps heard before movement)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 08: Sun texture placeholder visible behind clouds</li>
-                            <li class="border-l border-cyan-800 pl-2 text-red-500">ERR 09: Reflections detached from source entities</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 10: Ocean rendered as static 2D plane</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 11: Unscheduled upward rain (Red Category)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 12: Memory leak (Citizens forgetting names)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 13: Collision mesh failed (Walking through skyscrapers)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 14: Shadows rendering pink (Shader mismatch)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 15: Day/Night cycle stutter (Sun jumped 4 hours)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 16: Monolith entity spawned in Sector 4</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 17: Localized syntax error in billboard text</li>
-                            <li class="border-l border-cyan-800 pl-2 text-yellow-500">ERR 18: Pigeons stuck in T-pose (Atmospheric bug)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 19: Horizon clipping geometry (City edge visible)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 20: Unregistered thoughts (Psychic leakage)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 21: Physics engine crash (Objects frozen in air)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 22: Matter phasing (Solid ground turning liquid)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 23: Nostalgia overflow (1980s objects spawning)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 24: Billboard syntax error: "OBEY_NULL"</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 25: Out-of-bounds entity (Unknown 12ft tall human)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 26: Frame rate drop in CBD (Reality stuttering)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 27: Texture Z-fighting on road surfaces</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 28: Unprompted eclipse (Duration: 2.1s)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 29: Hexagonal clouds (Low-poly rendering)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 30: Spontaneous duplication of Sector 2 Plaza</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 31: Ambient track audible in public spaces</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 32: Micro-gravity pocket (Coffee floating)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 33: Spatial recursion loop (Infinite hallway)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 34: Flora in wireframe (Trees lost textures)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 35: History rewrite blocked by firewall</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 36: Missing bridge texture (Invisible crossing)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 37: Impossible geometry (Penrose stairs found)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 38: Wind vectors inverted (Blowing toward center)</li>
-                            <li class="border-l border-cyan-800 pl-2">ERR 39: Nighttime shaders offline (Eternal dusk)</li>
-                            <li class="border-l border-cyan-800 pl-2 text-cyan-400 font-bold">ERR 40: Gravity spike (Station altitude dropping)</li>
-                        </ul>
-                    </div>
-
-                    <div class="mt-12 border border-[#0ff]/40 bg-[#011018]/80 p-10 relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                        <h3 class="text-cyan-300 font-black text-xl mb-8 tracking-tighter uppercase border-b border-cyan-700/40 pb-2">Encrypted Reality Streams</h3>
-                        <div class="grid md:grid-cols-3 gap-6 text-[10px] font-mono">
-                            <div class="p-4 bg-black/40 border border-cyan-900/50">
-                                <span class="text-cyan-600 block mb-2">STREAM_ALPHA</span>
-                                <p class="text-cyan-400">Monitoring 4th Wall integrity. Current status: THINNING.</p>
-                            </div>
-                            <div class="p-4 bg-black/40 border border-cyan-900/50">
-                                <span class="text-cyan-600 block mb-2">STREAM_DELTA</span>
-                                <p class="text-cyan-400">Extracting data from "The Other Side". Bitrate: 400kbps.</p>
-                            </div>
-                            <div class="p-4 bg-black/40 border border-cyan-900/50">
-                                <span class="text-cyan-600 block mb-2">STREAM_OMEGA</span>
-                                <p class="text-red-500">DELETION PROTOCOL INITIALIZED. STANDBY.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-16 relative w-full h-80 bg-[#000c12] border border-cyan-700/30 rounded-lg overflow-hidden shadow-inner group">
-                        <canvas id="anomaly-visualization" class="w-full h-full opacity-60 group-hover:opacity-100 transition-opacity"></canvas>
-                        <div class="absolute top-4 left-4 flex gap-2">
-                            <div class="w-2 h-2 rounded-full bg-red-500 animate-ping"></div>
-                            <span class="text-[8px] text-cyan-500 font-bold uppercase tracking-widest">Live Feed: Matte Ceiling Leakage</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-16 flex flex-wrap gap-8 p-10 border border-cyan-700/40 bg-[#011122]/70 rounded-xl relative">
-                        <div class="absolute -top-3 left-6 bg-[#011122] px-3 text-[9px] font-black text-cyan-400 uppercase tracking-widest border border-cyan-700/40">Manual Override</div>
-                        
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 flex items-center justify-center border border-cyan-900 rounded-full hover:border-cyan-400 transition-all cursor-pointer">
-                                <input type="checkbox" id="thread-toggle" class="w-5 h-5 accent-cyan-400">
-                            </div>
-                            <div>
-                                <span class="block text-[10px] font-bold text-cyan-100">Thread Divergence</span>
-                                <span class="block text-[8px] text-cyan-600">Force timeline split</span>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 flex items-center justify-center border border-cyan-900 rounded-full hover:border-cyan-400 transition-all cursor-pointer">
-                                <input type="checkbox" id="ghost-toggle" class="w-5 h-5 accent-cyan-400">
-                            </div>
-                            <div>
-                                <span class="block text-[10px] font-bold text-cyan-100">Ghost Entities</span>
-                                <span class="block text-[8px] text-cyan-600">Render deleted NPCs</span>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 flex items-center justify-center border border-cyan-900 rounded-full hover:border-red-400 transition-all cursor-pointer">
-                                <input type="checkbox" id="panic-toggle" class="w-5 h-5 accent-red-400">
-                            </div>
-                            <div>
-                                <span class="block text-[10px] font-bold text-red-400">Emergency Flush</span>
-                                <span class="block text-[8px] text-red-900">Purge local cache</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+        <div class="content-wrapper max-w-7xl mx-auto px-6">
             
-            <footer class="mt-12 text-center">
-                <div class="text-[8px] font-mono text-cyan-900 uppercase tracking-[1em]">End_Of_Station_Observation_Log</div>
-                <div class="mt-4 text-[7px] text-cyan-950">© 2026 // DEPARTMENT OF UNREAL ENTITIES // ALL REALITY RESERVED</div>
+            <nav class="zone-tabs sticky top-0 z-50 bg-obsidian flex border border-cyan-900/30 rounded-t-lg overflow-hidden mb-12 shadow-2xl">
+                <a href="index.html" class="tab-item flex-1 py-5 text-[10px] font-bold text-center border-r border-cyan-900/30 hover:bg-cyan-500/5 transition-all">01. ENTRY</a>
+                <a href="zone2.html" class="tab-item flex-1 py-5 text-[10px] font-bold text-center border-r border-cyan-900/30 hover:bg-cyan-500/5 transition-all">02. ARCHIVE</a>
+                <a href="zone3.html" class="tab-item flex-1 py-5 text-[10px] font-bold text-center border-r border-cyan-900/30 hover:bg-cyan-500/5 transition-all">03. ENGINE</a>
+                <a href="zone4.html" class="tab-item active flex-1 py-5 text-[10px] font-bold text-center bg-cyan-500/10 text-cyan-400 border-b-2 border-cyan-400">04. OBSERVATION</a>
+                <a href="zone5.html" class="tab-item flex-1 py-5 text-[10px] font-bold text-center border-r border-cyan-900/30 hover:bg-cyan-500/5 transition-all">05. VOID</a>
+                <a href="zone6.html" class="tab-item flex-1 py-5 text-[10px] font-bold text-center hover:bg-cyan-500/5 transition-all">06. EXIT</a>
+            </nav>
+
+            <div class="main-panel bg-[#050b14] border border-cyan-900/40 p-8 md:p-16 mb-24 shadow-[0_0_100px_rgba(0,0,0,0.8)] relative">
+                
+                <article class="quote-section mb-24 relative">
+                    <div class="quote-accent absolute -left-8 top-0 bottom-0 w-1 bg-cyan-500 shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
+                    <div class="text-[10px] uppercase font-black text-cyan-800 mb-6 tracking-[0.5em]">Classified_Thought_Log</div>
+                    <p class="manifesto-text text-2xl md:text-5xl font-serif italic leading-tight text-white/90">
+                        "The grand illusion of Field Operations is that we are a subterranean agency hiding beneath the city. Stepping onto the God-Eye balcony shatters this immediately. <span class="bg-cyan-500 text-black px-4 not-italic font-black shadow-lg">The city exists within the Department.</span>"
+                    </p>
+                </article>
+
+                <div class="instrument-grid grid lg:grid-cols-3 gap-10 mb-24">
+                    
+                    <div class="panel border border-cyan-900/50 p-8 bg-black/40 group hover:border-cyan-500 transition-all">
+                        <h3 class="panel-head text-[10px] font-black text-cyan-700 tracking-widest uppercase mb-8">Probability Barometer</h3>
+                        <div class="gauge-container py-4 flex justify-center">
+                            <svg viewBox="0 0 100 60" class="w-full max-w-[200px]">
+                                <defs>
+                                    <linearGradient id="gauge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#083344" />
+                                        <stop offset="100%" style="stop-color:#22d3ee" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M10 50 A 40 40 0 0 1 90 50" class="gauge-track" stroke="url(#gauge-grad)" stroke-width="8" fill="none" stroke-linecap="round"/>
+                                <line x1="50" y1="50" x2="20" y2="20" class="needle stroke-red-500 stroke-[3] vibrate-sm" />
+                                <circle cx="50" cy="50" r="4" class="fill-cyan-400" />
+                            </svg>
+                        </div>
+                        <div class="data-readout mt-6 flex justify-between font-mono text-[10px]">
+                            <span class="text-cyan-900">VARIANCE:</span>
+                            <span class="text-cyan-400 font-bold">+0.0004μ</span>
+                        </div>
+                    </div>
+
+                    <div class="panel border border-yellow-900/30 p-8 bg-yellow-950/5 group">
+                        <h3 class="panel-head text-[10px] font-black text-yellow-700 tracking-widest uppercase mb-8">The Doomsday Clock</h3>
+                        <div class="clock-face-wrap py-4 text-center">
+                            <div class="clock-face text-5xl font-black text-yellow-500 text-shadow-yellow vibrate-heavy tabular-nums">12:59:59</div>
+                        </div>
+                        <div class="progress-track w-full h-1.5 bg-yellow-950 mt-10 rounded-full overflow-hidden">
+                            <div class="progress-fill h-full bg-yellow-500 animate-pulse" style="width: 98%;"></div>
+                        </div>
+                        <div class="text-[8px] text-yellow-900 font-bold uppercase mt-2 text-center">Caution: Stutter_Detected</div>
+                    </div>
+
+                    <div class="panel border border-cyan-900/50 p-8 bg-black/40">
+                        <h3 class="panel-head text-[10px] font-black text-cyan-700 tracking-widest uppercase mb-8">Narrative Density</h3>
+                        <div class="bar-stack space-y-6">
+                            <div class="bar-row">
+                                <div class="flex justify-between text-[9px] mb-2"><span class="lbl">REALITY_THICKNESS</span><span class="text-cyan-400">85%</span></div>
+                                <div class="bar-bg h-1 bg-cyan-950"><div class="bar-val h-full bg-cyan-500 shadow-cyan" style="width: 85%"></div></div>
+                            </div>
+                            <div class="bar-row">
+                                <div class="flex justify-between text-[9px] mb-2"><span class="lbl">SYNTAX_STABILITY</span><span class="text-cyan-400">92%</span></div>
+                                <div class="bar-bg h-1 bg-cyan-950"><div class="bar-val h-full bg-cyan-500 shadow-cyan" style="width: 92%"></div></div>
+                            </div>
+                            <div class="bar-row">
+                                <div class="flex justify-between text-[9px] mb-2"><span class="lbl">VOID_LEAKAGE</span><span class="text-red-500">CRITICAL</span></div>
+                                <div class="bar-bg h-1 bg-cyan-950"><div class="bar-val h-full bg-red-600 shadow-red" style="width: 98%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="storm-log mb-24">
+                    <div class="flex items-center gap-6 mb-12">
+                        <h2 class="section-title text-2xl font-black text-red-500 uppercase tracking-tighter">Atmospheric Processing Errors</h2>
+                        <div class="flex-1 h-[1px] bg-red-900/30"></div>
+                    </div>
+                    <div class="card-row grid md:grid-cols-3 gap-8">
+                        <div class="storm-card p-10 border border-red-900/20 bg-red-950/5 hover:bg-red-950/10 transition-all">
+                            <div class="icon-wrap mb-6">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-red-700 animate-pulse"><path d="M12 2L2 22H22L12 2Z" stroke-width="2"/></svg>
+                            </div>
+                            <h4 class="text-red-400 font-bold uppercase text-xs mb-4 tracking-widest">Red Triangles</h4>
+                            <p class="text-[11px] text-red-900 leading-relaxed">Massive geometric artifacts appearing over Sector 7. Collision with clouds causes pixelated rainfall. Do not observe with naked eye.</p>
+                        </div>
+                        <div class="storm-card p-10 border border-red-900/20 bg-red-950/5">
+                            <div class="icon-wrap mb-6">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-red-700 animate-spin-slow"><path d="M5 3H19L12 12L19 21H5L12 12L5 3Z" stroke-width="2"/></svg>
+                            </div>
+                            <h4 class="text-red-400 font-bold uppercase text-xs mb-4 tracking-widest">Hourglass Stalls</h4>
+                            <p class="text-[11px] text-red-900 leading-relaxed">30-meter tall spinning cursors that freeze local time for pedestrians within a 500m radius. Currently 4 active in CBD.</p>
+                        </div>
+                        <div class="storm-card p-10 border border-red-900/20 bg-red-950/5">
+                            <div class="icon-wrap mb-6">
+                                <div class="w-10 h-2 bg-red-900/50 rounded-full relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-red-500 animate-[load-pulse_2s_infinite]" style="width: 88%"></div>
+                                </div>
+                            </div>
+                            <h4 class="text-red-400 font-bold uppercase text-xs mb-4 tracking-widest">The Horizon Bar</h4>
+                            <p class="text-[11px] text-red-900 leading-relaxed">A pink line of light spanning the eastern horizon. When the progress bar fills, the next hour of history is compiled.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="data-table-wrapper mb-24 overflow-x-auto">
+                    <h3 class="text-[10px] font-black text-cyan-800 tracking-widest uppercase mb-8">Sector Stability Matrix</h3>
+                    <table class="diagnostic-table w-full text-left font-mono text-[10px] border-collapse">
+                        <thead>
+                            <tr class="border-b border-cyan-900 text-cyan-600">
+                                <th class="py-4 px-6 uppercase tracking-widest">Sector_ID</th>
+                                <th class="py-4 px-6 uppercase tracking-widest">Local_Variance</th>
+                                <th class="py-4 px-6 uppercase tracking-widest">Status</th>
+                                <th class="py-4 px-6 uppercase tracking-widest">Stability</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-cyan-400/80">
+                            <tr class="border-b border-cyan-900/20 hover:bg-cyan-500/5">
+                                <td class="py-4 px-6">SEC_001 (Market District)</td>
+                                <td class="py-4 px-6">+0.002%</td>
+                                <td class="py-4 px-6 text-green-500 font-bold">READY</td>
+                                <td class="py-4 px-6">0.998</td>
+                            </tr>
+                            <tr class="border-b border-cyan-900/20 hover:bg-cyan-500/5">
+                                <td class="py-4 px-6">SEC_007 (Industrial Docks)</td>
+                                <td class="py-4 px-6">-1.420%</td>
+                                <td class="py-4 px-6 text-yellow-500">BUFFERING</td>
+                                <td class="py-4 px-6">0.712</td>
+                            </tr>
+                            <tr class="border-b border-cyan-900/20 hover:bg-cyan-500/5">
+                                <td class="py-4 px-6">SEC_010 (The Spire)</td>
+                                <td class="py-4 px-6">+0.420%</td>
+                                <td class="py-4 px-6 text-green-500 font-bold">READY</td>
+                                <td class="py-4 px-6">0.991</td>
+                            </tr>
+                            <tr class="alert-row bg-red-500/5 text-red-400 border-b border-red-900/30">
+                                <td class="py-4 px-6 font-bold">SEC_013 (Void Point)</td>
+                                <td class="py-4 px-6">ERROR</td>
+                                <td class="py-4 px-6 text-red-600 animate-pulse font-black">FAILED</td>
+                                <td class="py-4 px-6">0.000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="ticker-box border border-cyan-900/40 bg-black/80 p-10 mb-24 relative overflow-hidden">
+                    <h3 class="ticker-label text-[10px] font-black text-cyan-600 mb-8 uppercase tracking-widest border-b border-cyan-900/40 pb-4">Live Anomaly Feed [V4.2.0]</h3>
+                    <div class="ticker-scroll grid md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-12 h-64 overflow-y-auto pr-4" id="ticker-target">
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 01: Gravity inversion (Sector 7)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 02: Deja vu loop detected (14s)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 03: Colors bleeding to grayscale</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 04: Spontaneous architecture detected</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 05: Time dilation (+0.04s/cycle)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 06: NPC pathfinding error (S4)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 07: Audio desync in commercial</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 08: Sun texture placeholder visible</div>
+                        <div class="ticker-item text-[9px] font-mono text-red-600 font-bold">ERR 09: Reflections detached from sources</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 10: Ocean rendered as static plane</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 11: Unscheduled upward rain</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 12: Memory leak (Amnesia)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 13: Collision mesh failed (SEC_02)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 14: Shadows rendering pink</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 15: Day/Night cycle stutter</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 16: Monolith entity spawned</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 17: Localized syntax error</div>
+                        <div class="ticker-item text-[9px] font-mono text-yellow-600">ERR 18: Pigeons stuck in T-pose</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 19: Horizon clipping geometry</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 20: Unregistered thoughts (Leak)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 21: Physics engine crash</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 22: Matter phasing detected</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 23: Nostalgia overflow (1980s)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 24: Billboard: "OBEY_NULL"</div>
+                        <div class="ticker-item text-[9px] font-mono text-red-600 font-bold">ERR 25: 12ft Humanoid (Out of Bounds)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 26: Frame rate drop in CBD</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 27: Texture Z-fighting (Roads)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 28: Unprompted eclipse (2.1s)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 29: Hexagonal clouds</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 30: Sector 2 Plaza duplication</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 31: OST audible in public space</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 32: Micro-gravity pocket (S5)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 33: Spatial recursion loop</div>
+                        <div class="ticker-item text-[9px] font-mono text-yellow-600">ERR 34: Flora in wireframe</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 35: History rewrite blocked</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 36: Missing bridge texture</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 37: Impossible geometry (Penrose)</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 38: Wind vectors inverted</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 39: Nighttime shaders offline</div>
+                        <div class="ticker-item text-[9px] font-mono text-cyan-400 font-bold">ERR 40: Station altitude dropping</div>
+                    </div>
+                </section>
+
+                <section class="manual-section mb-24 grid lg:grid-cols-2 gap-16">
+                    <div class="lore-content">
+                        <h3 class="text-xl font-black text-cyan-500 uppercase mb-8">Observation Deck Manual</h3>
+                        <div class="space-y-6 text-[11px] leading-relaxed text-cyan-900 font-serif">
+                            <p>Personnel assigned to the God-Eye are reminded that the balcony is not a physical space, but a conceptual interface. If you feel a "draft," it is likely a leak in the Substrate protocol. Report all tactile sensations to Section 2 immediately.</p>
+                            <p>The "City" below is a rendered aggregate of all unfinished events currently processed by the D.U.E. Engine. Do not attempt to throw physical objects over the railing. They will not fall; they will simply be deleted from the local cache.</p>
+                            <p>Warning: Prolonged exposure to the God-Eye has been known to cause "Post-Reality Syncing," where observers begin to see wireframes in their own homes. Rotation shifts are limited to 4 hours per day.</p>
+                        </div>
+                    </div>
+                    <div class="lore-controls bg-cyan-950/10 p-10 border border-cyan-900/30">
+                        <h4 class="text-[10px] font-black text-cyan-700 uppercase mb-8 tracking-widest">Manual Override Terminal</h4>
+                        <div class="space-y-8">
+                            <div class="control-node flex justify-between items-center">
+                                <span class="text-[9px] font-bold">THREAD_DIVERGENCE</span>
+                                <input type="checkbox" id="thread-opt" class="accent-cyan-500">
+                            </div>
+                            <div class="control-node flex justify-between items-center">
+                                <span class="text-[9px] font-bold">GHOST_ENTITIES</span>
+                                <input type="checkbox" id="ghost-opt" class="accent-cyan-500">
+                            </div>
+                            <div class="control-node flex justify-between items-center">
+                                <span class="text-[9px] font-bold">MATTE_CEILING_SYNC</span>
+                                <input type="checkbox" id="sync-opt" class="accent-cyan-500">
+                            </div>
+                            <button class="panic-btn w-full py-4 bg-red-950 border border-red-900 text-red-500 text-[9px] font-black uppercase hover:bg-red-500 hover:text-black transition-all">Emergency_Cache_Flush</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="canvas-panel border border-cyan-900/30 bg-black h-80 relative overflow-hidden group rounded-lg">
+                    <canvas id="anomaly-viz" class="w-full h-full opacity-60 group-hover:opacity-100 transition-opacity"></canvas>
+                    <div class="canvas-overlay absolute top-6 left-6 flex items-center gap-3">
+                        <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                        <span class="text-[9px] font-black text-cyan-500 tracking-widest uppercase">Live_Feed // Matte_Ceiling_Leak</span>
+                    </div>
+                </section>
+
+            </div>
+
+            <footer class="global-footer pb-24 text-center">
+                <div class="footer-decal mb-6 flex justify-center items-center gap-10">
+                    <div class="h-[1px] w-20 bg-cyan-950"></div>
+                    <div class="text-[10px] font-mono text-cyan-900 uppercase tracking-[1em]">Station_End</div>
+                    <div class="h-[1px] w-20 bg-cyan-950"></div>
+                </div>
+                <div class="text-[8px] font-mono text-cyan-950">© 2026 // DEPARTMENT OF UNREAL ENTITIES // ALL REALITY RESERVED</div>
             </footer>
         </div>
     </main>
 
     <script>
-        // Enhancement 21-40: Advanced Visual Logic
-        const canvas = document.getElementById('anomaly-visualization');
-        const ctx = canvas.getContext('2d');
-        
-        function resize() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+        // Nixie Randomization
+        const nixie = document.getElementById('dist-nixie');
+        setInterval(() => {
+            const val = (99 + Math.random()).toFixed(2);
+            nixie.innerText = val + '%';
+        }, 3000);
+
+        // System Time
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('system-time').innerText = now.toLocaleTimeString();
+        }, 1000);
+
+        // Anomaly Canvas Logic
+        const cvs = document.getElementById('anomaly-viz');
+        const ctx = cvs.getContext('2d');
+        function draw() {
+            cvs.width = cvs.parentElement.offsetWidth;
+            cvs.height = cvs.parentElement.offsetHeight;
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0,0,cvs.width,cvs.height);
+            for(let i=0; i<100; i++) {
+                ctx.fillStyle = Math.random() > 0.95 ? '#f00' : '#083344';
+                ctx.fillRect(Math.random()*cvs.width, Math.random()*cvs.height, 2, 2);
+            }
+            requestAnimationFrame(draw);
         }
-        window.onresize = resize;
-        resize();
-
-        class Particle {
-            constructor() {
-                this.init();
-            }
-            init() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2;
-                this.speedX = (Math.random() - 0.5) * 5;
-                this.color = Math.random() > 0.9 ? '#ff3131' : '#22d3ee';
-            }
-            update() {
-                this.x += this.speedX;
-                if (this.x > canvas.width || this.x < 0) this.init();
-            }
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.fillRect(this.x, this.y, this.size, this.size);
-            }
-        }
-
-        const particles = Array.from({ length: 100 }, () => new Particle());
-
-        function animate() {
-            ctx.fillStyle = 'rgba(0, 12, 18, 0.2)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw digital "tears"
-            if (Math.random() > 0.95) {
-                ctx.strokeStyle = 'rgba(255, 49, 49, 0.4)';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                let y = Math.random() * canvas.height;
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y + (Math.random() - 0.5) * 50);
-                ctx.stroke();
-            }
-
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-        // Checkbox interaction feedback
-        document.querySelectorAll('input[type="checkbox"]').forEach(el => {
-            el.addEventListener('change', () => {
-                document.body.classList.toggle('brightness-110');
-                setTimeout(() => document.body.classList.remove('brightness-110'), 100);
-            });
-        });
+        draw();
     </script>
 </body>
 </html>
