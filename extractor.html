@@ -2,288 +2,202 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>D.U.E. // STATION 04 // PERSISTENT_VAULT</title>
+    <title>STATION_04 // REVISED_CORE</title>
     <style>
         :root {
             --tobacco: #5c3a21; --ochre: #1f1b14; --vellum: #e8dcc4;
             --phosphor: #ff2a2a; --cyan: #17b8d1; --void: #030303;
-            --brass: #8f7a36; --steel: #2c2f33; --warning: #ff9900;
+            --brass: #8f7a36; --steel: #2c2f33;
         }
 
-        body, html {
-            margin: 0; padding: 0; width: 100vw; height: 100vh;
-            background: #000; color: var(--vellum); font-family: 'Courier New', monospace;
-            overflow: hidden; user-select: none;
-        }
-
-        /* --- CHASSIS & LAYOUT --- */
-        .chassis {
-            width: 100%; height: 100%; display: grid;
-            grid-template-columns: 300px 1fr 400px; grid-template-rows: 50px 1fr 200px;
-            background: var(--ochre); border: 15px solid #111; box-sizing: border-box;
-        }
-
-        .header {
-            grid-column: 1 / -1; background: var(--tobacco); display: flex;
-            align-items: center; justify-content: space-between; padding: 0 30px;
-            border-bottom: 5px solid #0a0a0a; font-weight: bold;
-        }
-
-        /* --- CRT MONITOR --- */
-        .monitor-well {
-            grid-column: 2; grid-row: 2; margin: 20px; background: #080808;
-            border-radius: 40px; border: 25px solid var(--steel);
-            box-shadow: inset 0 0 100px #000; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-        .scanlines {
-            position: absolute; inset: 0; pointer-events: none; z-index: 10;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
-            background-size: 100% 4px;
-        }
-
-        #sigil-text {
-            font-size: 4vw; font-weight: 900; color: var(--cyan);
-            text-shadow: 0 0 25px var(--cyan); letter-spacing: 5px; z-index: 5;
-        }
-
-        /* --- TARGET SYSTEM INPUT (NEW) --- */
-        .assignment-block {
-            margin-top: 30px; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 10px;
-            opacity: 0; transition: 0.3s; pointer-events: none;
-        }
-        .assignment-block.active { opacity: 1; pointer-events: all; }
+        body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; color: var(--vellum); font-family: 'Courier New', monospace; overflow: hidden; }
         
-        .sys-input {
-            background: #000; color: var(--vellum); border: 2px solid var(--brass);
-            padding: 10px; font-family: inherit; font-size: 1.2rem; width: 300px;
-            text-align: center; text-transform: uppercase; outline: none;
-        }
-        .sys-input:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(23, 184, 209, 0.5); }
-        
-        .save-btn {
-            background: var(--tobacco); color: #fff; border: 2px solid #000;
-            padding: 5px 20px; font-family: inherit; cursor: pointer; font-weight: bold;
-        }
-        .save-btn:hover { background: var(--warning); color: #000; }
-
-        /* --- LEFT PANEL --- */
-        .panel-l { padding: 30px; border-right: 4px solid #000; display: flex; flex-direction: column; gap: 20px; }
-        
-        .directive {
-            background: var(--vellum); color: #111; padding: 15px; font-size: 11px;
-            transform: rotate(-1.5deg); box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
+        /* 1. PHYSICAL CHASSIS */
+        .chassis { 
+            width: 100%; height: 100%; display: grid; 
+            grid-template-columns: 280px 1fr; grid-template-rows: 50px 1fr 60px; 
+            background: var(--ochre); border: 15px solid #111; box-sizing: border-box; 
         }
 
-        /* --- RIGHT PANEL: LOCALSTORAGE VAULT (NEW) --- */
-        .panel-r { padding: 20px; border-left: 4px solid #000; background: #120e0a; display: flex; flex-direction: column; }
-        
-        .vault-header { font-size: 12px; color: var(--warning); border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px; font-weight: bold;}
-        
-        .vault-list { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 10px; }
-        .vault-list::-webkit-scrollbar { width: 5px; }
-        .vault-list::-webkit-scrollbar-thumb { background: var(--tobacco); }
-
-        .vault-item {
-            background: #0a0a0a; border: 1px solid #333; padding: 10px;
-            display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center;
-        }
-        .vault-item:hover { border-color: var(--cyan); }
-        .v-sys { font-size: 12px; color: var(--vellum); font-weight: bold; text-transform: uppercase;}
-        .v-date { font-size: 9px; color: #666; }
-        
-        .v-btn { background: #222; border: 1px solid #444; color: var(--cyan); cursor: pointer; padding: 5px; font-family: inherit; font-size: 10px;}
-        .v-btn:hover { background: var(--cyan); color: #000; }
-        .v-del { color: var(--phosphor); border-color: var(--phosphor); }
-        .v-del:hover { background: var(--phosphor); color: #000; }
-
-        /* --- BOTTOM DECK --- */
-        .deck {
-            grid-column: 1 / -1; background: #1a1a1a; border-top: 10px solid #050505;
-            display: flex; justify-content: space-between; align-items: center; padding: 0 50px;
+        /* 2. HEADER: ARCHIVAL TAPE */
+        .header { 
+            grid-column: 1 / -1; background: var(--tobacco); display: flex; 
+            align-items: center; justify-content: space-between; padding: 0 20px; 
+            border-bottom: 5px solid #000; font-weight: 900; letter-spacing: 1px;
         }
 
-        .lever {
-            background: #500; color: #fff; border: 4px solid #000; padding: 20px 50px;
-            font-family: inherit; font-size: 1.5rem; font-weight: 900; cursor: pointer;
-            box-shadow: 0 10px 0 #200; transition: 0.1s; border-radius: 4px;
+        /* 3. SIDEBAR: NAVIGATION DIP-SWITCHES */
+        .sidebar { grid-row: 2; border-right: 5px solid #000; display: flex; flex-direction: column; background: #15120e; }
+        .tab { 
+            padding: 20px; border-bottom: 1px solid #333; cursor: pointer; font-size: 11px; 
+            color: #555; text-transform: uppercase; transition: 0.1s;
         }
-        .lever:active { transform: translateY(10px); box-shadow: 0 0 0 #000; background: var(--phosphor); }
+        .tab.active { background: #000; color: var(--cyan); border-left: 5px solid var(--cyan); }
+
+        /* 4. CRT DISPLAY WELL */
+        .monitor { 
+            position: relative; margin: 20px; background: #050505; 
+            border: 20px solid var(--steel); border-radius: 40px; 
+            box-shadow: inset 0 0 100px #000; overflow-y: auto; padding: 30px;
+        }
+
+        /* 5. COMPONENTS */
+        .view { display: none; flex-direction: column; gap: 20px; }
+        .view.active { display: flex; }
         
-        .entropy-bar { width: 200px; height: 10px; border: 1px solid #444; margin-top: 5px; }
-        #e-fill { height: 100%; background: var(--warning); width: 0%; transition: 0.1s; }
+        /* THE VAULT LIST */
+        .vault-item { 
+            background: #000; border: 1px solid #333; padding: 12px; 
+            display: grid; grid-template-columns: 1fr 1fr auto; align-items: center; gap: 10px;
+        }
+
+        /* ORDER FORM: VELLUM TEXTURE */
+        .order-sheet { 
+            background: var(--vellum); color: #222; padding: 30px; 
+            box-shadow: 10px 10px 0 rgba(0,0,0,0.5); transform: rotate(-0.5deg);
+        }
+        .order-row { display: flex; justify-content: space-between; border-bottom: 1px solid #aaa; padding: 5px 0; font-size: 12px; }
+
+        /* INPUTS & BUTTONS */
+        .lever { 
+            background: #600; color: #fff; border: 4px solid #000; padding: 15px 30px; 
+            cursor: pointer; font-family: inherit; font-weight: bold; box-shadow: 0 5px 0 #200;
+        }
+        .lever:active { transform: translateY(5px); box-shadow: 0 0 0 #000; background: var(--phosphor); }
+        .key-input { background: #000; border: 1px solid var(--brass); color: var(--cyan); padding: 10px; font-family: inherit; width: 100%; box-sizing: border-box; }
+
+        /* SECRET LOCK */
+        .locked { filter: blur(10px); pointer-events: none; opacity: 0.3; }
     </style>
 </head>
 <body>
 
 <div class="chassis">
     <div class="header">
-        <span>D.U.E. // LOCAL_STORAGE_VAULT // STATION 04</span>
-        <span id="sys-clock">00:00:00</span>
+        <span>D.U.E. STATION_04 // CORE_INTERFACE</span>
+        <span id="clock">OCT 31, 00:00:00</span>
     </div>
 
-    <div class="panel-l">
-        <div class="directive">
-            <strong>STORAGE DIRECTIVE:</strong><br><hr>
-            1. All shards are encrypted locally.<br>
-            2. Clearing browser cache will purge the vault.<br>
-            3. Do not assign true names to entities.<br>
+    <div class="sidebar">
+        <div class="tab active" onclick="Router.go('gen')">[01] EXTRACTOR</div>
+        <div class="tab" onclick="Router.go('vault')">[02] SEARCH_VAULT</div>
+        <div class="tab" onclick="Router.go('order')">[03] PROCUREMENT</div>
+        <div class="tab" onclick="Router.go('docs')">[04] PROTOCOLS</div>
+        <div class="tab" onclick="Router.go('secret')">[05] MASTER_LEDGER</div>
+    </div>
+
+    <div class="monitor">
+        <div id="view-gen" class="view active">
+            <h2 style="color:var(--cyan)">SIGIL_EXTRACTION</h2>
+            <div id="output-sigil" style="font-size: 4rem; text-align: center; margin: 50px 0; text-shadow: 0 0 20px var(--cyan);">AWAITING_INPUT</div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="target-id" class="key-input" placeholder="ASSIGN_TO_ENTITY (e.g. SUTURE_KEY)">
+                <button class="lever" onclick="Vault.extract()">EXTRACT</button>
+            </div>
         </div>
-        
-        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
-            <label style="font-size:11px; display:flex; justify-content:space-between;">UPPER_SHARDS <input type="checkbox" id="t-upper" checked></label>
-            <label style="font-size:11px; display:flex; justify-content:space-between;">STATIC_DECAY <input type="checkbox" id="t-num" checked></label>
-            <label style="font-size:11px; display:flex; justify-content:space-between;">SUTURE_POINTS <input type="checkbox" id="t-sym" checked></label>
-            <div style="margin-top: 20px;">
-                <span style="font-size: 10px;">LENGTH: <span id="len-val">16</span></span>
-                <input type="range" id="t-len" min="12" max="64" value="16" style="width:100%" oninput="document.getElementById('len-val').innerText=this.value">
+
+        <div id="view-vault" class="view">
+            <h2 style="color:var(--cyan)">VAULT_INVENTORY</h2>
+            <input type="text" class="key-input" placeholder="SEARCH ENTITIES..." oninput="Vault.render(this.value)">
+            <div id="vault-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        </div>
+
+        <div id="view-order" class="view">
+            <div class="order-sheet">
+                <h3 style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px;">FIELD_KIT_REQUISITION // FORM 4-B</h3>
+                <div class="order-row"><span>Brass Metronome (60FPS Anchor)</span> <input type="number" value="0" style="width:40px"></div>
+                <div class="order-row"><span>Polaroid Model-T (Latent Reality)</span> <input type="number" value="0" style="width:40px"></div>
+                <div class="order-row"><span>Lead-Lined Ledger (Blood-Ink)</span> <input type="number" value="0" style="width:40px"></div>
+                <div class="order-row"><span>Null-Grenade (Un-render Tool)</span> <input type="number" value="0" style="width:40px"></div>
+                <div class="order-row"><span>Calibration Sponge (Marrow-Fiber)</span> <input type="number" value="0" style="width:40px"></div>
+                <div class="order-row"><span>Amnestic Chalk (Texture Repair)</span> <input type="number" value="0" style="width:40px"></div>
+                <div style="margin-top: 20px; font-size: 10px; color: #555;">NOTE: Requisition requires Line Manager authorization.</div>
+                <button class="lever" style="width: 100%; background: #222; margin-top: 20px;" onclick="alert('ORDER LOGGED')">SUBMIT ORDER</button>
+            </div>
+        </div>
+
+        <div id="view-docs" class="view">
+            <h2 style="color:var(--brass)">OPERATIONAL_ANOMALIES</h2>
+            <div style="font-size: 13px; line-height: 1.6; border-left: 2px solid var(--brass); padding-left: 20px;">
+                <p><strong>Echo-Room Protocol:</strong> Loops detected. Syncing may cause permanent dispersion into audio waves.</p>
+                <p><strong>Narrative Scarcity:</strong> "The Cut" is active. Memories of minor subplots are being purged for event stability.</p>
+                <p><strong>Ink-Lungs:</strong> Occupational hazard from Blood-Ink exposure. Use Blotter Masks.</p>
+            </div>
+        </div>
+
+        <div id="view-secret" class="view">
+            <h2 style="color:var(--phosphor)">MASTER_LEDGER // [RESTRICTED]</h2>
+            <div id="lock-overlay" style="background:#200; padding:20px; text-align:center; border: 1px solid red;">
+                AUTH_FAILURE: RED_LEVEL KEY "SUTURE_KEY" NOT DETECTED IN VAULT.
+            </div>
+            <div id="secret-data" class="locked">
+                <h3>SECRET_SUTURE_MANUAL</h3>
+                <p><strong>Step 1: Synchronize.</strong> Anchor body at 60 FPS using Metronome.</p>
+                
+                <p><strong>Step 2: Resolution Tax.</strong> 
+                    Cost A: Delete target's 21st year. 
+                    Cost B: Stall 3 neighboring events.</p>
+                <p><strong>Step 3: Execution.</strong> Record in Ledger using Blood-Ink. Plunge needle into kinetic violation.</p>
+                <p style="color:red">HAZARD: Mirror ghosts reflect at 12 FPS in Scar Tissue.</p>
             </div>
         </div>
     </div>
 
-    <div class="monitor-well">
-        <div class="scanlines"></div>
-        <div id="sigil-text">AWAITING_EXTRACTION</div>
-        
-        <div class="assignment-block" id="assign-block">
-            <span style="font-size: 10px; color: var(--warning);">ASSIGN NARRATIVE SHARD TO ENTITY/SYSTEM:</span>
-            <input type="text" class="sys-input" id="sys-name" placeholder="e.g. GITHUB, ROUTER, PANGEA-EX" autocomplete="off">
-            <button class="save-btn" onclick="Vault.saveSigil()">ARCHIVE_TO_VAULT</button>
-        </div>
-    </div>
-
-    <div class="panel-r">
-        <div class="vault-header">SHELTERED RECORDS (LOCAL_STORAGE)</div>
-        <div class="vault-list" id="vault-list">
-            </div>
-    </div>
-
-    <div class="deck">
-        <div>
-            <div style="font-size: 10px; color: #888;">GATHER ENTROPY (MOUSE MOVEMENT)</div>
-            <div class="entropy-bar"><div id="e-fill"></div></div>
-        </div>
-
-        <button class="lever" id="extract-btn" onclick="Vault.extract()" disabled>
-            EXTRACT_SIGIL
-        </button>
-        
-        <div style="font-size: 10px; color: var(--phosphor);">
-            DEBT: <span id="debt-val">0.00</span>%
-        </div>
+    <div class="header" style="grid-row: 3; background: #111; font-size: 10px; color: #444;">
+        <span>STATION_DEBT: <span id="debt-count">0.00</span>%</span>
+        <span>ENFORCE_YEAR_00 // NO_EXIT_FOUND</span>
     </div>
 </div>
 
 <script>
-    const Vault = {
-        entropy: 0, debt: 0, currentSigil: "",
-        records: JSON.parse(localStorage.getItem('due_vault')) || [],
-
-        init() {
-            setInterval(() => document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString('en-GB'), 1000);
-            document.addEventListener('mousemove', (e) => this.gather(e));
-            this.render();
+    const Router = {
+        go(id) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('view-' + id).classList.add('active');
+            event.target.classList.add('active');
+            if(id === 'secret') this.checkAuth();
         },
-
-        gather(e) {
-            if(this.entropy >= 100) return;
-            this.entropy += (Math.abs(e.movementX) + Math.abs(e.movementY)) * 0.05;
-            if(this.entropy >= 100) {
-                this.entropy = 100;
-                document.getElementById('extract-btn').disabled = false;
-                if(!this.currentSigil) {
-                    document.getElementById('sigil-text').innerText = "BALLAST_ACHIEVED";
-                    document.getElementById('sigil-text').style.color = "var(--phosphor)";
-                }
+        checkAuth() {
+            const vault = JSON.parse(localStorage.getItem('due_vault_v3')) || [];
+            const unlocked = vault.some(v => v.name.toUpperCase() === "SUTURE_KEY");
+            if(unlocked) {
+                document.getElementById('lock-overlay').style.display = 'none';
+                document.getElementById('secret-data').classList.remove('locked');
             }
-            document.getElementById('e-fill').style.width = `${this.entropy}%`;
-        },
+        }
+    };
 
+    const Vault = {
+        records: JSON.parse(localStorage.getItem('due_vault_v3')) || [],
+        debt: 0,
         extract() {
-            if(this.entropy < 100) return;
-            
-            let pool = "abcdefghijklmnopqrstuvwxyz";
-            if(document.getElementById('t-upper').checked) pool += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            if(document.getElementById('t-num').checked) pool += "0123456789";
-            if(document.getElementById('t-sym').checked) pool += "!@#$%^&*()_+=";
-            
-            const len = document.getElementById('t-len').value;
-            let result = "";
-            for(let i=0; i<len; i++) result += pool[Math.floor(Math.random() * pool.length)];
-            
-            this.currentSigil = result;
-            const out = document.getElementById('sigil-text');
-            out.innerText = result;
-            out.style.color = "var(--cyan)";
-            
+            const target = document.getElementById('target-id').value || "UNNAMED_ENTITY";
+            const sigil = Math.random().toString(36).substring(2, 12).toUpperCase();
+            document.getElementById('output-sigil').innerText = sigil;
+            this.records.unshift({name: target, sigil: sigil});
+            localStorage.setItem('due_vault_v3', JSON.stringify(this.records));
             this.debt += 1.12;
-            document.getElementById('debt-val').innerText = this.debt.toFixed(2);
-            
-            // Reset entropy and show save dialog
-            this.entropy = 0; document.getElementById('e-fill').style.width = "0%";
-            document.getElementById('extract-btn').disabled = true;
-            document.getElementById('assign-block').classList.add('active');
-            document.getElementById('sys-name').focus();
-        },
-
-        saveSigil() {
-            const sysName = document.getElementById('sys-name').value.trim() || "UNKNOWN_ENTITY";
-            
-            const newRecord = {
-                id: Date.now(),
-                system: sysName,
-                sigil: this.currentSigil,
-                date: new Date().toLocaleDateString('en-GB')
-            };
-
-            this.records.unshift(newRecord); // Add to top
-            localStorage.setItem('due_vault', JSON.stringify(this.records));
-            
-            // Reset UI
-            document.getElementById('assign-block').classList.remove('active');
-            document.getElementById('sys-name').value = "";
-            this.currentSigil = "";
-            
+            document.getElementById('debt-count').innerText = this.debt.toFixed(2);
+            document.getElementById('target-id').value = "";
             this.render();
         },
-
-        copy(sigil) {
-            navigator.clipboard.writeText(sigil);
-            // Visual feedback could be added here
-        },
-
-        purge(id) {
-            this.records = this.records.filter(r => r.id !== id);
-            localStorage.setItem('due_vault', JSON.stringify(this.records));
-            this.render();
-        },
-
-        render() {
+        render(filter = "") {
             const list = document.getElementById('vault-list');
             list.innerHTML = "";
-            
-            if(this.records.length === 0) {
-                list.innerHTML = "<div style='color:#555; font-size:10px; text-align:center; margin-top:20px;'>VAULT IS EMPTY</div>";
-                return;
-            }
-
-            this.records.forEach(r => {
+            this.records.filter(r => r.name.toLowerCase().includes(filter.toLowerCase())).forEach(r => {
                 const item = document.createElement('div');
                 item.className = "vault-item";
-                item.innerHTML = `
-                    <div>
-                        <div class="v-sys">${r.system}</div>
-                        <div class="v-date">SHELTERED: ${r.date}</div>
-                    </div>
-                    <button class="v-btn" onclick="Vault.copy('${r.sigil}')">COPY</button>
-                    <button class="v-btn v-del" onclick="Vault.purge(${r.id})">PURGE</button>
-                `;
+                item.innerHTML = `<strong>${r.name}</strong> <span>${r.sigil}</span> <button class="lever" style="padding:5px; font-size:9px" onclick="navigator.clipboard.writeText('${r.sigil}')">COPY</button>`;
                 list.appendChild(item);
             });
         }
     };
 
-    Vault.init();
+    Vault.render();
+    setInterval(() => {
+        document.getElementById('clock').innerText = "OCT 31, " + new Date().toLocaleTimeString();
+    }, 1000);
 </script>
 
 </body>
