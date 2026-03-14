@@ -2,266 +2,262 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D.U.E. | SIGIL_EXTRACTOR</title>
+    <title>STATION_04 // SIGIL_EXTRACTOR</title>
     <style>
         :root {
-            --cyan-suture: #22d3ee;
-            --phosphor-red: #FF3131;
-            --terminal-green: #22c55e;
+            /* 1. Color Correction to D.U.E. Standards */
+            --tobacco-orange: #704214;
             --void-black: #050505;
-            --obsidian: #020617;
+            --phosphor-red: #FF3131;
+            --cyan-suture: #22d3ee;
+            --terminal-green: #22c55e;
+            --blood-ink: #630000;
+            --vellum-gold: #f2e6d0;
         }
 
+        /* 2. Full-Screen Immersion */
         body {
             background-color: var(--void-black);
-            color: #cbd5e1;
+            color: var(--vellum-gold);
             font-family: 'Courier New', Courier, monospace;
+            height: 100vh;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
             overflow: hidden;
+            /* 3. Global Texture */
+            background-image: radial-gradient(circle, #0a0a0a 0%, #000 100%);
         }
 
-        /* --- THE APP CHASSIS --- */
-        .sigil-app {
-            width: 380px;
-            background: var(--obsidian);
-            border: 2px solid #1e293b;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(34, 211, 238, 0.05);
+        /* 4. Large-Scale App Chassis */
+        .app-container {
+            width: 90vw;
+            max-width: 800px; /* 5. Size Increase */
+            height: 80vh;
+            border: 1px solid var(--tobacco-orange);
+            background: var(--void-black);
+            display: grid;
+            grid-template-rows: 40px 1fr 180px 60px;
             position: relative;
+            box-shadow: 0 0 50px rgba(112, 66, 20, 0.2);
         }
 
+        /* 6. Scanline Overlay */
+        .app-container::after {
+            content: ""; position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px; z-index: 100; opacity: 0.3;
+        }
+
+        /* 7. Animated Header */
         .header {
-            background: #0f172a;
-            padding: 12px;
-            font-size: 10px;
-            letter-spacing: 2px;
-            border-bottom: 1px solid #1e293b;
+            background: var(--tobacco-orange);
+            color: var(--void-black);
+            padding: 0 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        /* --- OUTPUT SECTION --- */
-        .display-area {
-            padding: 30px 20px;
-            background: radial-gradient(circle at center, #083344 0%, #020617 100%);
-            text-align: center;
-            position: relative;
-        }
-
-        #sigil-display {
-            font-size: 1.4rem;
-            min-height: 1.6rem;
-            word-break: break-all;
-            color: var(--terminal-green);
-            text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+            font-weight: bold;
+            font-size: 12px;
             letter-spacing: 3px;
-            margin-bottom: 10px;
         }
 
-        .strength-meter {
-            height: 2px;
-            background: #111;
-            width: 100%;
-            position: relative;
+        /* 8. The "God-Eye" Viewport */
+        .viewport {
+            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #222;
         }
 
-        #strength-bar {
-            height: 100%;
-            width: 0%;
-            background: var(--cyan-suture);
-            transition: width 0.5s ease;
-            box-shadow: 0 0 10px var(--cyan-suture);
+        /* 9. High-Visibility Output */
+        #sigil-display {
+            font-size: 3.5rem; /* 10. Massive font */
+            color: var(--cyan-suture);
+            text-shadow: 0 0 20px var(--cyan-suture);
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            transition: all 0.1s;
         }
 
-        /* --- CONTROLS --- */
-        .controls {
-            padding: 20px;
+        /* 11. Narrative Ballast / Weight Counter */
+        .debt-counter {
+            font-size: 10px;
+            color: var(--phosphor-red);
+            margin-top: 20px;
+        }
+
+        /* 12. Improved Control Grid */
+        .control-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            border-top: 1px solid #1e293b;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 30px;
+            background: #080808;
         }
 
-        .toggle-group {
+        /* 13. Stylized Toggle Switches */
+        .vault-check {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             cursor: pointer;
+            border: 1px solid #222;
+            padding: 10px;
+            transition: 0.2s;
         }
 
-        .toggle-group input { display: none; }
+        .vault-check:hover { border-color: var(--cyan-suture); }
 
-        .box {
-            width: 14px;
-            height: 14px;
-            border: 1px solid #444;
-            position: relative;
+        .vault-check input { display: none; }
+
+        .indicator {
+            width: 12px; height: 12px; border: 1px solid #444;
         }
 
-        input:checked + .box {
+        input:checked + .indicator {
             background: var(--phosphor-red);
-            border-color: var(--phosphor-red);
-            box-shadow: 0 0 8px var(--phosphor-red);
+            box-shadow: 0 0 10px var(--phosphor-red);
         }
 
-        label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; }
-
-        /* --- BUTTONS --- */
-        .actions {
-            padding: 15px;
-            background: #0f172a;
-        }
-
-        button {
-            width: 100%;
-            font-family: 'Courier New', monospace;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-        }
-
-        .primary-btn {
-            background: var(--cyan-suture);
-            color: #000;
-            border: none;
-            padding: 12px;
+        /* 14. Tactile Extraction Button */
+        .extract-btn {
+            background: var(--blood-ink);
+            color: white;
+            border: 1px solid var(--phosphor-red);
+            font-family: 'Courier New';
             font-weight: bold;
-            margin-bottom: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
-        .primary-btn:hover { background: #fff; transform: scale(1.02); }
+        .extract-btn:active { transform: translateY(2px); background: var(--phosphor-red); }
 
-        .secondary-btn {
-            background: transparent;
-            border: 1px solid #334155;
-            color: #64748b;
-            padding: 8px;
-        }
-
-        .secondary-btn:hover { border-color: var(--cyan-suture); color: #fff; }
-
-        /* --- CRT FX --- */
-        .scanlines {
-            position: absolute; inset: 0; pointer-events: none;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px;
-            z-index: 10;
+        /* 15. The "History" Shards */
+        .history-tray {
+            display: flex;
+            gap: 10px;
+            font-size: 9px;
+            color: #444;
+            padding: 10px;
+            background: #000;
         }
     </style>
 </head>
 <body>
 
-<div class="sigil-app">
-    <div class="scanlines"></div>
-    
+<div class="app-container">
     <div class="header">
-        <span>CORE_EXTRACTOR v1.0</span>
-        <span id="status" style="color: var(--terminal-green);">STATUS: STABLE</span>
+        <span>CORE_SIGIL_EXTRACTOR // STATION_04</span>
+        <span id="clock">00:00:00</span>
     </div>
 
-    <div class="display-area">
+    <div class="viewport">
         <div id="sigil-display">NO_DATA</div>
-        <div class="strength-meter">
-            <div id="strength-bar"></div>
-        </div>
+        <div class="debt-counter">RESOLUTION_DEBT: <span id="debt-val">0.00</span>%</div>
     </div>
 
-    <div class="controls">
-        <label class="toggle-group">
+    <div class="control-grid">
+        <label class="vault-check">
             <input type="checkbox" class="vault" data-type="upper" checked>
-            <div class="box"></div>
-            <span>Upper_Shards</span>
+            <div class="indicator"></div>
+            <span>[SHARDS] UPPER_CASE</span>
         </label>
-        <label class="toggle-group">
+        <label class="vault-check">
             <input type="checkbox" class="vault" data-type="num" checked>
-            <div class="box"></div>
-            <span>Static_Decay</span>
+            <div class="indicator"></div>
+            <span>[STATIC] NUMERIC</span>
         </label>
-        <label class="toggle-group">
-            <input type="checkbox" class="vault" data-type="sym" checked>
-            <div class="box"></div>
-            <span>Suture_Points</span>
+        <label class="vault-check">
+            <input type="checkbox" class="vault" data-type="sym">
+            <div class="indicator"></div>
+            <span>[SUTURE] SYMBOLS</span>
         </label>
-        <label class="toggle-group">
+        <label class="vault-check">
             <input type="checkbox" class="vault" data-type="lore">
-            <div class="box"></div>
-            <span>Debt_Sigils</span>
+            <div class="indicator"></div>
+            <span>[DEBT] ANCIENT</span>
         </label>
+        <button class="extract-btn" style="grid-column: span 2;" onclick="Extractor.init()">INITIATE_EXTRACTION</button>
     </div>
 
-    <div class="actions">
-        <button class="primary-btn" onclick="Extractor.init()">Extract Sigil</button>
-        <button id="copy-btn" class="secondary-btn" onclick="Extractor.copy()">Transfer to Buffer</button>
+    <div class="history-tray" id="history">
+        <span>PREVIOUS_SIGILS:</span>
     </div>
 </div>
 
 <script>
     const Extractor = {
+        debt: 0.00,
         vaults: {
             upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
             lower: "abcdefghijklmnopqrstuvwxyz",
             num: "0123456789",
-            sym: "!@#$%^&*()_+-=",
-            lore: "ΩΨΦΣΔΞϘ"
+            sym: "!@#$%^&*()_+=",
+            lore: "ΩΨΦΣΔΞϘϞ"
+        },
+
+        // 19. System Clock logic
+        tick() {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB');
         },
 
         init() {
             let pool = this.vaults.lower;
-            const toggles = document.querySelectorAll('.vault');
-            toggles.forEach(t => {
-                if(t.checked) pool += this.vaults[t.dataset.type];
-            });
+            document.querySelectorAll('.vault').forEach(t => { if(t.checked) pool += this.vaults[t.dataset.type]; });
 
-            const length = 16;
-            let sigil = "";
+            // 20. Variable Sigil Length
+            const length = Math.floor(Math.random() * 5) + 12; 
+            let result = "";
             for(let i=0; i<length; i++) {
-                sigil += pool[Math.floor(Math.random() * pool.length)];
+                result += pool[Math.floor(Math.random() * pool.length)];
             }
 
-            this.animate(sigil);
+            this.animate(result);
         },
 
         animate(final) {
             const display = document.getElementById('sigil-display');
-            const bar = document.getElementById('strength-bar');
-            const status = document.getElementById('status');
-            let frame = 0;
-
-            status.innerText = "STATUS: EXTRACTING...";
-            status.style.color = "var(--phosphor-red)";
-            bar.style.width = "0%";
-
+            let frames = 0;
+            
+            // 21. High-Entropy Glitch Animation
             const interval = setInterval(() => {
-                display.innerText = Math.random().toString(36).substring(2, 10).toUpperCase();
-                frame++;
+                display.innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
+                display.style.color = "var(--phosphor-red)";
+                frames++;
 
-                if(frame > 12) {
+                if(frames > 20) { // 22. Rule #2: The 99% Threshold delay
                     clearInterval(interval);
                     display.innerText = final;
-                    bar.style.width = "100%";
-                    status.innerText = "STATUS: STABLE";
-                    status.style.color = "var(--terminal-green)";
+                    display.style.color = "var(--cyan-suture)";
+                    this.updateDebt();
+                    this.log(final);
+                    // 23. Auto-copy to buffer
+                    navigator.clipboard.writeText(final);
                 }
-            }, 50);
+            }, 40);
         },
 
-        copy() {
-            const val = document.getElementById('sigil-display').innerText;
-            if(val === "NO_DATA") return;
-            
-            navigator.clipboard.writeText(val);
-            const btn = document.getElementById('copy-btn');
-            btn.innerText = "SHELTERED_IN_BUFFER";
-            setTimeout(() => btn.innerText = "Transfer to Buffer", 1500);
+        updateDebt() {
+            this.debt += 0.88;
+            document.getElementById('debt-val').innerText = this.debt.toFixed(2);
+        },
+
+        log(sigil) {
+            const h = document.getElementById('history');
+            const item = document.createElement('span');
+            item.innerText = `[${sigil}] `;
+            h.appendChild(item);
+            if(h.children.length > 5) h.removeChild(h.children[1]);
         }
     };
+
+    setInterval(Extractor.tick, 1000);
 </script>
 
 </body>
