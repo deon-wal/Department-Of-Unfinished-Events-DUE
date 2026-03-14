@@ -272,6 +272,74 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => f.style.opacity = '0', 80);
         }
     }
+    document.addEventListener('DOMContentLoaded', () => {
+    // --- 1. LORE-SPECIFIC TICKER FEED ---
+    const tickerContainer = document.querySelector('.ticker-scroll');
+    const anomalies = [
+        "PANGEA-EX: SECTOR 4 DRIFTING", "SUTURE UNRAVELING IN 0.4s",
+        "TEMPORAL BLEED DETECTED", "HALF-EVENT: CATALYZING...",
+        "REDACTED PROTOCOL: VOID", "NON-EXISTENT ENTITY DETECTED",
+        "ECHO-LOG: POSSIBLE FUTURE #412", "REALITY SCREAM IN BOUND",
+        "STORM DENSITY: 88.4%", "OBSERVATION DECK: STABLE",
+        "SUGGESTION: DO NOT LOOK OUTSIDE", "CORE REWIND INITIATED",
+        "AGENCY CLEARANCE: OMEGA", "FRAGMENT_09 MISSING",
+        "BAROMETER SPIKE: ANOMALOUS", "TIME-LOOP: ITERATION 4092"
+    ];
+
+    // Populates 40 items by cycling through the lore
+    if (tickerContainer) {
+        for (let i = 0; i < 40; i++) {
+            const item = document.createElement('div');
+            item.className = 'ticker-item';
+            const timestamp = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            const lore = anomalies[i % anomalies.length];
+            item.innerHTML = `<span style="opacity:0.4">[${timestamp}]</span> ${lore}`;
+            tickerContainer.appendChild(item);
+        }
+        // Auto-scroll to bottom
+        tickerContainer.scrollTop = tickerContainer.scrollHeight;
+    }
+
+    // --- 2. DYNAMIC GAUGE LOGIC ---
+    const updateGauges = () => {
+        const needles = document.querySelectorAll('.needle');
+        needles.forEach(needle => {
+            // Random jitter to simulate unstable analog hardware
+            const randomRotation = Math.floor(Math.random() * 20) - 10; 
+            const currentRotation = parseInt(needle.getAttribute('data-base-rot') || 0);
+            needle.style.transform = `rotate(${currentRotation + randomRotation}deg)`;
+        });
+    };
+    setInterval(updateGauges, 2000);
+
+    // --- 3. CLEARANCE & ALERT SYSTEM ---
+    const clearanceToggle = document.querySelector('#clearance-input');
+    clearanceToggle?.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            document.body.classList.add('clearance-active');
+            // Trigger the "Erasure Flash" effect from your CSS
+            const flash = document.getElementById('erasure-flash');
+            if (flash) {
+                flash.style.opacity = '1';
+                setTimeout(() => flash.style.opacity = '0', 50);
+            }
+        } else {
+            document.body.classList.remove('clearance-active');
+        }
+    });
+
+    // --- 4. PARALLAX MOUSE MOVEMENT ---
+    document.addEventListener('mousemove', (e) => {
+        const layers = document.querySelectorAll('.parallax-layer');
+        const x = (window.innerWidth - e.pageX * 2) / 100;
+        const y = (window.innerHeight - e.pageY * 2) / 100;
+
+        layers.forEach(layer => {
+            const speed = layer.getAttribute('data-speed') || 1;
+            layer.style.transform = `translateX(${x * speed}px) translateY(${y * speed}px)`;
+        });
+    });
+});
 
     // Parallax Interaction
     window.addEventListener('mousemove', (e) => {
