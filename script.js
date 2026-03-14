@@ -179,6 +179,23 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerFlash();
     };
 
+    // Add a "Glitched Rule" effect when Clearance is active
+const rules = document.querySelectorAll('.torn-paper li');
+const clearanceInput = document.querySelector('#clearance-input');
+
+clearanceInput?.addEventListener('change', (e) => {
+    rules.forEach((rule, index) => {
+        if (e.target.checked && index % 3 === 0) {
+            rule.setAttribute('data-original', rule.innerText);
+            rule.innerText = "ERROR: NARRATIVE COLLAPSE IMMINENT";
+            rule.style.color = "var(--phosphor-red)";
+        } else {
+            rule.innerText = rule.getAttribute('data-original') || rule.innerText;
+            rule.style.color = "inherit";
+        }
+    });
+});
+
     // --- EVENTS (Only attach if elements exist on current page) ---
     if(document.getElementById('generate-event')) {
         document.getElementById('generate-event').addEventListener('click', () => {
