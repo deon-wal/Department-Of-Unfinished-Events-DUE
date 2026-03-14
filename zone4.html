@@ -63,13 +63,19 @@
                 </nav>
 
                 <!-- ============================
-     Zone 4 Visual Enhancements
+<!-- ============================
+     Zone 4: Observation Deck (God-Eye)
      ============================ -->
+<div id="godeye-visuals" class="absolute inset-0 z-15 pointer-events-none overflow-hidden">
 
-<!-- Add this inside <body> after existing hero section -->
-<div id="godeye-visuals" class="absolute inset-0 z-10 pointer-events-none overflow-hidden">
     <!-- Hero background image (God-Eye panoramic) -->
-    <div class="absolute inset-0 bg-cover bg-center opacity-30" style="background-image: url('/mnt/data/a_digital_photograph_showcases_a_futuristic_observ.png'); filter: brightness(0.35) contrast(1.1);"></div>
+    <div class="absolute inset-0 bg-cover bg-center opacity-30" 
+         style="background-image: url('/mnt/data/a_digital_photograph_showcases_a_futuristic_observ.png'); 
+                filter: brightness(0.35) contrast(1.1);">
+    </div>
+
+    <!-- Sky overlay -->
+    <div id="godeye-sky-overlay" class="absolute inset-0 pointer-events-none opacity-20 bg-cyan-500/5 mix-blend-overlay"></div>
 
     <!-- Floating Holographic Instruments -->
     <div class="absolute left-[10%] top-[20%] w-32 h-32">
@@ -85,19 +91,23 @@
     </div>
 
     <!-- Sky Effects -->
-    <div id="processing-icons" class="absolute inset-0 pointer-events-none">
+    <div id="godeye-processing-storm" class="absolute inset-0 pointer-events-none">
         <!-- Red Error Triangles -->
-        <div class="absolute top-[15%] left-[30%] w-16 h-16 bg-red-500/40 clip-triangle animate-pulse"></div>
-        <div class="absolute top-[25%] right-[20%] w-20 h-20 bg-red-500/30 clip-triangle animate-pulse delay-500"></div>
+        <div class="absolute top-[15%] left-[30%] w-16 h-16 bg-red-500/40 clip-triangle animate-godeye-float-error"></div>
+        <div class="absolute top-[25%] right-[20%] w-20 h-20 bg-red-500/30 clip-triangle animate-godeye-float-error delay-500"></div>
 
         <!-- Rotating Hourglass Icons -->
-        <div class="absolute top-[10%] left-[50%] w-12 h-12 bg-cyan-200/20 clip-hourglass animate-spin-slow"></div>
-        <div class="absolute top-[18%] right-[45%] w-16 h-16 bg-cyan-200/15 clip-hourglass animate-spin-slow delay-700"></div>
+        <div class="absolute top-[10%] left-[50%] w-12 h-12 bg-cyan-200/20 clip-hourglass animate-godeye-float-hourglass"></div>
+        <div class="absolute top-[18%] right-[45%] w-16 h-16 bg-cyan-200/15 clip-hourglass animate-godeye-float-hourglass delay-700"></div>
 
         <!-- Massive Loading Bars -->
-        <div class="absolute bottom-[5%] left-0 w-1/2 h-1 bg-red-600 opacity-40 animate-load-pulse"></div>
-        <div class="absolute bottom-[7%] right-0 w-1/3 h-1 bg-red-500 opacity-30 animate-load-pulse delay-400"></div>
+        <div class="absolute bottom-[5%] left-0 w-1/2 h-1 bg-red-600 opacity-40 animate-godeye-load-pulse"></div>
+        <div class="absolute bottom-[7%] right-0 w-1/3 h-1 bg-red-500 opacity-30 animate-godeye-load-pulse delay-400"></div>
     </div>
+
+    <!-- Horizon Loading Bar -->
+    <div id="godeye-horizon-loading" class="absolute bottom-0 left-0 w-full h-1 bg-cyan-400/20 animate-godeye-load-bar"></div>
+
 </div>
                 <div id="zone4" class="tab-content active p-10 md:p-16">
                     
