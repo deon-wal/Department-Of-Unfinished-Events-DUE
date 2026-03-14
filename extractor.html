@@ -2,176 +2,201 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>D.U.E. // STATION_04_UNIVERSAL_PROCESSOR</title>
+    <title>D.U.E. // SIGIL_EXTRACTOR_STATION_04</title>
     <style>
         :root {
-            --tobacco-orange: #704214;
-            --ochre-dark: #2a241a;
-            --vellum-gold: #f2e6d0;
-            --phosphor-red: #cc2222;
-            --void-black: #050505;
-            --cyan-suture: #22d3ee;
-            --blood-ink: #630000;
+            --tobacco: #704214; --ochre: #2a241a; --vellum: #f2e6d0;
+            --phosphor: #ff3131; --cyan: #22d3ee; --void: #050505;
+            --brass: #8a6d3b; --plastic-black: #121212;
         }
 
-        /* 1. ARCHIVAL TEXTURE */
+        /* 1. CRT Screen Curvature & 2. Jitter Animation */
+        @keyframes jitter {
+            0% { transform: translate(0,0); } 10% { transform: translate(-1px, 1px); }
+            20% { transform: translate(1px, -1px); } 100% { transform: translate(0,0); }
+        }
+
         body {
-            background-color: #0c0b09;
-            color: var(--vellum-gold);
-            font-family: 'Courier New', monospace;
-            height: 100vh; margin: 0;
-            display: flex; justify-content: center; align-items: center;
-            background-image: radial-gradient(circle, rgba(112, 66, 20, 0.1) 0%, #000 100%);
-            overflow: hidden;
+            background: #000; color: var(--vellum); font-family: 'Courier New', monospace;
+            height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center;
+            overflow: hidden; perspective: 1000px;
         }
 
-        /* 2. THE HEAVY CHASSIS */
-        .mainframe {
-            width: 95vw; height: 90vh;
-            background: var(--ochre-dark);
-            border: 6px solid #1a1510;
-            box-shadow: 30px 30px 0px #000;
-            display: grid;
-            grid-template-columns: 300px 1fr 300px;
-            grid-template-rows: 50px 1fr 120px;
-            position: relative;
+        /* 3. The Physical "Console" Chassis */
+        .console-chassis {
+            width: 950px; height: 700px; background: var(--ochre);
+            border: 10px solid #1a1510; border-right: 15px solid #111; border-bottom: 20px solid #000;
+            display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 60px 1fr 180px;
+            box-shadow: 50px 50px 100px #000; position: relative;
+            transform: rotateX(5deg); /* 4. 3D Tilt */
         }
 
-        /* 3. CRT MONITOR VIEWPORT */
-        .viewport {
-            grid-column: 2; grid-row: 2;
-            background: #000; margin: 20px;
-            border: 20px solid #1a1a1a;
-            border-radius: 40px;
-            position: relative;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            box-shadow: inset 0 0 100px rgba(34, 211, 238, 0.1);
-            overflow: hidden;
+        /* 5. Dust & Scratches Overlay */
+        .console-chassis::before {
+            content: ""; position: absolute; inset: 0; opacity: 0.05; pointer-events: none;
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png'); z-index: 100;
         }
 
-        .scanlines {
-            position: absolute; inset: 0; pointer-events: none;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
-            background-size: 100% 4px; z-index: 10;
+        /* 6. Heavy Dymo Tape Labels */
+        .dymo-label {
+            background: #003366; color: white; padding: 2px 10px; font-weight: bold;
+            font-size: 10px; border-radius: 2px; box-shadow: 1px 1px 3px #000;
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
-        /* 4. THE SIGIL OUTPUT (BIGGER & DISTORTED) */
+        /* 7. The CRT Monitor Shroud */
+        .crt-shroud {
+            grid-column: 2; grid-row: 2; background: #111; margin: 15px;
+            border-radius: 50px; border: 20px solid var(--plastic-black);
+            position: relative; overflow: hidden; box-shadow: inset 0 0 80px #000;
+        }
+
+        /* 8. Scanlines & 9. Screen Flicker */
+        .crt-shroud::after {
+            content: ""; position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px; z-index: 50; animation: jitter 0.1s infinite;
+        }
+
+        /* 10. Large Data Output */
         #sigil-display {
-            font-size: 4rem; color: var(--cyan-suture);
-            text-shadow: 0 0 15px var(--cyan-suture);
-            letter-spacing: 12px; transition: 0.05s;
-            z-index: 5;
+            font-size: 4.5rem; color: var(--cyan); text-shadow: 0 0 20px var(--cyan);
+            text-align: center; margin-top: 100px; font-weight: 900;
         }
 
-        /* 5. SIDEBAR INSTRUMENTATION (LEFT) */
-        .sidebar-l {
-            padding: 20px; border-right: 2px solid #1a1510;
-            display: flex; flex-direction: column; gap: 20px;
+        /* 11. Oscilloscope Visualizer */
+        .oscilloscope {
+            width: 100%; height: 60px; border-top: 1px solid #222; margin-top: auto;
+            background: rgba(0, 50, 0, 0.2); position: relative;
         }
 
-        .gauge-panel {
-            background: rgba(0,0,0,0.3); padding: 10px;
-            border: 1px solid var(--tobacco-orange);
+        /* 12. Left Sidebar Control Panel */
+        .panel-l {
+            grid-row: 2; padding: 20px; border-right: 4px solid #111;
+            display: flex; flex-direction: column; gap: 15px;
         }
 
-        .needle { 
-            transform-origin: bottom center; 
-            transition: transform 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        /* 13. Functional Toggles */
+        .toggle-switch {
+            display: flex; align-items: center; gap: 10px; cursor: pointer;
+            padding: 5px; border: 1px solid transparent;
+        }
+        .toggle-switch:hover { border-color: var(--tobacco); }
+
+        /* 14. Heavy Brass Toggle Look */
+        .toggle-switch input { display: none; }
+        .switch-visual {
+            width: 30px; height: 15px; background: #000; border: 1px solid var(--brass);
+            position: relative;
+        }
+        input:checked + .switch-visual::after { content: ""; position: absolute; left: 15px; width: 13px; height: 13px; background: var(--phosphor); }
+
+        /* 15. The "Big Red Button" Lever Chassis */
+        .button-bay {
+            grid-column: 1 / span 2; grid-row: 3; background: #1a1a1a;
+            border-top: 8px solid #000; display: flex; align-items: center;
+            padding: 0 40px; gap: 50px;
         }
 
-        /* 6. THE 10 RULES (RESTORED TONE) */
+        /* 16. THE ACTION BUTTON (LEVER) */
+        .extraction-lever {
+            width: 180px; height: 80px; background: var(--blood-ink);
+            border: 4px solid #000; border-radius: 10px; color: white;
+            font-family: 'Courier New'; font-weight: bold; cursor: pointer;
+            box-shadow: 0 8px 0 #400, 0 15px 20px #000; transition: 0.1s;
+        }
+        .extraction-lever:active { transform: translateY(8px); box-shadow: 0 0 0 #000; background: var(--phosphor); }
+
+        /* 17. The 10 Rules Directive (Vellum Note) */
         .directive-note {
-            background: var(--vellum-gold); color: #000;
-            padding: 15px; font-size: 9px; line-height: 1.2;
-            transform: rotate(-1deg); box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
-            margin-top: auto; border: 1px solid #d4a017;
+            background: var(--vellum); color: #222; padding: 10px;
+            font-size: 8.5px; line-height: 1.1; transform: rotate(-1.5deg);
+            border: 1px solid #aaa; box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
         }
 
-        /* 7. LIVE TICKER (RIGHT) */
-        .sidebar-r {
-            padding: 10px; display: flex; flex-direction: column;
-            background: #1a1714; border-left: 2px solid #000;
+        /* 18. Anomaly Log (Bottom Right) */
+        #log-feed {
+            width: 250px; height: 100px; background: #080808; border: 1px solid #333;
+            font-size: 9px; padding: 5px; overflow: hidden; color: var(--tobacco);
         }
 
-        .ticker-wrap {
-            flex-grow: 1; overflow-y: auto; font-size: 9px;
-            color: var(--tobacco-orange); scrollbar-width: none;
+        /* 19. Warning Lights */
+        .warning-light {
+            width: 20px; height: 20px; border-radius: 50%; background: #200;
+            border: 2px solid #000;
         }
-
-        /* 8. TACTILE CONTROLS (BOTTOM) */
-        .footer-controls {
-            grid-column: 1 / span 3; background: #1e1a15;
-            border-top: 4px solid #000; display: flex;
-            align-items: center; padding: 0 40px; gap: 30px;
-        }
-
-        .big-red-button {
-            background: var(--blood-ink); color: #fff;
-            border: 3px solid #000; padding: 15px 40px;
-            font-family: inherit; font-weight: bold; cursor: pointer;
-            box-shadow: 6px 6px 0 #000;
-        }
-
-        .big-red-button:active { transform: translate(3px, 3px); box-shadow: 3px 3px 0 #000; }
-
-        .vibrate-sm { animation: vib 0.2s infinite; }
-        @keyframes vib { 0% {transform:translate(0,0)} 50% {transform:translate(1px, 1px)} }
+        .warning-light.active { background: var(--phosphor); box-shadow: 0 0 15px var(--phosphor); }
     </style>
 </head>
 <body>
 
-<div class="mainframe vibrate-sm">
-    <div style="grid-column: 1 / span 3; background: var(--tobacco-orange); display: flex; align-items: center; padding: 0 20px; color: #000; font-size: 11px; font-weight: bold;">
-        D.U.E. STATION_04 // UNIVERSAL_NARRATIVE_PROCESSOR // YEAR_00
+<div class="console-chassis">
+    <div style="grid-column: 1 / span 2; display: flex; align-items: center; padding-left: 20px;">
+        <span class="dymo-label">STATION_04 // ACCESS_SIGIL_PROCESSOR</span>
+        <span style="margin-left: auto; margin-right: 20px; font-size: 10px; opacity: 0.4;">STABILITY: 0.88 // YEAR_00</span>
     </div>
 
-    <div class="sidebar-l">
-        <div class="gauge-panel">
-            <div style="font-size: 8px; margin-bottom: 5px;">STORM_DENSITY</div>
-            <svg width="60" height="30" viewBox="0 0 60 30">
-                <path d="M 5 25 A 25 25 0 0 1 55 25" fill="none" stroke="#444" stroke-width="2"/>
-                <line id="needle-1" x1="30" y1="25" x2="10" y2="10" stroke="var(--phosphor-red)" stroke-width="2" class="needle"/>
+    <div class="panel-l">
+        <div class="directive-note">
+            <strong>DIRECTIVE_10:</strong><br>
+            1. Dialogue continuous.<br>
+            2. 99% Threshold caution.<br>
+            3. No Closure Pills.<br>
+            4. High-Weight Object req.<br>
+            5. Oct 31 Limit.
+        </div>
+
+        <label class="toggle-switch">
+            <input type="checkbox" id="upper-shards" checked>
+            <div class="switch-visual"></div>
+            <span style="font-size: 9px;">UPPER_SHARDS</span>
+        </label>
+        <label class="toggle-switch">
+            <input type="checkbox" id="static-decay" checked>
+            <div class="switch-visual"></div>
+            <span style="font-size: 9px;">STATIC_DECAY</span>
+        </label>
+        <label class="toggle-switch">
+            <input type="checkbox" id="debt-sigils">
+            <div class="switch-visual"></div>
+            <span style="font-size: 9px;">DEBT_SIGILS</span>
+        </label>
+
+        <div style="margin-top: auto; border-top: 1px solid #333; padding-top: 10px;">
+            <div style="font-size: 8px;">VOID_PRESSURE</div>
+            <svg width="100%" height="40" viewBox="0 0 100 40">
+                <path d="M 10 35 A 40 40 0 0 1 90 35" fill="none" stroke="#333" stroke-width="3"/>
+                <line id="needle" x1="50" y1="35" x2="20" y2="10" stroke="var(--phosphor)" stroke-width="2" style="transition: 0.5s;"/>
             </svg>
         </div>
+    </div>
+
+    <div class="crt-shroud">
+        <div style="position: absolute; top: 20px; left: 30px; font-size: 10px; color: var(--phosphor);">
+            RES_DEBT: <span id="debt-val">0.00</span>%
+        </div>
         
-        <div class="directive-note">
-            <strong>CITIZEN’S DIRECTIVE</strong><br><br>
-            1. Maintain continuous dialogue.<br>
-            2. Avoid the “99% Threshold”.<br>
-            3. Report flicker events.<br>
-            4. Carry a “High-Weight Object”.<br>
-            5. Ignore missing textures.<br>
-            6. No Closure Pills.<br>
-            7. Break loops via accidents.<br>
-            8. Shelter from corrosives.<br>
-            9. Respect the World-Drive hum.<br>
-            10. Don't calculate beyond Oct 31.
+        <div id="sigil-display">--IDLE--</div>
+        
+        <div class="oscilloscope">
+            <svg id="wave" width="100%" height="60" preserveAspectRatio="none">
+                <path d="M0 30 Q 50 10 100 30 T 200 30" fill="none" stroke="var(--cyan)" stroke-width="1" opacity="0.5"/>
+            </svg>
         </div>
     </div>
 
-    <div class="viewport">
-        <div class="scanlines"></div>
-        <div id="sigil-display">IDLE_STATE</div>
-        <div style="margin-top: 40px; font-size: 10px; color: var(--tobacco-orange);">
-            RESOLUTION_DEBT: <span id="debt-count">0.00</span>%
+    <div class="button-bay">
+        <button class="extraction-lever" onclick="Extractor.init()">
+            INITIATE_EXTRACTION
+        </button>
+
+        <div style="display: flex; gap: 10px;">
+            <div id="w-light" class="warning-light"></div>
+            <span style="font-size: 9px; align-self: center;">SYNC_ERR</span>
         </div>
-    </div>
 
-    <div class="sidebar-r">
-        <div style="font-size: 10px; margin-bottom: 10px; border-bottom: 1px solid #444;">ANOMALY_LOG_v88</div>
-        <div class="ticker-wrap" id="ticker">
-            </div>
-    </div>
-
-    <div class="footer-controls">
-        <button class="big-red-button" onclick="Extractor.process()">EXTRACT_ACCESS_SIGIL</button>
-        <div style="display: flex; flex-direction: column; gap: 5px;">
-            <div style="display: flex; gap: 5px;">
-                <div class="status-light" id="L1" style="width:10px; height:10px; background:#222; border-radius:50%;"></div>
-                <div class="status-light" id="L2" style="width:10px; height:10px; background:#222; border-radius:50%;"></div>
-            </div>
-            <span style="font-size: 8px; color: #555;">BUFFER_SYNC</span>
+        <div id="log-feed">
+            [00:00:00] STANDBY...<br>
         </div>
     </div>
 </div>
@@ -179,54 +204,51 @@
 <script>
     const Extractor = {
         debt: 0.00,
-        anomalies: [
-            "PANGEA-EX: DRIFT DETECTED", "SUTURE_UNRAVEL_0.4s", "HALF-EVENT CAUGHT", 
-            "REDACTED_VOID_SIGNAL", "ECHO_LOG: FUTURE_412", "STORM_DENSITY_CRITICAL",
-            "NON-EXISTENT_ENTITY", "UN-PEOPLE_NEARBY", "RESOLUTION_DEBT_SPIKE"
-        ],
-
+        // 27. Core Extraction Logic
         init() {
-            // Populate 40-item ticker
-            const t = document.getElementById('ticker');
-            for(let i=0; i<40; i++) {
-                const item = document.createElement('div');
-                item.style.marginBottom = "5px";
-                item.innerText = `[${new Date().toLocaleTimeString()}] ${this.anomalies[i % this.anomalies.length]}`;
-                t.appendChild(item);
-            }
-        },
-
-        process() {
+            const btn = document.querySelector('.extraction-lever');
+            const light = document.getElementById('w-light');
+            const needle = document.getElementById('needle');
             const out = document.getElementById('sigil-display');
-            const l1 = document.getElementById('L1');
-            const n1 = document.getElementById('needle-1');
-            let frames = 0;
+            
+            // 28. Visual Kickback
+            light.classList.add('active');
+            needle.style.transform = `rotate(${Math.random() * 140}deg)`;
+            
+            let frame = 0;
+            const chars = "ABCDEFGHIJKLMN0123456789!@#$%^&*";
+            
+            // 29. Glitch Interval
+            const glitcher = setInterval(() => {
+                let temp = "";
+                for(let i=0; i<10; i++) temp += chars[Math.floor(Math.random()*chars.length)];
+                out.innerText = temp;
+                out.style.color = (frame % 2) ? "var(--phosphor)" : "var(--cyan)";
+                frame++;
 
-            l1.style.background = "var(--phosphor-red)";
-            l1.style.boxShadow = "0 0 10px var(--phosphor-red)";
-            n1.style.transform = `rotate(${Math.random() * 90}deg)`;
-
-            const loop = setInterval(() => {
-                out.innerText = Math.random().toString(36).substring(2, 10).toUpperCase();
-                out.style.opacity = Math.random();
-                frames++;
-
-                if(frames > 30) {
-                    clearInterval(loop);
-                    out.innerText = Math.random().toString(36).substring(2, 12).toUpperCase();
-                    out.style.opacity = "1";
-                    l1.style.background = "#222";
-                    l1.style.boxShadow = "none";
-                    
-                    this.debt += 0.88;
-                    document.getElementById('debt-count').innerText = this.debt.toFixed(2);
-                    navigator.clipboard.writeText(out.innerText);
+                if(frame > 25) {
+                    clearInterval(glitcher);
+                    this.complete(out, light);
                 }
             }, 50);
+        },
+
+        complete(out, light) {
+            // 30. Auto-Copy & Narrative Log
+            const finalSigil = Math.random().toString(36).substring(2, 12).toUpperCase();
+            out.innerText = finalSigil;
+            out.style.color = "var(--cyan)";
+            light.classList.remove('active');
+            
+            navigator.clipboard.writeText(finalSigil);
+            
+            this.debt += 0.88;
+            document.getElementById('debt-val').innerText = this.debt.toFixed(2);
+            
+            const log = document.getElementById('log-feed');
+            log.innerHTML = `[${new Date().toLocaleTimeString()}] SIGIL_SHELTERED: ${finalSigil}<br>` + log.innerHTML;
         }
     };
-
-    Extractor.init();
 </script>
 
 </body>
