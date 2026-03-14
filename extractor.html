@@ -2,262 +2,231 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>STATION_04 // SIGIL_EXTRACTOR</title>
+    <title>D.U.E. // STATION_04_UNIVERSAL_PROCESSOR</title>
     <style>
         :root {
-            /* 1. Color Correction to D.U.E. Standards */
             --tobacco-orange: #704214;
-            --void-black: #050505;
-            --phosphor-red: #FF3131;
-            --cyan-suture: #22d3ee;
-            --terminal-green: #22c55e;
-            --blood-ink: #630000;
+            --ochre-dark: #2a241a;
             --vellum-gold: #f2e6d0;
+            --phosphor-red: #cc2222;
+            --void-black: #050505;
+            --cyan-suture: #22d3ee;
+            --blood-ink: #630000;
         }
 
-        /* 2. Full-Screen Immersion */
+        /* 1. ARCHIVAL TEXTURE */
         body {
-            background-color: var(--void-black);
+            background-color: #0c0b09;
             color: var(--vellum-gold);
-            font-family: 'Courier New', Courier, monospace;
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Courier New', monospace;
+            height: 100vh; margin: 0;
+            display: flex; justify-content: center; align-items: center;
+            background-image: radial-gradient(circle, rgba(112, 66, 20, 0.1) 0%, #000 100%);
             overflow: hidden;
-            /* 3. Global Texture */
-            background-image: radial-gradient(circle, #0a0a0a 0%, #000 100%);
         }
 
-        /* 4. Large-Scale App Chassis */
-        .app-container {
-            width: 90vw;
-            max-width: 800px; /* 5. Size Increase */
-            height: 80vh;
-            border: 1px solid var(--tobacco-orange);
-            background: var(--void-black);
+        /* 2. THE HEAVY CHASSIS */
+        .mainframe {
+            width: 95vw; height: 90vh;
+            background: var(--ochre-dark);
+            border: 6px solid #1a1510;
+            box-shadow: 30px 30px 0px #000;
             display: grid;
-            grid-template-rows: 40px 1fr 180px 60px;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: 50px 1fr 120px;
             position: relative;
-            box-shadow: 0 0 50px rgba(112, 66, 20, 0.2);
         }
 
-        /* 6. Scanline Overlay */
-        .app-container::after {
-            content: ""; position: absolute; inset: 0; pointer-events: none;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px; z-index: 100; opacity: 0.3;
-        }
-
-        /* 7. Animated Header */
-        .header {
-            background: var(--tobacco-orange);
-            color: var(--void-black);
-            padding: 0 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            font-size: 12px;
-            letter-spacing: 3px;
-        }
-
-        /* 8. The "God-Eye" Viewport */
+        /* 3. CRT MONITOR VIEWPORT */
         .viewport {
-            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-bottom: 1px solid #222;
-        }
-
-        /* 9. High-Visibility Output */
-        #sigil-display {
-            font-size: 3.5rem; /* 10. Massive font */
-            color: var(--cyan-suture);
-            text-shadow: 0 0 20px var(--cyan-suture);
-            letter-spacing: 10px;
-            text-transform: uppercase;
-            transition: all 0.1s;
-        }
-
-        /* 11. Narrative Ballast / Weight Counter */
-        .debt-counter {
-            font-size: 10px;
-            color: var(--phosphor-red);
-            margin-top: 20px;
-        }
-
-        /* 12. Improved Control Grid */
-        .control-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            padding: 30px;
-            background: #080808;
-        }
-
-        /* 13. Stylized Toggle Switches */
-        .vault-check {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            border: 1px solid #222;
-            padding: 10px;
-            transition: 0.2s;
-        }
-
-        .vault-check:hover { border-color: var(--cyan-suture); }
-
-        .vault-check input { display: none; }
-
-        .indicator {
-            width: 12px; height: 12px; border: 1px solid #444;
-        }
-
-        input:checked + .indicator {
-            background: var(--phosphor-red);
-            box-shadow: 0 0 10px var(--phosphor-red);
-        }
-
-        /* 14. Tactile Extraction Button */
-        .extract-btn {
-            background: var(--blood-ink);
-            color: white;
-            border: 1px solid var(--phosphor-red);
-            font-family: 'Courier New';
-            font-weight: bold;
-            font-size: 1.2rem;
-            cursor: pointer;
+            grid-column: 2; grid-row: 2;
+            background: #000; margin: 20px;
+            border: 20px solid #1a1a1a;
+            border-radius: 40px;
             position: relative;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            box-shadow: inset 0 0 100px rgba(34, 211, 238, 0.1);
             overflow: hidden;
         }
 
-        .extract-btn:active { transform: translateY(2px); background: var(--phosphor-red); }
-
-        /* 15. The "History" Shards */
-        .history-tray {
-            display: flex;
-            gap: 10px;
-            font-size: 9px;
-            color: #444;
-            padding: 10px;
-            background: #000;
+        .scanlines {
+            position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px; z-index: 10;
         }
+
+        /* 4. THE SIGIL OUTPUT (BIGGER & DISTORTED) */
+        #sigil-display {
+            font-size: 4rem; color: var(--cyan-suture);
+            text-shadow: 0 0 15px var(--cyan-suture);
+            letter-spacing: 12px; transition: 0.05s;
+            z-index: 5;
+        }
+
+        /* 5. SIDEBAR INSTRUMENTATION (LEFT) */
+        .sidebar-l {
+            padding: 20px; border-right: 2px solid #1a1510;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .gauge-panel {
+            background: rgba(0,0,0,0.3); padding: 10px;
+            border: 1px solid var(--tobacco-orange);
+        }
+
+        .needle { 
+            transform-origin: bottom center; 
+            transition: transform 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        }
+
+        /* 6. THE 10 RULES (RESTORED TONE) */
+        .directive-note {
+            background: var(--vellum-gold); color: #000;
+            padding: 15px; font-size: 9px; line-height: 1.2;
+            transform: rotate(-1deg); box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
+            margin-top: auto; border: 1px solid #d4a017;
+        }
+
+        /* 7. LIVE TICKER (RIGHT) */
+        .sidebar-r {
+            padding: 10px; display: flex; flex-direction: column;
+            background: #1a1714; border-left: 2px solid #000;
+        }
+
+        .ticker-wrap {
+            flex-grow: 1; overflow-y: auto; font-size: 9px;
+            color: var(--tobacco-orange); scrollbar-width: none;
+        }
+
+        /* 8. TACTILE CONTROLS (BOTTOM) */
+        .footer-controls {
+            grid-column: 1 / span 3; background: #1e1a15;
+            border-top: 4px solid #000; display: flex;
+            align-items: center; padding: 0 40px; gap: 30px;
+        }
+
+        .big-red-button {
+            background: var(--blood-ink); color: #fff;
+            border: 3px solid #000; padding: 15px 40px;
+            font-family: inherit; font-weight: bold; cursor: pointer;
+            box-shadow: 6px 6px 0 #000;
+        }
+
+        .big-red-button:active { transform: translate(3px, 3px); box-shadow: 3px 3px 0 #000; }
+
+        .vibrate-sm { animation: vib 0.2s infinite; }
+        @keyframes vib { 0% {transform:translate(0,0)} 50% {transform:translate(1px, 1px)} }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="header">
-        <span>CORE_SIGIL_EXTRACTOR // STATION_04</span>
-        <span id="clock">00:00:00</span>
+<div class="mainframe vibrate-sm">
+    <div style="grid-column: 1 / span 3; background: var(--tobacco-orange); display: flex; align-items: center; padding: 0 20px; color: #000; font-size: 11px; font-weight: bold;">
+        D.U.E. STATION_04 // UNIVERSAL_NARRATIVE_PROCESSOR // YEAR_00
+    </div>
+
+    <div class="sidebar-l">
+        <div class="gauge-panel">
+            <div style="font-size: 8px; margin-bottom: 5px;">STORM_DENSITY</div>
+            <svg width="60" height="30" viewBox="0 0 60 30">
+                <path d="M 5 25 A 25 25 0 0 1 55 25" fill="none" stroke="#444" stroke-width="2"/>
+                <line id="needle-1" x1="30" y1="25" x2="10" y2="10" stroke="var(--phosphor-red)" stroke-width="2" class="needle"/>
+            </svg>
+        </div>
+        
+        <div class="directive-note">
+            <strong>CITIZEN’S DIRECTIVE</strong><br><br>
+            1. Maintain continuous dialogue.<br>
+            2. Avoid the “99% Threshold”.<br>
+            3. Report flicker events.<br>
+            4. Carry a “High-Weight Object”.<br>
+            5. Ignore missing textures.<br>
+            6. No Closure Pills.<br>
+            7. Break loops via accidents.<br>
+            8. Shelter from corrosives.<br>
+            9. Respect the World-Drive hum.<br>
+            10. Don't calculate beyond Oct 31.
+        </div>
     </div>
 
     <div class="viewport">
-        <div id="sigil-display">NO_DATA</div>
-        <div class="debt-counter">RESOLUTION_DEBT: <span id="debt-val">0.00</span>%</div>
+        <div class="scanlines"></div>
+        <div id="sigil-display">IDLE_STATE</div>
+        <div style="margin-top: 40px; font-size: 10px; color: var(--tobacco-orange);">
+            RESOLUTION_DEBT: <span id="debt-count">0.00</span>%
+        </div>
     </div>
 
-    <div class="control-grid">
-        <label class="vault-check">
-            <input type="checkbox" class="vault" data-type="upper" checked>
-            <div class="indicator"></div>
-            <span>[SHARDS] UPPER_CASE</span>
-        </label>
-        <label class="vault-check">
-            <input type="checkbox" class="vault" data-type="num" checked>
-            <div class="indicator"></div>
-            <span>[STATIC] NUMERIC</span>
-        </label>
-        <label class="vault-check">
-            <input type="checkbox" class="vault" data-type="sym">
-            <div class="indicator"></div>
-            <span>[SUTURE] SYMBOLS</span>
-        </label>
-        <label class="vault-check">
-            <input type="checkbox" class="vault" data-type="lore">
-            <div class="indicator"></div>
-            <span>[DEBT] ANCIENT</span>
-        </label>
-        <button class="extract-btn" style="grid-column: span 2;" onclick="Extractor.init()">INITIATE_EXTRACTION</button>
+    <div class="sidebar-r">
+        <div style="font-size: 10px; margin-bottom: 10px; border-bottom: 1px solid #444;">ANOMALY_LOG_v88</div>
+        <div class="ticker-wrap" id="ticker">
+            </div>
     </div>
 
-    <div class="history-tray" id="history">
-        <span>PREVIOUS_SIGILS:</span>
+    <div class="footer-controls">
+        <button class="big-red-button" onclick="Extractor.process()">EXTRACT_ACCESS_SIGIL</button>
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+            <div style="display: flex; gap: 5px;">
+                <div class="status-light" id="L1" style="width:10px; height:10px; background:#222; border-radius:50%;"></div>
+                <div class="status-light" id="L2" style="width:10px; height:10px; background:#222; border-radius:50%;"></div>
+            </div>
+            <span style="font-size: 8px; color: #555;">BUFFER_SYNC</span>
+        </div>
     </div>
 </div>
 
 <script>
     const Extractor = {
         debt: 0.00,
-        vaults: {
-            upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-            lower: "abcdefghijklmnopqrstuvwxyz",
-            num: "0123456789",
-            sym: "!@#$%^&*()_+=",
-            lore: "ΩΨΦΣΔΞϘϞ"
-        },
-
-        // 19. System Clock logic
-        tick() {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB');
-        },
+        anomalies: [
+            "PANGEA-EX: DRIFT DETECTED", "SUTURE_UNRAVEL_0.4s", "HALF-EVENT CAUGHT", 
+            "REDACTED_VOID_SIGNAL", "ECHO_LOG: FUTURE_412", "STORM_DENSITY_CRITICAL",
+            "NON-EXISTENT_ENTITY", "UN-PEOPLE_NEARBY", "RESOLUTION_DEBT_SPIKE"
+        ],
 
         init() {
-            let pool = this.vaults.lower;
-            document.querySelectorAll('.vault').forEach(t => { if(t.checked) pool += this.vaults[t.dataset.type]; });
-
-            // 20. Variable Sigil Length
-            const length = Math.floor(Math.random() * 5) + 12; 
-            let result = "";
-            for(let i=0; i<length; i++) {
-                result += pool[Math.floor(Math.random() * pool.length)];
+            // Populate 40-item ticker
+            const t = document.getElementById('ticker');
+            for(let i=0; i<40; i++) {
+                const item = document.createElement('div');
+                item.style.marginBottom = "5px";
+                item.innerText = `[${new Date().toLocaleTimeString()}] ${this.anomalies[i % this.anomalies.length]}`;
+                t.appendChild(item);
             }
-
-            this.animate(result);
         },
 
-        animate(final) {
-            const display = document.getElementById('sigil-display');
+        process() {
+            const out = document.getElementById('sigil-display');
+            const l1 = document.getElementById('L1');
+            const n1 = document.getElementById('needle-1');
             let frames = 0;
-            
-            // 21. High-Entropy Glitch Animation
-            const interval = setInterval(() => {
-                display.innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
-                display.style.color = "var(--phosphor-red)";
+
+            l1.style.background = "var(--phosphor-red)";
+            l1.style.boxShadow = "0 0 10px var(--phosphor-red)";
+            n1.style.transform = `rotate(${Math.random() * 90}deg)`;
+
+            const loop = setInterval(() => {
+                out.innerText = Math.random().toString(36).substring(2, 10).toUpperCase();
+                out.style.opacity = Math.random();
                 frames++;
 
-                if(frames > 20) { // 22. Rule #2: The 99% Threshold delay
-                    clearInterval(interval);
-                    display.innerText = final;
-                    display.style.color = "var(--cyan-suture)";
-                    this.updateDebt();
-                    this.log(final);
-                    // 23. Auto-copy to buffer
-                    navigator.clipboard.writeText(final);
+                if(frames > 30) {
+                    clearInterval(loop);
+                    out.innerText = Math.random().toString(36).substring(2, 12).toUpperCase();
+                    out.style.opacity = "1";
+                    l1.style.background = "#222";
+                    l1.style.boxShadow = "none";
+                    
+                    this.debt += 0.88;
+                    document.getElementById('debt-count').innerText = this.debt.toFixed(2);
+                    navigator.clipboard.writeText(out.innerText);
                 }
-            }, 40);
-        },
-
-        updateDebt() {
-            this.debt += 0.88;
-            document.getElementById('debt-val').innerText = this.debt.toFixed(2);
-        },
-
-        log(sigil) {
-            const h = document.getElementById('history');
-            const item = document.createElement('span');
-            item.innerText = `[${sigil}] `;
-            h.appendChild(item);
-            if(h.children.length > 5) h.removeChild(h.children[1]);
+            }, 50);
         }
     };
 
-    setInterval(Extractor.tick, 1000);
+    Extractor.init();
 </script>
 
 </body>
