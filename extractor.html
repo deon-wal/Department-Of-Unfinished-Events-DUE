@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D.U.E. | SIGIL_EXTRACTOR</title>
+    <style>
+        :root {
+            --cyan-suture: #22d3ee;
+            --phosphor-red: #FF3131;
+            --terminal-green: #22c55e;
+            --void-black: #050505;
+            --obsidian: #020617;
+        }
+
+        body {
+            background-color: var(--void-black);
+            color: #cbd5e1;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* --- THE APP CHASSIS --- */
+        .sigil-app {
+            width: 380px;
+            background: var(--obsidian);
+            border: 2px solid #1e293b;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(34, 211, 238, 0.05);
+            position: relative;
+        }
+
+        .header {
+            background: #0f172a;
+            padding: 12px;
+            font-size: 10px;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- OUTPUT SECTION --- */
+        .display-area {
+            padding: 30px 20px;
+            background: radial-gradient(circle at center, #083344 0%, #020617 100%);
+            text-align: center;
+            position: relative;
+        }
+
+        #sigil-display {
+            font-size: 1.4rem;
+            min-height: 1.6rem;
+            word-break: break-all;
+            color: var(--terminal-green);
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .strength-meter {
+            height: 2px;
+            background: #111;
+            width: 100%;
+            position: relative;
+        }
+
+        #strength-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--cyan-suture);
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px var(--cyan-suture);
+        }
+
+        /* --- CONTROLS --- */
+        .controls {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            border-top: 1px solid #1e293b;
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .toggle-group input { display: none; }
+
+        .box {
+            width: 14px;
+            height: 14px;
+            border: 1px solid #444;
+            position: relative;
+        }
+
+        input:checked + .box {
+            background: var(--phosphor-red);
+            border-color: var(--phosphor-red);
+            box-shadow: 0 0 8px var(--phosphor-red);
+        }
+
+        label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; }
+
+        /* --- BUTTONS --- */
+        .actions {
+            padding: 15px;
+            background: #0f172a;
+        }
+
+        button {
+            width: 100%;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+
+        .primary-btn {
+            background: var(--cyan-suture);
+            color: #000;
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .primary-btn:hover { background: #fff; transform: scale(1.02); }
+
+        .secondary-btn {
+            background: transparent;
+            border: 1px solid #334155;
+            color: #64748b;
+            padding: 8px;
+        }
+
+        .secondary-btn:hover { border-color: var(--cyan-suture); color: #fff; }
+
+        /* --- CRT FX --- */
+        .scanlines {
+            position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sigil-app">
+    <div class="scanlines"></div>
+    
+    <div class="header">
+        <span>CORE_EXTRACTOR v1.0</span>
+        <span id="status" style="color: var(--terminal-green);">STATUS: STABLE</span>
+    </div>
+
+    <div class="display-area">
+        <div id="sigil-display">NO_DATA</div>
+        <div class="strength-meter">
+            <div id="strength-bar"></div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <label class="toggle-group">
+            <input type="checkbox" class="vault" data-type="upper" checked>
+            <div class="box"></div>
+            <span>Upper_Shards</span>
+        </label>
+        <label class="toggle-group">
+            <input type="checkbox" class="vault" data-type="num" checked>
+            <div class="box"></div>
+            <span>Static_Decay</span>
+        </label>
+        <label class="toggle-group">
+            <input type="checkbox" class="vault" data-type="sym" checked>
+            <div class="box"></div>
+            <span>Suture_Points</span>
+        </label>
+        <label class="toggle-group">
+            <input type="checkbox" class="vault" data-type="lore">
+            <div class="box"></div>
+            <span>Debt_Sigils</span>
+        </label>
+    </div>
+
+    <div class="actions">
+        <button class="primary-btn" onclick="Extractor.init()">Extract Sigil</button>
+        <button id="copy-btn" class="secondary-btn" onclick="Extractor.copy()">Transfer to Buffer</button>
+    </div>
+</div>
+
+<script>
+    const Extractor = {
+        vaults: {
+            upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+            lower: "abcdefghijklmnopqrstuvwxyz",
+            num: "0123456789",
+            sym: "!@#$%^&*()_+-=",
+            lore: "ΩΨΦΣΔΞϘ"
+        },
+
+        init() {
+            let pool = this.vaults.lower;
+            const toggles = document.querySelectorAll('.vault');
+            toggles.forEach(t => {
+                if(t.checked) pool += this.vaults[t.dataset.type];
+            });
+
+            const length = 16;
+            let sigil = "";
+            for(let i=0; i<length; i++) {
+                sigil += pool[Math.floor(Math.random() * pool.length)];
+            }
+
+            this.animate(sigil);
+        },
+
+        animate(final) {
+            const display = document.getElementById('sigil-display');
+            const bar = document.getElementById('strength-bar');
+            const status = document.getElementById('status');
+            let frame = 0;
+
+            status.innerText = "STATUS: EXTRACTING...";
+            status.style.color = "var(--phosphor-red)";
+            bar.style.width = "0%";
+
+            const interval = setInterval(() => {
+                display.innerText = Math.random().toString(36).substring(2, 10).toUpperCase();
+                frame++;
+
+                if(frame > 12) {
+                    clearInterval(interval);
+                    display.innerText = final;
+                    bar.style.width = "100%";
+                    status.innerText = "STATUS: STABLE";
+                    status.style.color = "var(--terminal-green)";
+                }
+            }, 50);
+        },
+
+        copy() {
+            const val = document.getElementById('sigil-display').innerText;
+            if(val === "NO_DATA") return;
+            
+            navigator.clipboard.writeText(val);
+            const btn = document.getElementById('copy-btn');
+            btn.innerText = "SHELTERED_IN_BUFFER";
+            setTimeout(() => btn.innerText = "Transfer to Buffer", 1500);
+        }
+    };
+</script>
+
+</body>
+</html>
