@@ -2,251 +2,441 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>D.U.E. // SIGIL_EXTRACTOR_STATION_04</title>
+    <title>D.U.E. // STATION 04 // ACCESS_SIGIL_PROCESSOR</title>
     <style>
         :root {
-            --tobacco: #704214; --ochre: #2a241a; --vellum: #f2e6d0;
-            --phosphor: #ff3131; --cyan: #22d3ee; --void: #050505;
-            --brass: #8a6d3b; --plastic-black: #121212;
+            --tobacco: #5c3a21; --ochre: #1f1b14; --vellum: #e8dcc4;
+            --phosphor: #ff2a2a; --cyan: #17b8d1; --void: #030303;
+            --brass: #8f7a36; --steel: #2c2f33; --warning: #ff9900;
         }
 
-        /* 1. CRT Screen Curvature & 2. Jitter Animation */
-        @keyframes jitter {
-            0% { transform: translate(0,0); } 10% { transform: translate(-1px, 1px); }
-            20% { transform: translate(1px, -1px); } 100% { transform: translate(0,0); }
+        /* --- 1. CRT BARREL DISTORTION & 2. PHOSPHOR BURN-IN --- */
+        @keyframes crt-flicker {
+            0% { opacity: 0.95; } 5% { opacity: 0.85; } 10% { opacity: 0.95; }
+            100% { opacity: 1; }
+        }
+        @keyframes text-glitch {
+            0% { transform: translate(0); } 20% { transform: translate(-2px, 1px); }
+            40% { transform: translate(2px, -1px); } 60% { transform: translate(-1px, 2px); }
+            80% { transform: translate(1px, -2px); } 100% { transform: translate(0); }
         }
 
-        body {
+        body, html {
+            margin: 0; padding: 0; width: 100vw; height: 100vh;
             background: #000; color: var(--vellum); font-family: 'Courier New', monospace;
-            height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center;
-            overflow: hidden; perspective: 1000px;
+            overflow: hidden; user-select: none;
         }
 
-        /* 3. The Physical "Console" Chassis */
-        .console-chassis {
-            width: 950px; height: 700px; background: var(--ochre);
-            border: 10px solid #1a1510; border-right: 15px solid #111; border-bottom: 20px solid #000;
-            display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 60px 1fr 180px;
-            box-shadow: 50px 50px 100px #000; position: relative;
-            transform: rotateX(5deg); /* 4. 3D Tilt */
+        /* --- 3. THE BOOT OVERLAY --- */
+        #boot-screen {
+            position: absolute; inset: 0; background: #000; z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            color: var(--phosphor); font-size: 2rem; font-weight: bold; cursor: pointer;
+            text-shadow: 0 0 20px var(--phosphor); letter-spacing: 5px;
         }
 
-        /* 5. Dust & Scratches Overlay */
-        .console-chassis::before {
-            content: ""; position: absolute; inset: 0; opacity: 0.05; pointer-events: none;
-            background-image: url('https://www.transparenttextures.com/patterns/stardust.png'); z-index: 100;
+        /* --- 4. MASSIVE INDUSTRIAL CHASSIS --- */
+        .chassis {
+            width: 100%; height: 100%; display: grid;
+            grid-template-columns: 350px 1fr 350px; grid-template-rows: 50px 1fr 250px;
+            background: var(--ochre); border: 15px solid #111; box-sizing: border-box;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.5" stitchTiles="stitch"/></filter><rect width="200" height="200" filter="url(%23n)" opacity="0.04"/></svg>');
         }
 
-        /* 6. Heavy Dymo Tape Labels */
-        .dymo-label {
-            background: #003366; color: white; padding: 2px 10px; font-weight: bold;
-            font-size: 10px; border-radius: 2px; box-shadow: 1px 1px 3px #000;
-            text-transform: uppercase; letter-spacing: 1px;
+        /* --- 5. REDACTED HEADER TAPE --- */
+        .header {
+            grid-column: 1 / -1; background: var(--tobacco); display: flex;
+            align-items: center; justify-content: space-between; padding: 0 30px;
+            border-bottom: 5px solid #0a0a0a; box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+        }
+        .redacted-tape { background: #000; color: #000; padding: 0 10px; }
+        .redacted-tape:hover { color: #333; }
+
+        /* --- 6. CURVED MONITOR WELL --- */
+        .monitor-well {
+            grid-column: 2; grid-row: 2; margin: 20px; background: #080808;
+            border-radius: 40px; border: 25px solid var(--steel);
+            box-shadow: inset 0 0 100px #000, 0 10px 30px #000;
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+            animation: crt-flicker 0.1s infinite;
+        }
+        .scanlines {
+            position: absolute; inset: 0; pointer-events: none; z-index: 10;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px;
+        }
+        .vignette {
+            position: absolute; inset: 0; pointer-events: none; z-index: 11;
+            background: radial-gradient(circle, transparent 50%, #000 150%);
         }
 
-        /* 7. The CRT Monitor Shroud */
-        .crt-shroud {
-            grid-column: 2; grid-row: 2; background: #111; margin: 15px;
-            border-radius: 50px; border: 20px solid var(--plastic-black);
-            position: relative; overflow: hidden; box-shadow: inset 0 0 80px #000;
+        /* --- 7. GREASE PENCIL MARKS --- */
+        .grease-pencil {
+            position: absolute; top: 10px; right: 20px; color: rgba(255,255,255,0.1);
+            font-family: 'Brush Script MT', cursive; font-size: 1.5rem; transform: rotate(5deg);
         }
 
-        /* 8. Scanlines & 9. Screen Flicker */
-        .crt-shroud::after {
-            content: ""; position: absolute; inset: 0; pointer-events: none;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px; z-index: 50; animation: jitter 0.1s infinite;
+        /* --- 8. CENTRAL DATA DISPLAY --- */
+        .sigil-output {
+            margin: auto; text-align: center; position: relative; z-index: 5;
+        }
+        #sigil-text {
+            font-size: 5vw; font-weight: 900; color: var(--cyan);
+            text-shadow: 0 0 25px var(--cyan), 0 0 5px #fff; letter-spacing: 10px;
+            word-break: break-all; padding: 0 40px;
+        }
+        /* --- 9. COPY CONFIRMATION STAMP --- */
+        #stamp {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg) scale(2);
+            color: var(--phosphor); border: 5px solid var(--phosphor); padding: 10px 20px;
+            font-size: 3rem; font-weight: 900; opacity: 0; pointer-events: none; transition: 0.2s;
         }
 
-        /* 10. Large Data Output */
-        #sigil-display {
-            font-size: 4.5rem; color: var(--cyan); text-shadow: 0 0 20px var(--cyan);
-            text-align: center; margin-top: 100px; font-weight: 900;
+        /* --- 10. ENTROPY / WORLD-DRIVE RPM --- */
+        .entropy-bar-container {
+            width: 80%; height: 10px; border: 2px solid #333; margin: 20px auto; position: relative;
+        }
+        #entropy-fill { height: 100%; background: var(--warning); width: 0%; transition: 0.1s; }
+        .entropy-label { font-size: 10px; color: #666; text-align: center; }
+
+        /* --- 11. LEFT PANEL: LORE & RULES --- */
+        .panel-l { padding: 30px; border-right: 4px solid #000; display: flex; flex-direction: column; gap: 20px; }
+        .directive {
+            background: var(--vellum); color: #111; padding: 15px; font-size: 11px;
+            transform: rotate(-1.5deg); box-shadow: 5px 5px 0 rgba(0,0,0,0.5); border: 1px solid #888;
         }
 
-        /* 11. Oscilloscope Visualizer */
-        .oscilloscope {
-            width: 100%; height: 60px; border-top: 1px solid #222; margin-top: auto;
-            background: rgba(0, 50, 0, 0.2); position: relative;
+        /* --- 12. HEAVY ROCKER SWITCHES --- */
+        .rocker-group { display: flex; flex-direction: column; gap: 15px; }
+        .rocker {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 11px; border-bottom: 1px solid #333; padding-bottom: 5px;
+        }
+        .rocker input { display: none; }
+        .rocker-btn {
+            width: 40px; height: 20px; background: #111; border: 2px solid var(--brass);
+            position: relative; cursor: pointer; box-shadow: inset 0 5px 5px #000;
+        }
+        .rocker input:checked + .rocker-btn::after {
+            content: ""; position: absolute; right: 0; width: 20px; height: 100%;
+            background: var(--phosphor); box-shadow: 0 0 10px var(--phosphor);
         }
 
-        /* 12. Left Sidebar Control Panel */
-        .panel-l {
-            grid-row: 2; padding: 20px; border-right: 4px solid #111;
-            display: flex; flex-direction: column; gap: 15px;
+        /* --- 13. RIGHT PANEL: DIAGNOSTICS & RADAR --- */
+        .panel-r { padding: 30px; border-left: 4px solid #000; background: #120e0a; display: flex; flex-direction: column; }
+        
+        /* --- 14. WIREFRAME DRIFT RADAR --- */
+        .radar {
+            width: 100%; height: 120px; border: 1px solid var(--cyan); margin-bottom: 20px;
+            position: relative; overflow: hidden; background: rgba(0, 50, 50, 0.1);
+        }
+        .radar-sweep {
+            position: absolute; top: 50%; left: 50%; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan));
+            transform-origin: left center; animation: spin 4s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- 15. SHIFT REGISTER VISUALIZER --- */
+        .shift-register { font-size: 9px; color: #555; height: 100px; overflow: hidden; line-height: 1.2; }
+
+        /* --- 16. BOTTOM DECK: TACTILE CONTROLS --- */
+        .deck {
+            grid-column: 1 / -1; background: #1a1a1a; border-top: 10px solid #050505;
+            display: flex; justify-content: space-between; align-items: center; padding: 0 50px;
+            box-shadow: inset 0 20px 20px -20px #000;
         }
 
-        /* 13. Functional Toggles */
-        .toggle-switch {
-            display: flex; align-items: center; gap: 10px; cursor: pointer;
-            padding: 5px; border: 1px solid transparent;
-        }
-        .toggle-switch:hover { border-color: var(--tobacco); }
+        /* --- 17. OCT 31 DIAL (LENGTH CONTROLLER) --- */
+        .dial-container { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        input[type=range] { width: 150px; accent-color: var(--brass); cursor: pointer; }
 
-        /* 14. Heavy Brass Toggle Look */
-        .toggle-switch input { display: none; }
-        .switch-visual {
-            width: 30px; height: 15px; background: #000; border: 1px solid var(--brass);
-            position: relative;
+        /* --- 18. THE HEAVY EXTRACTION LEVER --- */
+        .lever {
+            background: #500; color: #fff; border: 4px solid #000; padding: 20px 50px;
+            font-family: inherit; font-size: 1.5rem; font-weight: 900; cursor: pointer;
+            box-shadow: 0 10px 0 #200, 0 15px 20px #000; border-radius: 5px; transition: 0.1s;
         }
-        input:checked + .switch-visual::after { content: ""; position: absolute; left: 15px; width: 13px; height: 13px; background: var(--phosphor); }
+        .lever:active { transform: translateY(10px); box-shadow: 0 0 0 #000; background: var(--phosphor); }
+        .lever:disabled { background: #333; color: #555; box-shadow: 0 5px 0 #111; transform: translateY(5px); cursor: not-allowed; }
 
-        /* 15. The "Big Red Button" Lever Chassis */
-        .button-bay {
-            grid-column: 1 / span 2; grid-row: 3; background: #1a1a1a;
-            border-top: 8px solid #000; display: flex; align-items: center;
-            padding: 0 40px; gap: 50px;
+        /* --- 19. PRINT TO VELLUM (EXPORT) --- */
+        .print-btn {
+            background: #222; color: var(--vellum); border: 2px solid var(--brass);
+            padding: 10px 20px; font-family: inherit; cursor: pointer;
         }
+        .print-btn:hover { background: var(--brass); color: #000; }
 
-        /* 16. THE ACTION BUTTON (LEVER) */
-        .extraction-lever {
-            width: 180px; height: 80px; background: var(--blood-ink);
-            border: 4px solid #000; border-radius: 10px; color: white;
-            font-family: 'Courier New'; font-weight: bold; cursor: pointer;
-            box-shadow: 0 8px 0 #400, 0 15px 20px #000; transition: 0.1s;
-        }
-        .extraction-lever:active { transform: translateY(8px); box-shadow: 0 0 0 #000; background: var(--phosphor); }
+        /* --- 20. LED STATUS MATRIX --- */
+        .led-matrix { display: grid; grid-template-columns: repeat(4, 15px); gap: 5px; }
+        .led { width: 15px; height: 15px; border-radius: 50%; background: #200; border: 1px solid #000; }
+        .led.active { background: var(--phosphor); box-shadow: 0 0 10px var(--phosphor); }
 
-        /* 17. The 10 Rules Directive (Vellum Note) */
-        .directive-note {
-            background: var(--vellum); color: #222; padding: 10px;
-            font-size: 8.5px; line-height: 1.1; transform: rotate(-1.5deg);
-            border: 1px solid #aaa; box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
-        }
-
-        /* 18. Anomaly Log (Bottom Right) */
-        #log-feed {
-            width: 250px; height: 100px; background: #080808; border: 1px solid #333;
-            font-size: 9px; padding: 5px; overflow: hidden; color: var(--tobacco);
-        }
-
-        /* 19. Warning Lights */
-        .warning-light {
-            width: 20px; height: 20px; border-radius: 50%; background: #200;
-            border: 2px solid #000;
-        }
-        .warning-light.active { background: var(--phosphor); box-shadow: 0 0 15px var(--phosphor); }
+        /* --- 21. HIGH-WEIGHT ANCHOR LOCK --- */
+        .anchor-lock { display: flex; align-items: center; gap: 10px; font-size: 10px; color: var(--warning); border: 1px solid var(--warning); padding: 5px;}
+        .anchor-lock input { cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="console-chassis">
-    <div style="grid-column: 1 / span 2; display: flex; align-items: center; padding-left: 20px;">
-        <span class="dymo-label">STATION_04 // ACCESS_SIGIL_PROCESSOR</span>
-        <span style="margin-left: auto; margin-right: 20px; font-size: 10px; opacity: 0.4;">STABILITY: 0.88 // YEAR_00</span>
+<div id="boot-screen" onclick="System.boot()">
+    [ CLICK TO ENGAGE WORLD-DRIVE ]
+</div>
+
+<div class="chassis">
+    <div class="header">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <svg width="30" height="30" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="var(--vellum)" stroke-width="4"/>
+                <path d="M50 5 L50 95 M5 50 L95 50" stroke="var(--vellum)" stroke-width="2"/>
+                <circle cx="50" cy="50" r="20" fill="none" stroke="var(--phosphor)" stroke-width="4"/>
+            </svg>
+            <span>DEPARTMENT OF UNFINISHED EVENTS // <span class="redacted-tape">STATION 04</span></span>
+        </div>
+        <span id="sys-clock">OCT 31, 00:00:00</span>
     </div>
 
     <div class="panel-l">
-        <div class="directive-note">
-            <strong>DIRECTIVE_10:</strong><br>
-            1. Dialogue continuous.<br>
-            2. 99% Threshold caution.<br>
-            3. No Closure Pills.<br>
-            4. High-Weight Object req.<br>
-            5. Oct 31 Limit.
+        <div class="directive">
+            <strong>CITIZEN’S DIRECTIVE:</strong><br><hr style="border-color:#aaa">
+            1. Dialogue continuous. Silence invites Un-People.<br>
+            2. Avoid 99% Threshold.<br>
+            3. Ignore missing textures.<br>
+            4. Shelter from corrosives.<br>
+            <span style="color:red; font-weight:bold;">5. RESPECT YEAR 00.</span>
         </div>
 
-        <label class="toggle-switch">
-            <input type="checkbox" id="upper-shards" checked>
-            <div class="switch-visual"></div>
-            <span style="font-size: 9px;">UPPER_SHARDS</span>
-        </label>
-        <label class="toggle-switch">
-            <input type="checkbox" id="static-decay" checked>
-            <div class="switch-visual"></div>
-            <span style="font-size: 9px;">STATIC_DECAY</span>
-        </label>
-        <label class="toggle-switch">
-            <input type="checkbox" id="debt-sigils">
-            <div class="switch-visual"></div>
-            <span style="font-size: 9px;">DEBT_SIGILS</span>
-        </label>
+        <div class="rocker-group">
+            <label class="rocker">UPPER_SHARDS 
+                <input type="checkbox" id="t-upper" checked><div class="rocker-btn"></div>
+            </label>
+            <label class="rocker">STATIC_DECAY 
+                <input type="checkbox" id="t-num" checked><div class="rocker-btn"></div>
+            </label>
+            <label class="rocker">SUTURE_POINTS 
+                <input type="checkbox" id="t-sym" checked><div class="rocker-btn"></div>
+            </label>
+            <label class="rocker">LORE_FRAGMENTS 
+                <input type="checkbox" id="t-lore"><div class="rocker-btn"></div>
+            </label>
+        </div>
 
-        <div style="margin-top: auto; border-top: 1px solid #333; padding-top: 10px;">
-            <div style="font-size: 8px;">VOID_PRESSURE</div>
-            <svg width="100%" height="40" viewBox="0 0 100 40">
-                <path d="M 10 35 A 40 40 0 0 1 90 35" fill="none" stroke="#333" stroke-width="3"/>
-                <line id="needle" x1="50" y1="35" x2="20" y2="10" stroke="var(--phosphor)" stroke-width="2" style="transition: 0.5s;"/>
-            </svg>
+        <button style="margin-top:auto; background:none; border:1px dashed #444; color:#444; cursor:pointer;" onclick="System.closurePill()">CONSUME_CLOSURE_PILL (CLEAR DEBT)</button>
+    </div>
+
+    <div class="monitor-well" id="crt">
+        <div class="scanlines"></div>
+        <div class="vignette"></div>
+        <div class="grease-pencil">DO NOT TOUCH! - D.</div>
+
+        <div class="sigil-output">
+            <div id="stamp">SHELTERED</div>
+            <div id="sigil-text">AWAITING_ENTROPY</div>
+        </div>
+
+        <div style="position:absolute; bottom:20px; width:100%;">
+            <div class="entropy-label">NARRATIVE BALLAST (MOUSE MOVEMENT REQ.)</div>
+            <div class="entropy-bar-container"><div id="entropy-fill"></div></div>
+            <div style="text-align:center; font-size:12px; color:var(--phosphor); margin-top:10px;">
+                RESOLUTION DEBT: <span id="debt-val">0.00</span>%
+            </div>
         </div>
     </div>
 
-    <div class="crt-shroud">
-        <div style="position: absolute; top: 20px; left: 30px; font-size: 10px; color: var(--phosphor);">
-            RES_DEBT: <span id="debt-val">0.00</span>%
-        </div>
+    <div class="panel-r">
+        <div style="font-size:10px; margin-bottom:5px;">VOID_DRIFT_RADAR</div>
+        <div class="radar"><div class="radar-sweep"></div></div>
         
-        <div id="sigil-display">--IDLE--</div>
-        
-        <div class="oscilloscope">
-            <svg id="wave" width="100%" height="60" preserveAspectRatio="none">
-                <path d="M0 30 Q 50 10 100 30 T 200 30" fill="none" stroke="var(--cyan)" stroke-width="1" opacity="0.5"/>
-            </svg>
-        </div>
+        <div style="font-size:10px; margin-bottom:5px;">SHIFT_REGISTER</div>
+        <div class="shift-register" id="hex-log"></div>
     </div>
 
-    <div class="button-bay">
-        <button class="extraction-lever" onclick="Extractor.init()">
-            INITIATE_EXTRACTION
+    <div class="deck">
+        <div class="dial-container">
+            <span style="font-size:10px;">NARRATIVE_LENGTH: <span id="len-val">16</span></span>
+            <input type="range" id="sigil-len" min="12" max="32" value="16" oninput="System.updateLen(this.value)">
+            <label class="anchor-lock">
+                <input type="checkbox" id="anchor"> ENGAGE GRAVITY ANCHOR
+            </label>
+        </div>
+
+        <button class="lever" id="extract-btn" disabled onclick="System.extract()">
+            EXTRACT_SIGIL
         </button>
 
-        <div style="display: flex; gap: 10px;">
-            <div id="w-light" class="warning-light"></div>
-            <span style="font-size: 9px; align-self: center;">SYNC_ERR</span>
-        </div>
-
-        <div id="log-feed">
-            [00:00:00] STANDBY...<br>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:15px;">
+            <div class="led-matrix">
+                <div class="led" id="led1"></div><div class="led" id="led2"></div>
+                <div class="led" id="led3"></div><div class="led" id="led4"></div>
+            </div>
+            <button class="print-btn" onclick="System.printVellum()">PRINT_RECEIPT.TXT</button>
         </div>
     </div>
 </div>
 
 <script>
-    const Extractor = {
-        debt: 0.00,
-        // 27. Core Extraction Logic
-        init() {
-            const btn = document.querySelector('.extraction-lever');
-            const light = document.getElementById('w-light');
-            const needle = document.getElementById('needle');
-            const out = document.getElementById('sigil-display');
-            
-            // 28. Visual Kickback
-            light.classList.add('active');
-            needle.style.transform = `rotate(${Math.random() * 140}deg)`;
-            
-            let frame = 0;
-            const chars = "ABCDEFGHIJKLMN0123456789!@#$%^&*";
-            
-            // 29. Glitch Interval
-            const glitcher = setInterval(() => {
-                let temp = "";
-                for(let i=0; i<10; i++) temp += chars[Math.floor(Math.random()*chars.length)];
-                out.innerText = temp;
-                out.style.color = (frame % 2) ? "var(--phosphor)" : "var(--cyan)";
-                frame++;
-
-                if(frame > 25) {
-                    clearInterval(glitcher);
-                    this.complete(out, light);
-                }
-            }, 50);
+    const System = {
+        booted: false, audioCtx: null, humOsc: null,
+        entropy: 0, debt: 0, lastSigil: "",
+        
+        vaults: {
+            upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ", lower: "abcdefghijklmnopqrstuvwxyz",
+            num: "0123456789", sym: "!@#$%^&*",
+            lore: "PGEA_SUTR_HALF_VOID_DUE" // Lore Fragments
         },
 
-        complete(out, light) {
-            // 30. Auto-Copy & Narrative Log
-            const finalSigil = Math.random().toString(36).substring(2, 12).toUpperCase();
-            out.innerText = finalSigil;
-            out.style.color = "var(--cyan)";
-            light.classList.remove('active');
+        // --- 28. WEB AUDIO API INTEGRATION (Hum & Clicks) ---
+        boot() {
+            document.getElementById('boot-screen').style.display = 'none';
+            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             
-            navigator.clipboard.writeText(finalSigil);
+            // Background World-Drive Hum
+            this.humOsc = this.audioCtx.createOscillator();
+            const gainNode = this.audioCtx.createGain();
+            this.humOsc.type = 'sine';
+            this.humOsc.frequency.setValueAtTime(50, this.audioCtx.currentTime); // Low 50Hz hum
+            gainNode.gain.setValueAtTime(0.1, this.audioCtx.currentTime);
+            this.humOsc.connect(gainNode);
+            gainNode.connect(this.audioCtx.destination);
+            this.humOsc.start();
+            this.booted = true;
+
+            // Start passive systems
+            setInterval(() => this.glitchClock(), 1000);
+            setInterval(() => this.populateHex(), 100);
             
-            this.debt += 0.88;
-            document.getElementById('debt-val').innerText = this.debt.toFixed(2);
+            // Entropy Gathering
+            document.addEventListener('mousemove', (e) => this.gatherEntropy(e));
+        },
+
+        playClick() {
+            if(!this.audioCtx) return;
+            const osc = this.audioCtx.createOscillator();
+            const gain = this.audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(150, this.audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(40, this.audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, this.audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(this.audioCtx.destination);
+            osc.start(); osc.stop(this.audioCtx.currentTime + 0.1);
+        },
+
+        // --- 29. ENTROPY GATHERING SYSTEM ---
+        gatherEntropy(e) {
+            if(this.entropy >= 100) return;
+            this.entropy += (Math.abs(e.movementX) + Math.abs(e.movementY)) * 0.05;
+            if(this.entropy > 100) this.entropy = 100;
             
-            const log = document.getElementById('log-feed');
-            log.innerHTML = `[${new Date().toLocaleTimeString()}] SIGIL_SHELTERED: ${finalSigil}<br>` + log.innerHTML;
+            document.getElementById('entropy-fill').style.width = `${this.entropy}%`;
+            
+            // World-Drive RPM tied to mouse
+            if(this.humOsc) this.humOsc.frequency.setValueAtTime(50 + (this.entropy/2), this.audioCtx.currentTime);
+
+            if(this.entropy >= 100) {
+                document.getElementById('extract-btn').disabled = false;
+                document.getElementById('sigil-text').innerText = "BALLAST_ACHIEVED";
+                document.getElementById('sigil-text').style.color = "var(--phosphor)";
+            }
+        },
+
+        updateLen(val) {
+            document.getElementById('len-val').innerText = val;
+            if(val == 32) document.getElementById('len-val').innerHTML = "<span style='color:red'>OCT 31 OVERRIDE</span>";
+        },
+
+        glitchClock() {
+            const time = new Date().toLocaleTimeString('en-GB');
+            const target = document.getElementById('sys-clock');
+            // Randomly glitch to Oct 31 Year 00
+            if(Math.random() > 0.9) { target.innerText = "OCT 31, 00:00:00"; target.style.color = "red"; }
+            else { target.innerText = `YEAR 00, ${time}`; target.style.color = "inherit"; }
+        },
+
+        populateHex() {
+            const hex = document.getElementById('hex-log');
+            let str = "";
+            for(let i=0; i<8; i++) str += Math.floor(Math.random()*16777215).toString(16) + " ";
+            hex.innerText = str + "\n" + hex.innerText.substring(0, 150);
+        },
+
+        // --- 30. EXTRACTION WITH HALF-EVENT FAILURE LOGIC ---
+        extract() {
+            if(this.entropy < 100) return;
+            
+            const isAnchored = document.getElementById('anchor').checked;
+            const crt = document.getElementById('crt');
+            if(!isAnchored) crt.style.animation = "text-glitch 0.1s infinite"; // Shake if not anchored
+
+            document.getElementById('extract-btn').disabled = true;
+            this.entropy = 0; document.getElementById('entropy-fill').style.width = "0%";
+            
+            let pool = this.vaults.lower;
+            if(document.getElementById('t-upper').checked) pool += this.vaults.upper;
+            if(document.getElementById('t-num').checked) pool += this.vaults.num;
+            if(document.getElementById('t-sym').checked) pool += this.vaults.sym;
+            if(document.getElementById('t-lore').checked) pool += this.vaults.lore;
+
+            const len = document.getElementById('sigil-len').value;
+            const out = document.getElementById('sigil-text');
+            let frames = 0;
+
+            const processLoop = setInterval(() => {
+                this.playClick();
+                // Random LED blinking
+                document.querySelectorAll('.led').forEach(l => l.classList.toggle('active', Math.random()>0.5));
+                
+                let temp = "";
+                for(let i=0; i<len; i++) temp += pool[Math.floor(Math.random()*pool.length)];
+                out.innerText = temp;
+
+                frames++;
+                if(frames > 30) {
+                    clearInterval(processLoop);
+                    crt.style.animation = "crt-flicker 0.1s infinite"; // Reset shake
+                    document.querySelectorAll('.led').forEach(l => l.classList.remove('active'));
+                    
+                    // 10% Chance of Half-Event Failure
+                    if(Math.random() > 0.9) {
+                        out.innerText = "HALF-EVENT_COLLAPSE";
+                        out.style.color = "red";
+                        this.debt += 5.0; // High penalty
+                        document.getElementById('extract-btn').disabled = false;
+                    } else {
+                        let final = "";
+                        for(let i=0; i<len; i++) final += pool[Math.floor(Math.random()*pool.length)];
+                        out.innerText = final;
+                        out.style.color = "var(--cyan)";
+                        this.lastSigil = final;
+                        
+                        // Resolution Debt
+                        this.debt += 1.12;
+                        if(this.debt > 50) crt.style.filter = `blur(${Math.random()*2}px) hue-rotate(90deg)`; // Debt Consequence
+
+                        // Auto Copy & Stamp
+                        navigator.clipboard.writeText(final);
+                        const stamp = document.getElementById('stamp');
+                        stamp.style.opacity = 1; stamp.style.transform = "translate(-50%, -50%) rotate(-15deg) scale(1)";
+                        setTimeout(() => { stamp.style.opacity = 0; stamp.style.transform = "translate(-50%, -50%) rotate(-15deg) scale(2)"; }, 1500);
+                    }
+                    document.getElementById('debt-val').innerText = this.debt.toFixed(2);
+                }
+            }, 60);
+        },
+
+        printVellum() {
+            if(!this.lastSigil) return;
+            const blob = new Blob([`DEPARTMENT OF UNFINISHED EVENTS\nSTATION 04 - OBS DECK\nYEAR 00\n\nEXTRACTED NARRATIVE SHARD:\n${this.lastSigil}\n\nRESOLUTION DEBT INCURRED: ${this.debt.toFixed(2)}%\nDO NOT LOSE THIS RECORD.`], {type: "text/plain"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url; a.download = "DUE_SIGIL_RECEIPT.txt";
+            a.click();
+        },
+
+        closurePill() {
+            alert("RULE 6 VIOLATION: CLOSURE PILLS PROHIBITED. EXISTENTIAL DREAD LOGGED.");
+            document.body.style.background = "red";
+            setTimeout(() => document.body.style.background = "#000", 500);
         }
     };
 </script>
