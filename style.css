@@ -568,3 +568,141 @@ body::before {
 #hero-parallax {
     transition: transform 0.08s ease-out;
 }
+
+/* ===============================
+   ZONE 4: OBSERVATION DECK (THE GOD-EYE)
+   =============================== */
+
+/* Visual Container */
+#godeye-visuals {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    overflow: visible;
+}
+
+/* Circular Balcony Overlay */
+#godeye-balcony {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 50%;
+    border-radius: 50%;
+    border: 2px solid rgba(34, 211, 238, 0.4);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+    backdrop-filter: blur(2px);
+}
+
+/* Red Error Triangle (Floating) */
+.clip-triangle {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    background: var(--phosphor-red);
+    animation: godeye-float-error 8s infinite alternate ease-in-out;
+    filter: drop-shadow(0 0 10px rgba(255, 49, 49, 0.5));
+}
+@keyframes godeye-float-error {
+    0% { transform: translateY(0px) scale(1); opacity: 0.1; }
+    50% { opacity: 0.3; }
+    100% { transform: translateY(-30px) scale(1.1); opacity: 0.05; }
+}
+
+/* Hourglass Icons (Floating in Sky) */
+.clip-hourglass {
+    position: absolute;
+    width: 24px;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(0,0,0,0.1));
+    clip-path: polygon(50% 0%, 100% 0%, 50% 100%, 0% 100%);
+    animation: godeye-float-hourglass 12s infinite alternate ease-in-out;
+}
+@keyframes godeye-float-hourglass {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-25px) rotate(15deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* Horizon Loading Bar (Sky Phenomenon) */
+#godeye-horizon-loading {
+    position: fixed;
+    top: 15vh;
+    left: 0;
+    height: 4px;
+    background: var(--phosphor-red);
+    z-index: 40;
+    opacity: 0.3;
+    box-shadow: 0 0 20px var(--phosphor-red);
+    animation: godeye-horizon-load 12s infinite ease-in-out;
+}
+@keyframes godeye-horizon-load {
+    0% { width: 0%; opacity: 0; }
+    10% { opacity: 0.3; }
+    80% { width: 85%; }
+    90% { width: 85%; opacity: 0.3; }
+    95% { width: 100%; opacity: 0.8; }
+    100% { width: 100%; opacity: 0; }
+}
+
+/* Doomsday Clock Needle (Twitch Animation) */
+.barometer-needle {
+    animation: godeye-needle-twitch 5s infinite;
+}
+@keyframes godeye-needle-twitch {
+    0% { transform: rotate(0deg); }
+    10% { transform: rotate(15deg); }
+    15% { transform: rotate(12deg); }
+    30% { transform: rotate(60deg); }
+    35% { transform: rotate(55deg); }
+    40% { transform: rotate(58deg); }
+    60% { transform: rotate(-10deg); }
+    70% { transform: rotate(5deg); }
+    90% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Processing Storm Mist Layer */
+#godeye-processing-storm {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+    opacity: 0.2;
+    background: radial-gradient(rgba(255,255,255,0.05), transparent 70%);
+    animation: godeye-mist-glow 20s ease-in-out infinite alternate;
+}
+@keyframes godeye-mist-glow {
+    0% { opacity: 0.15; }
+    50% { opacity: 0.25; }
+    100% { opacity: 0.2; }
+}
+
+/* Existential Vertigo / Blood-Ink Effect */
+.blood-ink-glitch:hover {
+    animation: godeye-blood-glitch 0.2s infinite;
+}
+@keyframes godeye-blood-glitch {
+    0% { text-shadow: 0 0 2px var(--blood-ink), 1px 1px 2px var(--phosphor-red); }
+    50% { text-shadow: 2px 0 var(--blood-ink), -2px 0 var(--phosphor-red); }
+    100% { text-shadow: 0 0 5px var(--blood-ink), 0 0 10px var(--phosphor-red); }
+}
+
+/* Matte Ceiling / Processing Icons Overlay */
+#godeye-sky-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(0,255,255,0.03),
+        rgba(0,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    mix-blend-mode: overlay;
+}
