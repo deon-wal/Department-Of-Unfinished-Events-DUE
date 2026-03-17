@@ -11,11 +11,12 @@
         :root {
             --brass: #c5a059;
             --brass-dim: #5c4a1e;
-            --paper: #f5f3eb;
+            --paper: #fdfcf8;
             --ink: #1a1a1a;
             --alert-red: #d9381e;
             --clinical-blue: #d1d9e0;
             --phosphor: #00ff41;
+            --surgical-teal: #14b8a6;
         }
 
         * { box-sizing: border-box; cursor: crosshair; }
@@ -32,46 +33,83 @@
         .clinical-void-board {
             background-color: var(--clinical-blue);
             background-image: 
-                radial-gradient(circle at center, rgba(255,255,255,0.9) 0%, transparent 100%),
+                radial-gradient(circle at center, rgba(255,255,255,0.95) 0%, transparent 100%),
                 url('https://www.transparenttextures.com/patterns/dark-wood.png');
             box-shadow: inset 0 0 300px rgba(255,255,255,1);
             position: relative;
-            border: 24px solid #91a2b5;
-            outline: 1px solid rgba(0,0,0,0.2);
-            animation: white-out-pulse 15s infinite ease-in-out;
-        }
-
-        @keyframes white-out-pulse {
-            0%, 100% { filter: brightness(1); }
-            50% { filter: brightness(1.1) contrast(0.9); }
+            border: 30px solid #91a2b5;
+            outline: 2px solid rgba(0,0,0,0.1);
+            perspective: 1200px;
         }
 
         /* TACTILE PAPER EFFECT */
         .torn-paper {
             background-color: var(--paper);
             background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-            box-shadow: 5px 15px 35px rgba(0,0,0,0.15), 0 0 40px rgba(255,255,255,0.4);
+            box-shadow: 2px 8px 25px rgba(0,0,0,0.1), 0 0 40px rgba(255,255,255,0.3);
             border-radius: 2px;
             position: relative;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease;
         }
-        .torn-paper:hover { transform: translateY(-5px) rotate(0deg) !important; z-index: 100 !important; }
+        .torn-paper:hover {
+            box-shadow: 15px 40px 70px rgba(0,0,0,0.25);
+            z-index: 200 !important;
+        }
 
         /* SURGICAL SUTURE PIN */
         .suture-pin {
             position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-            width: 20px; height: 20px;
+            width: 22px; height: 22px;
             background: radial-gradient(circle at 35% 35%, #f2d06b, #3d2e14);
             border-radius: 50%;
             box-shadow: -3px 5px 8px rgba(0,0,0,0.5), inset -1px 1px 2px rgba(255,255,255,0.4);
             z-index: 110;
-            transition: transform 0.1s;
         }
-        .torn-paper:hover .suture-pin { animation: pin-jiggle 0.3s infinite; }
-        @keyframes pin-jiggle {
-            0%, 100% { transform: translateX(-50%) rotate(0deg); }
-            25% { transform: translateX(-52%) rotate(-5deg); }
-            75% { transform: translateX(-48%) rotate(5deg); }
+
+        /* PROJECT FOLDER STYLING */
+        .project-folder {
+            border-left: 12px solid var(--surgical-teal);
+            padding: 30px;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .folder-tab {
+            position: absolute; top: -25px; left: 0;
+            background: var(--surgical-teal); color: white;
+            padding: 5px 25px; font-family: 'Space Mono';
+            font-size: 10px; font-weight: 900;
+            clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
+            box-shadow: 0 -5px 10px rgba(0,0,0,0.05);
+        }
+
+        /* OSCILLOSCOPE */
+        .oscilloscope {
+            width: 100%; height: 180px;
+            background: #020502;
+            border: 6px solid #1e2530;
+            border-radius: 8px;
+            position: relative; overflow: hidden;
+            box-shadow: inset 0 0 40px rgba(0, 255, 65, 0.3);
+        }
+        .screaming-pulse {
+            position: absolute; top: 50%; left: 0; width: 200%; height: 3px;
+            background: var(--phosphor);
+            box-shadow: 0 0 20px var(--phosphor);
+            animation: scream-wave 0.8s infinite linear;
+        }
+
+        /* INVESTIGATION LENS EFFECT */
+        #uv-lens {
+            position: fixed; width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 500;
+            mix-blend-mode: overlay;
+            display: none;
         }
 
         /* HANDWRITTEN ANNOTATIONS */
@@ -80,259 +118,257 @@
             color: var(--alert-red);
             font-size: 14px;
             pointer-events: none;
-            opacity: 0.8;
-            position: absolute;
+            opacity: 0.7;
         }
 
-        /* OSCILLOSCOPE ENHANCEMENTS */
-        .oscilloscope {
-            width: 100%; height: 240px;
-            background: #020502;
-            border: 10px solid #1e2530;
-            border-radius: 12px;
-            position: relative; overflow: hidden;
-            box-shadow: inset 0 0 60px rgba(0, 255, 65, 0.4), 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .screaming-pulse {
-            position: absolute; top: 50%; left: 0; width: 200%; height: 4px;
-            background: var(--phosphor);
-            box-shadow: 0 0 25px var(--phosphor), 0 0 5px #fff;
-            filter: blur(0.3px);
-            animation: scream-wave 1s infinite cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-
-        /* BUREAU ELEMENTS */
-        .bureau-stamp {
-            position: absolute; font-family: 'Space Mono'; font-weight: 900;
-            padding: 8px 20px; border: 5px double currentColor;
-            text-transform: uppercase; mix-blend-mode: multiply; opacity: 0.65;
-            pointer-events: none; letter-spacing: 2px; font-size: 14px;
-        }
-
-        /* DUST PARTICLES CANVAS */
+        /* DUST & SCROLLING */
         #dust-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 55; opacity: 0.4;
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 55; opacity: 0.3;
         }
 
-        /* POST-PROCESSING */
-        .film-overlay {
+        .film-grain {
             position: fixed; inset: 0;
             background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.1; pointer-events: none; z-index: 1000;
-        }
-        .white-out-vignette {
-            position: fixed; inset: 0;
-            background: radial-gradient(circle, transparent 20%, rgba(255,255,255,0.4) 100%);
-            pointer-events: none; z-index: 60;
+            opacity: 0.05; pointer-events: none; z-index: 1000;
         }
 
-        /* REDACTED HOVER */
         [data-redacted] {
-            background: #000; color: #000; transition: 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+            background: #000; color: #000; transition: 1.5s;
         }
-        [data-redacted]:hover { background: transparent; color: inherit; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        [data-redacted]:hover { background: transparent; color: inherit; }
 
         .brass-plaque {
             background: linear-gradient(135deg, #e2b04a 0%, #f2d06b 40%, #a67c00 100%);
             border: 2px solid #3d2e14;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .ash-pile {
-            background: radial-gradient(ellipse at center, #111 0%, #333 40%, transparent 85%);
-            filter: blur(8px); transform: scaleY(0.4);
+        .btn-protocol {
+            background: #1a1a1a; color: white;
+            padding: 12px 25px; font-family: 'Space Mono';
+            font-size: 11px; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 2px;
+            transition: 0.3s;
+            position: relative; overflow: hidden;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-protocol:hover { background: var(--surgical-teal); box-shadow: 0 0 20px var(--surgical-teal); color: white; }
+
+        .bureau-stamp {
+            position: absolute; font-family: 'Space Mono'; font-weight: 900;
+            padding: 10px 20px; border: 4px double currentColor;
+            text-transform: uppercase; mix-blend-mode: multiply; opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* NAVIGATION TABS ACTIVE STATE */
+        .nav-tab {
+            transition: 0.3s;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+        .nav-tab:hover {
+            background: rgba(255,255,255,0.05);
+            opacity: 1 !important;
+        }
+        .nav-tab.active {
+            background: var(--surgical-teal) !important;
+            color: white !important;
+            opacity: 1 !important;
+            font-weight: 900;
         }
     </style>
 </head>
-<body class="flex flex-col">
+<body class="flex flex-col bg-slate-200">
 
-    <div class="film-overlay"></div>
+    <div class="film-grain"></div>
+    <div id="uv-lens"></div>
     <div id="erasure-flash" class="fixed inset-0 bg-white z-[10000] pointer-events-none opacity-0"></div>
-    <div class="white-out-vignette"></div>
     <canvas id="dust-canvas"></canvas>
     
     <!-- BUREAU HEADER -->
-    <header class="bg-[#fcfcfc]/95 border-b-2 border-slate-300 relative z-50 backdrop-blur-xl px-12 py-8 flex justify-between items-center shadow-md">
+    <header class="bg-white/95 border-b-4 border-black relative z-[300] px-12 py-6 flex justify-between items-center shadow-xl">
         <div class="flex items-center gap-12">
-            <div class="font-black text-6xl tracking-tighter text-slate-900 group cursor-pointer">
+            <div class="font-black text-6xl tracking-tighter text-slate-900 leading-none">
                 D.U.E.
-                <span class="block text-[10px] tracking-[1em] opacity-30 group-hover:opacity-100 transition-opacity">EST. 1942</span>
+                <span class="block text-[9px] tracking-[1.2em] opacity-40 font-bold uppercase mt-2">Investigation // Station_04</span>
             </div>
-            <div class="text-[12px] opacity-80 leading-snug uppercase font-black border-l-4 border-red-600 pl-10 tracking-[0.2em]">
-                Station_04 // <span class="text-red-600 animate-pulse">Correction_Chambers</span><br>
-                Sub_Sector: THE_WHITE_OUT<br>
-                Index: Bible_Addendum_V6.1
+            <div class="h-16 w-px bg-slate-300"></div>
+            <div class="text-[12px] opacity-80 leading-tight uppercase font-black tracking-[0.2em]">
+                Zone: <span class="text-teal-600">CORRECTION_CHAMBERS</span><br>
+                Protocol: <span class="text-red-600 animate-pulse">WHITE_OUT</span><br>
+                User: <span class="text-slate-500">DEON_WAL // OMEGA</span>
             </div>
         </div>
         
         <div class="flex items-center gap-12">
-            <div class="flex flex-col items-end">
-                <span class="text-[10px] uppercase font-bold opacity-50 mb-2">Narrative Consistency</span>
-                <div id="dist-nixie" class="font-mono text-4xl font-black text-slate-800 tracking-tighter border-b-4 border-slate-200">99.982%</div>
+            <div class="bg-slate-100 p-4 border-2 border-slate-300 flex flex-col items-center justify-center group cursor-pointer hover:bg-teal-50 hover:border-teal-400 transition-colors">
+                <a href="extractor.html" class="flex flex-col items-center">
+                    <span class="text-[9px] uppercase font-black tracking-widest text-slate-400 group-hover:text-teal-600">System Tool</span>
+                    <span class="text-[12px] font-bold text-slate-900">EXTRACTOR.EXE</span>
+                </a>
             </div>
-            <div class="bg-white p-5 rounded-sm border-2 border-slate-300 flex items-center gap-6 shadow-inner">
-                <div class="flex flex-col">
-                    <span class="text-[11px] uppercase font-black tracking-widest text-slate-400">Clearance</span>
-                    <span class="text-[9px] font-bold text-red-600">LEVEL_OMEGA</span>
-                </div>
-                <input type="checkbox" id="clearance-toggle" class="w-8 h-8 accent-red-600 cursor-pointer transition-transform hover:scale-110">
+            <div class="flex flex-col items-end">
+                <span class="text-[10px] uppercase font-bold opacity-50 mb-1">Reality Consistency</span>
+                <div id="dist-nixie" class="font-mono text-4xl font-black text-slate-900 tracking-tighter border-b-2 border-slate-100">99.982%</div>
+            </div>
+            <div class="bg-slate-50 p-4 border-2 border-slate-200 flex items-center gap-4 shadow-sm">
+                <span class="text-[10px] uppercase font-black tracking-widest text-slate-400">Clearance</span>
+                <input type="checkbox" id="clearance-toggle" class="w-8 h-8 accent-red-600 cursor-pointer">
             </div>
         </div>
     </header>
 
-    <main id="main-scroll-container" class="relative z-20 overflow-y-auto pt-12">
+    <main id="main-scroll-container" class="relative z-20 overflow-y-auto pt-10">
         
         <!-- HERO TITLING -->
-        <section class="h-[35vh] flex flex-col items-center justify-center text-center relative mb-12">
-            <h1 class="text-[10rem] font-black tracking-[4rem] text-slate-900 opacity-10 mb-2 uppercase select-none">Zone 03</h1>
-            <div class="absolute flex flex-col items-center">
-                <p class="text-lg md:text-xl tracking-[1.5rem] text-slate-800 uppercase font-black bg-white/95 px-12 py-4 border-4 border-slate-900 shadow-[20px_20px_0_rgba(0,0,0,0.1)]">
-                    Correction Chambers
+        <section class="h-[25vh] flex flex-col items-center justify-center text-center relative mb-10">
+            <h1 class="text-[12rem] font-black tracking-[3rem] text-slate-900 opacity-5 mb-2 uppercase select-none absolute">Zone 3</h1>
+            <div class="relative">
+                <p class="text-xl md:text-2xl tracking-[1.2rem] text-slate-900 uppercase font-black bg-white/95 px-16 py-6 border-8 border-black shadow-[30px_30px_0_rgba(0,0,0,0.05)]">
+                    Evidence Atlas
                 </p>
-                <span class="annotation mt-4" style="transform: rotate(-5deg); left: 110%;">"The Point of No Return"</span>
+                <span class="annotation absolute -bottom-8 -right-12" style="transform: rotate(5deg);">"Decisions are permanent."</span>
             </div>
         </section>
 
         <!-- MAIN INVESTIGATION BOARD -->
-        <div class="w-full max-w-[1800px] mx-auto pb-64 px-12 relative z-20">
-            <div class="bg-[#fcfcfc] border-4 border-slate-400 shadow-[0_80px_150px_rgba(0,0,0,0.3)] overflow-hidden">
+        <div class="w-full max-w-[1900px] mx-auto pb-48 px-12 relative z-20">
+            <div class="bg-[#fcfcfc] border-8 border-black shadow-2xl overflow-hidden">
                 
-                <!-- NAVIGATION TABS -->
-                <nav class="flex border-b-2 border-slate-300 bg-slate-100/50">
-                    <a href="#" class="tab-btn px-16 py-10 border-r-2 border-slate-300 opacity-40 hover:opacity-100 transition-opacity">01. THE SPIRE</a>
-                    <a href="#" class="tab-btn px-16 py-10 border-r-2 border-slate-300 opacity-40 hover:opacity-100 transition-opacity">02. THE MARKET</a>
-                    <a href="#" class="tab-btn px-16 py-10 bg-white text-black font-black border-b-8 border-red-600 shadow-sm relative">
-                        03. CORRECTION
-                        <div class="w-2 h-2 rounded-full bg-red-600 absolute top-4 right-4"></div>
-                    </a>
-                    <a href="#" class="tab-btn px-16 py-10 border-r-2 border-slate-300 opacity-40 hover:opacity-100 transition-opacity">04. OBSERVATORY</a>
+                <!-- NAVIGATION TABS - WORKING LINKS TO YOUR FILES -->
+                <nav class="flex border-b-4 border-black bg-slate-900 text-white font-mono text-[11px] uppercase overflow-x-auto">
+                    <a href="index.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">01. Spire</a>
+                    <a href="zone2.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">02. Market</a>
+                    <a href="zone3.html" class="nav-tab px-10 py-8 active">03. Correction</a>
+                    <a href="zone4.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">04. Observatory</a>
+                    <a href="zone5.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">05. Sync</a>
+                    <a href="zone6.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100">06. Root</a>
                     <div class="flex-1 flex justify-end items-center px-12">
-                        <span class="text-[10px] font-black text-red-600/40 uppercase tracking-[0.5em]">Classified Document 74-A</span>
+                        <span class="font-black text-red-500 animate-pulse tracking-[0.4em]">STATION_04_ARCHIVE</span>
                     </div>
                 </nav>
 
                 <!-- THE BOARD -->
-                <div id="zone3-board" class="p-24 clinical-void-board min-h-[1800px]">
+                <div id="zone3-board" class="p-24 clinical-void-board grid grid-cols-12 gap-10 min-h-[2400px]">
                     
                     <!-- CENTRAL BIBLE OBJECT -->
-                    <div class="leather-book w-[480px] h-[700px] absolute top-20 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center justify-center p-16 text-center" style="transform: rotate(0.4deg);">
-                        <div class="brass-clasp absolute right-[-14px] top-[45%] w-[35px] h-[70px] rounded-r-lg"></div>
-                        <div class="w-36 h-36 mb-16 opacity-30">
-                            <svg viewBox="0 0 100 100" class="text-white fill-none stroke-current stroke-1">
-                                <circle cx="50" cy="50" r="48"/>
-                                <path d="M50 5 L53 47 L95 50 L53 53 L50 95 L47 53 L5 50 L47 47 Z" fill="rgba(255,255,255,0.2)"/>
-                            </svg>
+                    <div class="col-start-4 col-span-6 flex justify-center py-20 relative">
+                        <div class="bureau-stamp text-red-600 top-0 left-0 -rotate-12 border-red-600">Confidential</div>
+                        <div class="leather-book w-[500px] h-[750px] relative z-40 flex flex-col items-center justify-center p-16 text-center" style="transform: rotate(0.8deg);">
+                            <div class="brass-clasp absolute right-[-18px] top-[45%] w-[40px] h-[80px] rounded-r-lg"></div>
+                            <div class="w-40 h-40 mb-16 opacity-30 invert">
+                                <svg viewBox="0 0 100 100" class="text-white fill-none stroke-current stroke-1">
+                                    <circle cx="50" cy="50" r="48"/>
+                                    <path d="M50 5 L53 47 L95 50 L53 53 L50 95 L47 53 L5 50 L47 47 Z" fill="white"/>
+                                </svg>
+                            </div>
+                            <h2 class="font-serif text-[#d4af37] text-6xl font-black uppercase tracking-[0.1em] leading-tight text-shadow-xl">D.U.E.<br>BIBLE</h2>
+                            <div class="mt-16 w-full border-t border-[#d4af37]/30 pt-8">
+                                <span class="font-mono text-[14px] text-[#d4af37] tracking-[0.6em] uppercase font-bold">Volume_03: Correction</span>
+                            </div>
                         </div>
-                        <h2 class="font-serif text-[#d4af37] text-5xl font-black uppercase tracking-[0.25em] leading-tight text-shadow-lg">Department<br>of<br>Unfinished<br>Events</h2>
-                        <div class="mt-16 w-full border-t border-[#d4af37]/30 pt-8">
-                            <span class="font-mono text-[12px] text-[#d4af37] tracking-[0.5em] uppercase font-bold">Vol III: Visual Atlas</span>
-                        </div>
-                        <div class="bureau-stamp stamp-red top-12 left-12">RESTRICTED</div>
                     </div>
 
-                    <!-- CLINICAL REPORT (LEFT TOP) -->
-                    <div class="torn-paper absolute top-24 left-12 w-[550px] p-16 z-30 shadow-2xl" style="transform: rotate(-1deg);">
+                    <!-- CLINICAL REPORT (Left) -->
+                    <div class="col-span-4 torn-paper p-16 z-30" style="transform: rotate(-1.5deg);">
                         <div class="suture-pin"></div>
-                        <div class="bureau-stamp stamp-black bottom-12 right-12">LOGGED_S3</div>
-                        <span class="annotation" style="top: 20px; right: 20px;">"Crucial Reading"</span>
-                        <h4 class="font-black text-3xl uppercase tracking-tighter border-b-8 border-black/5 mb-8 pb-4">The Stance of Execution</h4>
+                        <h4 class="font-black text-3xl uppercase tracking-tighter border-b-8 border-black/5 mb-8 pb-4">The Theory</h4>
                         <p class="font-mono text-base font-bold text-black/80 leading-relaxed mb-10 italic">
-                            Zone 3 is where the metaphor of "fixing" reality dies. Here, we are surgeons cutting away the dead weight of <span data-redacted>failed human timelines</span>.
+                            Reality in Zone 3 is <span data-redacted>fluid but finite</span>. We are surgeons removing the weight of failed human timelines.
                         </p>
-                        <div class="bg-black text-white p-8 font-black text-2xl uppercase text-center mb-8 leading-tight shadow-xl border-l-[12px] border-red-600">
-                            "WE FORCE THE ENDING.<br>WE DO NOT FIX IT."
+                        <div class="bg-black text-white p-8 font-black text-2xl uppercase text-center mb-10 leading-tight border-l-[12px] border-teal-600">
+                            "WE FORCE THE ENDING."
                         </div>
-                        <p class="font-mono text-[11px] text-black/50 border-t border-black/10 pt-4">
-                            Authored by: Director V. Aldersyth // Note: Specialist Kael exhibits signs of sympathetic resonance. Monitor closely.
-                        </p>
+                        <span class="annotation">"Director Aldersyth's notes - 1982"</span>
                     </div>
 
-                    <!-- EVIDENCE PHOTO: THE RIFT -->
-                    <div class="evidence-photo w-[500px] absolute top-[48%] left-16 z-20" style="transform: rotate(-2deg);">
-                        <div class="suture-pin" style="left:30px;"></div>
-                        <div class="h-[400px] bg-black relative overflow-hidden border-b-4 border-slate-900">
-                            <canvas id="rift-canvas"></canvas>
-                            <div class="absolute top-4 left-4 font-mono text-[10px] text-white/40">SCAN_FEED_03.RAW</div>
-                        </div>
-                        <div class="evidence-caption mt-6 font-black text-xs">Fig 4.2: NARRATIVE SINGULARITY // ZONE 3 CORE</div>
-                    </div>
-
-                    <!-- SURGICAL NOTES (RIGHT TOP) -->
-                    <div class="torn-paper absolute top-32 right-12 w-[520px] p-16 z-30 bg-[#fbfbf9] shadow-2xl" style="transform: rotate(1.2deg);">
+                    <!-- PROJECT FOLDER 1 (Right) -->
+                    <div class="col-span-4 col-start-9 torn-paper project-folder z-30" style="transform: rotate(2deg);">
+                        <div class="folder-tab">FILE_001</div>
                         <div class="suture-pin"></div>
-                        <h4 class="font-black text-2xl uppercase tracking-[0.2em] border-b-4 border-red-600/20 mb-8 pb-2">Containment Protocols</h4>
-                        <ul class="font-mono text-sm font-bold space-y-8 text-slate-800">
-                            <li class="flex gap-6">
-                                <div class="bg-red-600 text-white w-10 h-10 flex items-center justify-center font-black flex-shrink-0">01</div>
-                                <div><strong>THE TABLE:</strong> Events must be locked in magnetic resonance. Any vibration above 4Hz indicates a <span class="text-red-600">Timeline Breach</span>.</div>
-                            </li>
-                            <li class="flex gap-6">
-                                <div class="bg-red-600 text-white w-10 h-10 flex items-center justify-center font-black flex-shrink-0">02</div>
-                                <div><strong>SUTURING:</strong> The Cesium-137 thread is non-reversible. Once the gap is closed, the alternate history is erased permanently.</div>
-                            </li>
-                        </ul>
-                        <div class="mt-12 opacity-30 grayscale hover:opacity-80 transition-opacity">
-                            <img src="https://picsum.photos/seed/tools/400/150" class="w-full h-24 object-cover border-2 border-black" alt="Tools">
-                            <p class="text-[9px] mt-2 font-bold uppercase">Standard Issue Suture Kit (Model 9)</p>
+                        <div>
+                            <h4 class="font-black text-2xl uppercase tracking-widest text-teal-700 mb-4">// THE APPARATUS</h4>
+                            <p class="font-mono text-sm text-slate-700 font-bold mb-6">Brass transit device utilizing Cesium-137 for narrative anchoring. Restricted access.</p>
+                            <span class="text-[9px] font-bold text-red-500 uppercase tracking-widest">[ Metadata: Volatile ]</span>
                         </div>
+                        <a href="https://deon-wal.github.io/The-Apparatus/" class="btn-protocol">Access Protocol</a>
                     </div>
 
-                    <!-- SCREAM MONITOR (RIGHT MIDDLE) -->
-                    <div class="bg-[#1a202c] p-10 absolute top-[55%] right-24 w-[650px] z-20 shadow-[40px_40px_80px_rgba(0,0,0,0.5)] border-t-8 border-slate-600" style="transform: rotate(-0.2deg);">
-                        <div class="suture-pin" style="left: auto; right: 30px;"></div>
-                        <h4 class="font-black text-[11px] uppercase mb-6 text-slate-400 tracking-[0.4em] flex items-center gap-5">
+                    <!-- RIFT SCANNER (Center) -->
+                    <div class="col-start-4 col-span-6 torn-paper p-4 z-20" style="transform: rotate(-0.5deg);">
+                        <div class="suture-pin"></div>
+                        <div class="h-[550px] bg-black relative overflow-hidden border-4 border-slate-900 group">
+                            <canvas id="rift-canvas"></canvas>
+                            <div class="absolute inset-0 bg-gradient-to-b from-teal-500/10 to-transparent pointer-events-none"></div>
+                            <div class="absolute top-8 left-8 font-mono text-[11px] text-teal-400 font-black tracking-widest bg-black/80 p-4 border border-teal-900/50">
+                                SCAN_CORE: OMEGA_74<br>
+                                STATUS: CRITICAL_SHIFT<br>
+                                DEPTH: -4.02ms
+                            </div>
+                        </div>
+                        <div class="evidence-caption mt-6 font-black text-sm uppercase tracking-[0.5em]">Figure 03: Narrative Singularity Visualization</div>
+                    </div>
+
+                    <!-- PROJECT FOLDER 2 (Left Lower) -->
+                    <div class="col-span-4 torn-paper project-folder z-30" style="transform: rotate(-1deg);">
+                        <div class="folder-tab">FILE_002</div>
+                        <div class="suture-pin"></div>
+                        <div>
+                            <h4 class="font-black text-2xl uppercase tracking-widest text-teal-700 mb-4">// SUBSTRATE PROTOCOL</h4>
+                            <p class="font-mono text-sm text-slate-700 font-bold mb-6">Hierarchical spatial mapping of the Syth-fold. Used for agent orientation in vacuum states.</p>
+                        </div>
+                        <a href="https://deon-wal.github.io/Substrate-Protocol/" class="btn-protocol">Access Protocol</a>
+                    </div>
+
+                    <!-- SCREAM MONITOR (Right Lower) -->
+                    <div class="col-span-5 col-start-8 bg-slate-900 p-12 z-20 shadow-2xl border-t-8 border-teal-600" style="transform: rotate(0.2deg);">
+                        <div class="suture-pin" style="left: auto; right: 20px;"></div>
+                        <h4 class="font-black text-[12px] uppercase mb-6 text-teal-400 tracking-[0.4em] flex items-center gap-5">
                             <span class="w-3 h-3 rounded-full bg-red-600 shadow-[0_0_15px_#ff0000] animate-pulse"></span>
-                            AUDITORY FEEDBACK: THE REALITY SCREAM
+                            AUDITORY_FEEDBACK: THE SCREAM
                         </h4>
                         <div class="oscilloscope">
                             <div class="screaming-pulse"></div>
-                            <div class="absolute inset-0 bg-gradient-to-t from-green-500/10 to-transparent pointer-events-none"></div>
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/criss-cross.png')] opacity-20"></div>
                         </div>
-                        <div class="flex justify-between mt-8 font-mono text-[11px] font-black text-green-500 tracking-[0.2em]">
-                            <span>PEAK: 19,402 Hz</span>
-                            <span>STATUS: CRITICAL_TEAR</span>
-                            <span>VOLTAGE: 1.2MV</span>
+                        <div class="flex justify-between mt-8 font-mono text-[11px] font-black text-teal-500 uppercase tracking-widest">
+                            <span>Resonance: 19.4KHz</span>
+                            <span>Tear: Level 3</span>
                         </div>
                     </div>
 
-                    <!-- TEMPORAL BLEED (LEFT BOTTOM) -->
-                    <div class="vellum-clinical absolute bottom-32 left-24 w-[600px] p-16 z-40 border-t-4 border-l-4 border-white/50 shadow-2xl" style="transform: rotate(-0.5deg);">
+                    <!-- PROJECT FOLDER 3 (Bottom Left) -->
+                    <div class="col-span-4 col-start-2 torn-paper project-folder z-30" style="transform: rotate(1.5deg);">
+                        <div class="folder-tab">FILE_003</div>
                         <div class="suture-pin"></div>
-                        <h3 class="text-black font-black text-3xl mb-8 tracking-[0.2em] uppercase border-b-8 border-black/5">Bleed Incident Report</h3>
-                        <p class="text-2xl text-black/90 font-black font-serif leading-tight mb-10">
-                            "The voices in the White-Out are not screams. They are the soft sounds of millions of lives <span class="text-red-700 italic">simply ceasing to exist</span>."
-                        </p>
-                        <div class="flex items-center gap-10">
-                            <div class="evidence-photo w-56 flex-shrink-0 shadow-lg" style="transform: rotate(-3deg); padding-bottom: 40px;">
-                                <img src="https://picsum.photos/seed/blur/300/300" class="grayscale brightness-50 contrast-150" alt="Ghostly image">
-                            </div>
-                            <div class="font-mono text-[12px] font-bold text-slate-900 space-y-6">
-                                <p>"We swept up the ash piles. Pure carbon. No DNA. It's like they never happened."</p>
-                                <div class="inline-block bg-red-600 text-white px-4 py-1 text-[10px] uppercase font-black tracking-widest">Incident 09-B Redacted</div>
-                            </div>
+                        <div>
+                            <h4 class="font-black text-2xl uppercase tracking-widest text-teal-700 mb-4">// D.U.E. ARCHIVE</h4>
+                            <p class="font-mono text-sm text-slate-700 font-bold mb-6">Master chronological vault containing every purged timeline since Bureau inception.</p>
                         </div>
+                        <a href="https://deon-wal.github.io/Department-Of-Unfinished-Events-DUE/" class="btn-protocol">Access Protocol</a>
                     </div>
 
                     <!-- BRASS PLAQUE (BOTTOM CENTER) -->
-                    <div class="absolute bottom-12 left-1/2 -translate-x-1/2 z-50">
-                        <div class="brass-plaque px-32 py-10 shadow-2xl relative border-b-4 border-black/40">
-                            <div class="w-5 h-5 rounded-full bg-black/60 absolute left-8 top-1/2 -translate-y-1/2 shadow-inner"></div>
-                            <div class="w-5 h-5 rounded-full bg-black/60 absolute right-8 top-1/2 -translate-y-1/2 shadow-inner"></div>
-                            <h3 class="font-serif font-black text-[#1a140f] text-2xl tracking-[0.5em] text-center leading-tight">
-                                VISUAL ATLAS: ZONE 03<br>
-                                <span class="text-[11px] font-sans font-black tracking-[1em] text-black/50">STATION_04 // BUREAU RECORDS</span>
+                    <div class="col-start-4 col-span-6 flex justify-center mt-32">
+                        <div class="brass-plaque px-32 py-12 border-b-8 border-black/40">
+                            <div class="w-6 h-6 rounded-full bg-black/60 absolute left-8 top-1/2 -translate-y-1/2 shadow-inner"></div>
+                            <div class="w-6 h-6 rounded-full bg-black/60 absolute right-8 top-1/2 -translate-y-1/2 shadow-inner"></div>
+                            <h3 class="font-serif font-black text-[#1a140f] text-3xl tracking-[0.4em] text-center leading-tight">
+                                ZONE 03: CORRECTION<br>
+                                <span class="text-[12px] font-sans font-black tracking-[1em] text-black/50">OFFICIAL ATLAS // BUREAU_STATION_04</span>
                             </h3>
                         </div>
                     </div>
 
-                    <!-- ASH PILE -->
-                    <div class="absolute bottom-32 right-40 z-30 flex flex-col items-end">
-                        <span class="annotation mb-2" style="right: 0;">"21 grams of narrative dust"</span>
-                        <div class="w-64 h-40 ash-pile"></div>
-                        <div class="bg-white px-10 py-5 border-4 border-black font-black text-xl uppercase tracking-[0.4em] shadow-[15px_15px_0_rgba(0,0,0,0.1)] -mt-12 transition-transform hover:scale-105 cursor-help">
-                            FORCED ENDING.
+                    <!-- THE ASH PILE -->
+                    <div class="col-start-10 col-span-3 flex flex-col items-end mt-20 pr-10">
+                        <div class="ash-pile w-64 h-40 opacity-80"></div>
+                        <div class="bg-white px-10 py-5 border-8 border-black font-black text-2xl uppercase tracking-[0.4em] shadow-2xl -mt-12">
+                            VOID.
                         </div>
+                        <span class="annotation mt-6 text-right">"Residue collected from Site-03."</span>
                     </div>
 
                 </div>
@@ -341,61 +377,78 @@
     </main>
 
     <!-- FOOTER STABILITY BAR -->
-    <footer class="bg-white border-t-8 border-black py-6 px-12 flex justify-between items-center fixed bottom-0 w-full z-[200] shadow-[0_-20px_50px_rgba(0,0,0,0.2)]">
-        <div class="tracking-[0.8em] text-black font-black text-[12px] uppercase opacity-40">Bureau_Archive_Station_04 // White_Out_Containment</div>
-        <div id="stability-display" class="font-mono text-slate-900 text-xl font-black tracking-tighter">
-            SIGNAL_STABILITY: <span class="text-blue-600" id="stability-val">99.98%</span>
+    <footer class="bg-white border-t-8 border-black py-8 px-12 flex justify-between items-center fixed bottom-0 w-full z-[400] shadow-[0_-20px_50px_rgba(0,0,0,0.1)]">
+        <div class="flex gap-12 items-center">
+            <div class="tracking-[1em] text-black font-black text-[14px] uppercase opacity-30">Bureau_Archive_S4</div>
+            <div class="flex items-center gap-4 bg-red-50 px-4 py-2 border border-red-200">
+                <div class="h-3 w-3 rounded-full bg-red-600 animate-ping"></div>
+                <span class="text-[10px] font-black text-red-700 tracking-widest">RADIATION DETECTED</span>
+            </div>
+        </div>
+        <div id="stability-display" class="font-mono text-slate-900 text-2xl font-black tracking-tighter">
+            SIGNAL_STABILITY: <span class="text-teal-600" id="stability-val">99.98%</span>
         </div>
     </footer>
 
     <script>
-        // 1. NIXIE TUBE & SIGNAL JITTER
+        // 1. NIXIE & SIGNAL JITTER
         setInterval(() => {
             const val = (99.98 + (Math.random() * 0.02)).toFixed(3);
             document.getElementById('dist-nixie').innerText = val + "%";
             document.getElementById('stability-val').innerText = val + "%";
             
-            // Random Reality Glitch
             if (Math.random() > 0.99) {
-                document.getElementById('erasure-flash').style.opacity = 0.5;
+                document.getElementById('erasure-flash').style.opacity = 0.4;
                 setTimeout(() => document.getElementById('erasure-flash').style.opacity = 0, 80);
-                document.body.style.transform = `translate(${Math.random()*10}px, ${Math.random()*10}px)`;
-                setTimeout(() => document.body.style.transform = `none`, 50);
             }
-        }, 150);
+        }, 200);
 
-        // 2. DUST PARTICLES ENGINE
+        // 2. DUST PARTICLES
         const dCanvas = document.getElementById('dust-canvas');
         const dCtx = dCanvas.getContext('2d');
         let particles = [];
-
         function initDust() {
-            dCanvas.width = window.innerWidth;
-            dCanvas.height = window.innerHeight;
-            for(let i=0; i<100; i++) {
+            dCanvas.width = window.innerWidth; dCanvas.height = window.innerHeight;
+            for(let i=0; i<150; i++) {
                 particles.push({
                     x: Math.random() * dCanvas.width,
                     y: Math.random() * dCanvas.height,
-                    s: Math.random() * 2 + 1,
-                    v: Math.random() * 0.5 + 0.2
+                    s: Math.random() * 2.5,
+                    v: Math.random() * 0.4 + 0.1
                 });
             }
         }
-
         function drawDust() {
             dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
-            dCtx.fillStyle = '#666';
+            dCtx.fillStyle = '#999';
             particles.forEach(p => {
-                dCtx.beginPath();
-                dCtx.arc(p.x, p.y, p.s, 0, Math.PI*2);
-                dCtx.fill();
-                p.y -= p.v;
-                if(p.y < -10) p.y = dCanvas.height + 10;
+                dCtx.beginPath(); dCtx.arc(p.x, p.y, p.s, 0, Math.PI*2); dCtx.fill();
+                p.y -= p.v; if(p.y < -10) p.y = dCanvas.height + 10;
             });
             requestAnimationFrame(drawDust);
         }
 
-        // 3. THREE.JS GLITCH RIFT
+        // 3. INVESTIGATION LENS & PARALLAX
+        const lens = document.getElementById('uv-lens');
+        document.addEventListener('mousemove', (e) => {
+            lens.style.display = 'block';
+            lens.style.left = (e.clientX - 175) + 'px';
+            lens.style.top = (e.clientY - 175) + 'px';
+
+            // Parallax Documents
+            document.querySelectorAll('.torn-paper').forEach(paper => {
+                const rect = paper.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const moveX = (e.clientX - centerX) / 60;
+                const moveY = (e.clientY - centerY) / 60;
+                
+                const baseRot = parseFloat(paper.style.transform.match(/rotate\((.*)deg\)/)?.[1] || 0);
+                paper.style.transform = `rotateX(${-moveY}deg) rotateY(${moveX}deg) rotate(${baseRot}deg)`;
+            });
+        });
+
+        // 4. THREE.JS GLITCH RIFT
         function initRift() {
             const canvas = document.getElementById('rift-canvas');
             const renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true});
@@ -403,66 +456,54 @@
             const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth/canvas.clientHeight, 0.1, 1000);
             camera.position.z = 2.5;
 
-            const geometry = new THREE.IcosahedronGeometry(1, 12);
-            // Dynamic displacement shader-like effect in CPU (simplified for Three.js)
+            const geometry = new THREE.IcosahedronGeometry(1.2, 15);
             const material = new THREE.MeshPhongMaterial({
-                color: 0xffffff,
+                color: 0x14b8a6,
                 wireframe: true,
                 transparent: true,
-                opacity: 0.7,
+                opacity: 0.6,
                 blending: THREE.AdditiveBlending
             });
             const rift = new THREE.Mesh(geometry, material);
             scene.add(rift);
 
-            const ambient = new THREE.AmbientLight(0x404040);
-            scene.add(ambient);
-            const light = new THREE.PointLight(0xff0000, 2, 50);
-            light.position.set(2, 2, 2);
+            const light = new THREE.PointLight(0xffffff, 2, 50);
+            light.position.set(5, 5, 5);
             scene.add(light);
 
             function animate() {
                 requestAnimationFrame(animate);
-                const time = Date.now() * 0.001;
-                rift.rotation.x += 0.002;
-                rift.rotation.y += 0.003;
+                rift.rotation.x += 0.003;
+                rift.rotation.y += 0.004;
                 
-                // Narrative "Tear" effect
-                if(Math.random() > 0.95) {
-                    rift.scale.set(1.2, 0.8, 1.1);
+                if(Math.random() > 0.985) {
+                    rift.scale.set(1.5, 0.7, 1.3);
                     material.opacity = 1;
                 } else {
                     rift.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
-                    material.opacity = 0.7;
+                    material.opacity = 0.6;
                 }
-                
                 renderer.render(scene, camera);
             }
             animate();
-
-            window.addEventListener('resize', () => {
-                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-                camera.aspect = canvas.clientWidth/canvas.clientHeight;
-                camera.updateProjectionMatrix();
-            });
             renderer.setSize(canvas.clientWidth, canvas.clientHeight);
         }
-
-        // 4. CLEARANCE LOGIC
-        document.getElementById('clearance-toggle').onchange = (e) => {
-            if(e.target.checked) {
-                document.body.style.filter = "contrast(1.4) brightness(1.1) saturate(0.5)";
-                document.querySelectorAll('[data-redacted]').forEach(el => el.style.background = 'transparent');
-            } else {
-                document.body.style.filter = "none";
-                document.querySelectorAll('[data-redacted]').forEach(el => el.style.background = '#000');
-            }
-        };
 
         window.onload = () => {
             initRift();
             initDust();
             drawDust();
+        };
+
+        // 5. CLEARANCE TOGGLE
+        document.getElementById('clearance-toggle').onchange = (e) => {
+            if(e.target.checked) {
+                document.body.style.filter = "contrast(1.2) brightness(1.1)";
+                document.querySelectorAll('[data-redacted]').forEach(el => el.style.background = 'transparent');
+            } else {
+                document.body.style.filter = "none";
+                document.querySelectorAll('[data-redacted]').forEach(el => el.style.background = '#000');
+            }
         };
     </script>
 </body>
