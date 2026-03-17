@@ -3,375 +3,508 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Observation Deck access for the Department of Unfinished Events.">
-    <title>DUE // STATION_04 - Zone 4: Observation Deck</title>
+    <title>DUE // STATION_04 - Zone 3: Correction Chambers (The White-Out)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;700;900&family=Homemade+Apple&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brass: #c5a059;
+            --brass-dim: #5c4a1e;
+            --paper: #fdfcf8;
+            --ink: #1a1a1a;
+            --alert-red: #d9381e;
+            --clinical-blue: #d1d9e0;
+            --phosphor: #00ff41;
+            --surgical-teal: #14b8a6;
+        }
+
+        * { box-sizing: border-box; cursor: crosshair; }
+        
+        body {
+            background-color: #cbd5e0;
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            transition: background 1s ease;
+        }
+
+        /* --- THE WHITE-OUT BOARD --- */
+        .clinical-void-board {
+            background-color: var(--clinical-blue);
+            background-image: 
+                radial-gradient(circle at center, rgba(255,255,255,0.95) 0%, transparent 100%),
+                url('https://www.transparenttextures.com/patterns/dark-wood.png');
+            box-shadow: inset 0 0 300px rgba(255,255,255,1);
+            position: relative;
+            border: 30px solid #91a2b5;
+            outline: 2px solid rgba(0,0,0,0.1);
+            perspective: 1200px;
+        }
+
+        /* TACTILE PAPER EFFECT */
+        .torn-paper {
+            background-color: var(--paper);
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            box-shadow: 2px 8px 25px rgba(0,0,0,0.1), 0 0 40px rgba(255,255,255,0.3);
+            border-radius: 2px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+        }
+        .torn-paper:hover {
+            box-shadow: 15px 40px 70px rgba(0,0,0,0.25);
+            z-index: 200 !important;
+        }
+
+        /* SURGICAL SUTURE PIN */
+        .suture-pin {
+            position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+            width: 22px; height: 22px;
+            background: radial-gradient(circle at 35% 35%, #f2d06b, #3d2e14);
+            border-radius: 50%;
+            box-shadow: -3px 5px 8px rgba(0,0,0,0.5), inset -1px 1px 2px rgba(255,255,255,0.4);
+            z-index: 110;
+        }
+
+        /* PROJECT FOLDER STYLING */
+        .project-folder {
+            border-left: 12px solid var(--surgical-teal);
+            padding: 30px;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .folder-tab {
+            position: absolute; top: -25px; left: 0;
+            background: var(--surgical-teal); color: white;
+            padding: 5px 25px; font-family: 'Space Mono';
+            font-size: 10px; font-weight: 900;
+            clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
+            box-shadow: 0 -5px 10px rgba(0,0,0,0.05);
+        }
+
+        /* OSCILLOSCOPE */
+        .oscilloscope {
+            width: 100%; height: 180px;
+            background: #020502;
+            border: 6px solid #1e2530;
+            border-radius: 8px;
+            position: relative; overflow: hidden;
+            box-shadow: inset 0 0 40px rgba(0, 255, 65, 0.3);
+        }
+        .screaming-pulse {
+            position: absolute; top: 50%; left: 0; width: 200%; height: 3px;
+            background: var(--phosphor);
+            box-shadow: 0 0 20px var(--phosphor);
+            animation: scream-wave 0.8s infinite linear;
+        }
+
+        /* INVESTIGATION LENS EFFECT */
+        #uv-lens {
+            position: fixed; width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 500;
+            mix-blend-mode: overlay;
+            display: none;
+        }
+
+        /* HANDWRITTEN ANNOTATIONS */
+        .annotation {
+            font-family: 'Homemade Apple', cursive;
+            color: var(--alert-red);
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* DUST & SCROLLING */
+        #dust-canvas {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 55; opacity: 0.3;
+        }
+
+        .film-grain {
+            position: fixed; inset: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.05; pointer-events: none; z-index: 1000;
+        }
+
+        [data-redacted] {
+            background: #000; color: #000; transition: 1.5s;
+        }
+        [data-redacted]:hover { background: transparent; color: inherit; }
+
+        .brass-plaque {
+            background: linear-gradient(135deg, #e2b04a 0%, #f2d06b 40%, #a67c00 100%);
+            border: 2px solid #3d2e14;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .btn-protocol {
+            background: #1a1a1a; color: white;
+            padding: 12px 25px; font-family: 'Space Mono';
+            font-size: 11px; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 2px;
+            transition: 0.3s;
+            position: relative; overflow: hidden;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-protocol:hover { background: var(--surgical-teal); box-shadow: 0 0 20px var(--surgical-teal); color: white; }
+
+        .bureau-stamp {
+            position: absolute; font-family: 'Space Mono'; font-weight: 900;
+            padding: 10px 20px; border: 4px double currentColor;
+            text-transform: uppercase; mix-blend-mode: multiply; opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* NAVIGATION TABS ACTIVE STATE */
+        .nav-tab {
+            transition: 0.3s;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+        .nav-tab:hover {
+            background: rgba(255,255,255,0.05);
+            opacity: 1 !important;
+        }
+        .nav-tab.active {
+            background: var(--surgical-teal) !important;
+            color: white !important;
+            opacity: 1 !important;
+            font-weight: 900;
+        }
+    </style>
 </head>
+<body class="flex flex-col bg-slate-200">
 
-<body class="bg-obsidian terminal-mode">
-
-    <div id="scanlines" aria-hidden="true"></div>
-    <div id="vignette" aria-hidden="true"></div>
-    <div id="static-overlay" aria-hidden="true"></div>
-    <div id="horizon-bar-fx"></div>
-
-    <div class="hud-frame">
-        <svg width="100%" height="100%" preserveAspectRatio="none">
-            <rect width="100%" height="100%" fill="none" stroke="rgba(34, 211, 238, 0.1)" stroke-width="2"/>
-            <path d="M0 40 L40 0 Mcalc(100% - 40px) 0 L100% 40 M100% calc(100% - 40px) Lcalc(100% - 40px) 100% M40 100% L0 calc(100% - 40px)" stroke="rgba(34, 211, 238, 0.3)" fill="none"/>
-        </svg>
-    </div>
-
-    <header class="top-nav px-8 py-6 flex justify-between items-center relative z-50 border-b border-cyan-950">
-        <div class="nav-left flex items-center gap-10">
-            <div class="logo-wrap">
-                <div class="logo text-4xl font-black tracking-tighter text-cyan-500">D.U.E.</div>
-                <div class="text-[8px] uppercase tracking-[0.4em] text-cyan-800">Observation_Unit</div>
+    <div class="film-grain"></div>
+    <div id="uv-lens"></div>
+    <div id="erasure-flash" class="fixed inset-0 bg-white z-[10000] pointer-events-none opacity-0"></div>
+    <canvas id="dust-canvas"></canvas>
+    
+    <!-- BUREAU HEADER -->
+    <header class="bg-white/95 border-b-4 border-black relative z-[300] px-12 py-6 flex justify-between items-center shadow-xl">
+        <div class="flex items-center gap-12">
+            <div class="font-black text-6xl tracking-tighter text-slate-900 leading-none">
+                D.U.E.
+                <span class="block text-[9px] tracking-[1.2em] opacity-40 font-bold uppercase mt-2">Investigation // Station_04</span>
             </div>
-            
-            <div class="status-block hidden md:block border-l border-cyan-900 pl-8 font-mono">
-                <div class="flex flex-col gap-1">
-                    <span class="text-[10px] text-cyan-700">LAT: 40.7128° N</span>
-                    <span class="text-[10px] text-cyan-700">LONG: 74.0060° W</span>
-                    <span class="text-[9px] text-green-500 flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                        SYSTEM_LINK_ACTIVE
-                    </span>
-                </div>
+            <div class="h-16 w-px bg-slate-300"></div>
+            <div class="text-[12px] opacity-80 leading-tight uppercase font-black tracking-[0.2em]">
+                Zone: <span class="text-teal-600">CORRECTION_CHAMBERS</span><br>
+                Protocol: <span class="text-red-600 animate-pulse">WHITE_OUT</span><br>
+                User: <span class="text-slate-500">DEON_WAL // OMEGA</span>
             </div>
         </div>
-
-        <div class="nixie-wrapper text-center">
-            <div id="dist-nixie" class="nixie-tube text-5xl text-orange-500 tabular-nums">99.99%</div>
-            <div class="text-[9px] font-bold text-orange-900 uppercase tracking-widest mt-1">Reality_Stability</div>
-        </div>
-
-        <div class="nav-right flex items-center gap-8">
-            <div class="clock-wrap font-mono text-right">
-                <div id="system-time" class="text-xl text-cyan-400">21:53:41</div>
-                <div class="text-[8px] text-cyan-900 uppercase">Local_Station_Time</div>
+        
+        <div class="flex items-center gap-12">
+            <div class="bg-slate-100 p-4 border-2 border-slate-300 flex flex-col items-center justify-center group cursor-pointer hover:bg-teal-50 hover:border-teal-400 transition-colors">
+                <a href="extractor.html" class="flex flex-col items-center">
+                    <span class="text-[9px] uppercase font-black tracking-widest text-slate-400 group-hover:text-teal-600">System Tool</span>
+                    <span class="text-[12px] font-bold text-slate-900">EXTRACTOR.EXE</span>
+                </a>
             </div>
-            
-            <div class="clearance-control flex flex-col items-center">
-                <label class="clearance-switch relative inline-block w-12 h-6">
-                    <input type="checkbox" id="clearance-toggle" class="opacity-0 w-0 h-0">
-                    <span class="slider absolute cursor-pointer inset-0 bg-cyan-950 border border-cyan-800 rounded-full transition-all"></span>
-                </label>
-                <span class="text-[7px] font-black text-cyan-700 mt-2 uppercase">Override</span>
+            <div class="flex flex-col items-end">
+                <span class="text-[10px] uppercase font-bold opacity-50 mb-1">Reality Consistency</span>
+                <div id="dist-nixie" class="font-mono text-4xl font-black text-slate-900 tracking-tighter border-b-2 border-slate-100">99.982%</div>
+            </div>
+            <div class="bg-slate-50 p-4 border-2 border-slate-200 flex items-center gap-4 shadow-sm">
+                <span class="text-[10px] uppercase font-black tracking-widest text-slate-400">Clearance</span>
+                <input type="checkbox" id="clearance-toggle" class="w-8 h-8 accent-red-600 cursor-pointer">
             </div>
         </div>
     </header>
 
-    <main id="main-scroll-container" class="relative z-10">
+    <main id="main-scroll-container" class="relative z-20 overflow-y-auto pt-10">
         
-        <section class="hero-gate min-h-[80vh] flex flex-col items-center justify-center relative overflow-hidden">
-            <div class="parallax-title text-center z-20">
-                <h1 class="glitch-text text-6xl md:text-[10rem] font-black tracking-tighter leading-none text-white opacity-90 mb-4" data-text="ZONE 04">ZONE 04</h1>
-                <h2 class="sub-title text-xl md:text-3xl font-light tracking-[1.5em] text-cyan-500 opacity-60 uppercase">The God-Eye</h2>
-            </div>
-            <div class="scroll-indicator absolute bottom-10 animate-bounce text-cyan-900 text-2xl">▼</div>
-            
-            <div class="absolute inset-0 z-0 opacity-10 flex items-center justify-center">
-                <svg width="800" height="800" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" stroke="currentColor" fill="none" stroke-width="0.1" />
-                    <circle cx="50" cy="50" r="35" stroke="currentColor" fill="none" stroke-width="0.1" />
-                    <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" stroke-width="0.1" />
-                    <line x1="50" y1="0" x2="50" y2="100" stroke="currentColor" stroke-width="0.1" />
-                </svg>
+        <!-- HERO TITLING -->
+        <section class="h-[25vh] flex flex-col items-center justify-center text-center relative mb-10">
+            <h1 class="text-[12rem] font-black tracking-[3rem] text-slate-900 opacity-5 mb-2 uppercase select-none absolute">Zone 3</h1>
+            <div class="relative">
+                <p class="text-xl md:text-2xl tracking-[1.2rem] text-slate-900 uppercase font-black bg-white/95 px-16 py-6 border-8 border-black shadow-[30px_30px_0_rgba(0,0,0,0.05)]">
+                    Evidence Atlas
+                </p>
+                <span class="annotation absolute -bottom-8 -right-12" style="transform: rotate(5deg);">"Decisions are permanent."</span>
             </div>
         </section>
 
-        <div class="content-wrapper max-w-7xl mx-auto px-6">
-            
-            <nav class="zone-tabs sticky top-0 z-50 bg-obsidian flex border border-cyan-900/30 rounded-t-lg overflow-hidden mb-12 shadow-2xl">
-                <a href="index.html" class="tab-item flex-1 py-5 text-[10px] font-bold text-center border-r border-cyan-900/30 hover:bg-cyan-500/5 transition-all">01. ENTRY</a>
-                <a href="zone2.html" class="tab-item flex-1 py-5 text-[10px] font-bold text-center border-r border-cyan-900/30 hover:bg-cyan-500/5 transition-all">02. ARCHIVE</a>
-                <a href="zone3.html" class="tab-item flex-1 py-5 text-[10px] font-bold text-center border-r border-cyan-900/30 hover:bg-cyan-500/5 transition-all">03. ENGINE</a>
-                <a href="zone4.html" class="tab-item active flex-1 py-5 text-[10px] font-bold text-center bg-cyan-500/10 text-cyan-400 border-b-2 border-cyan-400">04. OBSERVATION</a>
-                <a href="zone5.html" class="tab-item flex-1 py-5 text-[10px] font-bold text-center border-r border-cyan-900/30 hover:bg-cyan-500/5 transition-all">05. VOID</a>
-                <a href="zone6.html" class="tab-item flex-1 py-5 text-[10px] font-bold text-center hover:bg-cyan-500/5 transition-all">06. EXIT</a>
-            </nav>
-
-            <div class="main-panel bg-[#050b14] border border-cyan-900/40 p-8 md:p-16 mb-24 shadow-[0_0_100px_rgba(0,0,0,0.8)] relative">
+        <!-- MAIN INVESTIGATION BOARD -->
+        <div class="w-full max-w-[1900px] mx-auto pb-48 px-12 relative z-20">
+            <div class="bg-[#fcfcfc] border-8 border-black shadow-2xl overflow-hidden">
                 
-                <article class="quote-section mb-24 relative">
-                    <div class="quote-accent absolute -left-8 top-0 bottom-0 w-1 bg-cyan-500 shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
-                    <div class="text-[10px] uppercase font-black text-cyan-800 mb-6 tracking-[0.5em]">Classified_Thought_Log</div>
-                    <p class="manifesto-text text-2xl md:text-5xl font-serif italic leading-tight text-white/90">
-                        "The grand illusion of Field Operations is that we are a subterranean agency hiding beneath the city. Stepping onto the God-Eye balcony shatters this immediately. <span class="bg-cyan-500 text-black px-4 not-italic font-black shadow-lg">The city exists within the Department.</span>"
-                    </p>
-                </article>
+                <!-- NAVIGATION TABS - WORKING LINKS TO YOUR FILES -->
+                <nav class="flex border-b-4 border-black bg-slate-900 text-white font-mono text-[11px] uppercase overflow-x-auto">
+                    <a href="index.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">01. Spire</a>
+                    <a href="zone2.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">02. Market</a>
+                    <a href="zone3.html" class="nav-tab px-10 py-8 active">03. Correction</a>
+                    <a href="zone4.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">04. Observatory</a>
+                    <a href="zone5.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">05. Sync</a>
+                    <a href="zone6.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100">06. Root</a>
+                    <div class="flex-1 flex justify-end items-center px-12">
+                        <span class="font-black text-red-500 animate-pulse tracking-[0.4em]">STATION_04_ARCHIVE</span>
+                    </div>
+                </nav>
 
-                <div class="torn-paper vibrate-sm" style="position: absolute; bottom: 80px; left: 20px; width: 280px; padding: 1.5rem; z-index: 100; font-size: 0.65rem; line-height: 1.3; transform: rotate(-2deg);">
-    <div class="photo-pin"></div>
-    <h4 style="margin: 0 0 10px 0; border-bottom: 1px solid #1a1a1a; text-align: center; font-weight: 900;">
-        CITIZEN’S DIRECTIVE: 10 RULES
-    </h4>
-    <ol style="padding-left: 15px; margin: 0;">
-        <li>Maintain continuous dialogue; silence invites <span class="redacted">Un-People</span>.</li>
-        <li>Avoid the “99% Threshold”; never fully finish tasks.</li>
-        <li>Report flicker events; do not attempt re-rendering.</li>
-        <li>Carry a “High-Weight Object” to stabilize reality.</li>
-        <li>Ignore missing textures; seeing the code increases Resolution Debt.</li>
-        <li>Do not consume Closure Pills; accept regrets as narrative ballast.</li>
-        <li>Break loops via minor unpredictable accidents.</li>
-        <li>Shelter during storms; “Processing” icons rain is corrosive.</li>
-        <li>Acknowledge the hum of the World-Drive; it signals stability.</li>
-        <li style="margin-top: 8px; font-weight: bold;">Respect Year 00; do not calculate beyond October 31.</li>
-    </ol>
-</div>
-
-                <div class="instrument-grid grid lg:grid-cols-3 gap-10 mb-24">
+                <!-- THE BOARD -->
+                <div id="zone3-board" class="p-24 clinical-void-board grid grid-cols-12 gap-10 min-h-[2400px]">
                     
-                    <div class="panel border border-cyan-900/50 p-8 bg-black/40 group hover:border-cyan-500 transition-all">
-                        <h3 class="panel-head text-[10px] font-black text-cyan-700 tracking-widest uppercase mb-8">Probability Barometer</h3>
-                        <div class="gauge-container py-4 flex justify-center">
-                            <svg viewBox="0 0 100 60" class="w-full max-w-[200px]">
-                                <defs>
-                                    <linearGradient id="gauge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                        <stop offset="0%" style="stop-color:#083344" />
-                                        <stop offset="100%" style="stop-color:#22d3ee" />
-                                    </linearGradient>
-                                </defs>
-                                <path d="M10 50 A 40 40 0 0 1 90 50" class="gauge-track" stroke="url(#gauge-grad)" stroke-width="8" fill="none" stroke-linecap="round"/>
-                                <line x1="50" y1="50" x2="20" y2="20" class="needle stroke-red-500 stroke-[3] vibrate-sm" />
-                                <circle cx="50" cy="50" r="4" class="fill-cyan-400" />
-                            </svg>
-                        </div>
-                        <div class="data-readout mt-6 flex justify-between font-mono text-[10px]">
-                            <span class="text-cyan-900">VARIANCE:</span>
-                            <span class="text-cyan-400 font-bold">+0.0004μ</span>
+                    <!-- CENTRAL BIBLE OBJECT -->
+                    <div class="col-start-4 col-span-6 flex justify-center py-20 relative">
+                        <div class="bureau-stamp text-red-600 top-0 left-0 -rotate-12 border-red-600">Confidential</div>
+                        <div class="leather-book w-[500px] h-[750px] relative z-40 flex flex-col items-center justify-center p-16 text-center" style="transform: rotate(0.8deg);">
+                            <div class="brass-clasp absolute right-[-18px] top-[45%] w-[40px] h-[80px] rounded-r-lg"></div>
+                            <div class="w-40 h-40 mb-16 opacity-30 invert">
+                                <svg viewBox="0 0 100 100" class="text-white fill-none stroke-current stroke-1">
+                                    <circle cx="50" cy="50" r="48"/>
+                                    <path d="M50 5 L53 47 L95 50 L53 53 L50 95 L47 53 L5 50 L47 47 Z" fill="white"/>
+                                </svg>
+                            </div>
+                            <h2 class="font-serif text-[#d4af37] text-6xl font-black uppercase tracking-[0.1em] leading-tight text-shadow-xl">D.U.E.<br>BIBLE</h2>
+                            <div class="mt-16 w-full border-t border-[#d4af37]/30 pt-8">
+                                <span class="font-mono text-[14px] text-[#d4af37] tracking-[0.6em] uppercase font-bold">Volume_03: Correction</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="panel border border-yellow-900/30 p-8 bg-yellow-950/5 group">
-                        <h3 class="panel-head text-[10px] font-black text-yellow-700 tracking-widest uppercase mb-8">The Doomsday Clock</h3>
-                        <div class="clock-face-wrap py-4 text-center">
-                            <div class="clock-face text-5xl font-black text-yellow-500 text-shadow-yellow vibrate-heavy tabular-nums">12:59:59</div>
+                    <!-- CLINICAL REPORT (Left) -->
+                    <div class="col-span-4 torn-paper p-16 z-30" style="transform: rotate(-1.5deg);">
+                        <div class="suture-pin"></div>
+                        <h4 class="font-black text-3xl uppercase tracking-tighter border-b-8 border-black/5 mb-8 pb-4">The Theory</h4>
+                        <p class="font-mono text-base font-bold text-black/80 leading-relaxed mb-10 italic">
+                            Reality in Zone 3 is <span data-redacted>fluid but finite</span>. We are surgeons removing the weight of failed human timelines.
+                        </p>
+                        <div class="bg-black text-white p-8 font-black text-2xl uppercase text-center mb-10 leading-tight border-l-[12px] border-teal-600">
+                            "WE FORCE THE ENDING."
                         </div>
-                        <div class="progress-track w-full h-1.5 bg-yellow-950 mt-10 rounded-full overflow-hidden">
-                            <div class="progress-fill h-full bg-yellow-500 animate-pulse" style="width: 98%;"></div>
-                        </div>
-                        <div class="text-[8px] text-yellow-900 font-bold uppercase mt-2 text-center">Caution: Stutter_Detected</div>
+                        <span class="annotation">"Director Aldersyth's notes - 1982"</span>
                     </div>
 
-                    <div class="panel border border-cyan-900/50 p-8 bg-black/40">
-                        <h3 class="panel-head text-[10px] font-black text-cyan-700 tracking-widest uppercase mb-8">Narrative Density</h3>
-                        <div class="bar-stack space-y-6">
-                            <div class="bar-row">
-                                <div class="flex justify-between text-[9px] mb-2"><span class="lbl">REALITY_THICKNESS</span><span class="text-cyan-400">85%</span></div>
-                                <div class="bar-bg h-1 bg-cyan-950"><div class="bar-val h-full bg-cyan-500 shadow-cyan" style="width: 85%"></div></div>
-                            </div>
-                            <div class="bar-row">
-                                <div class="flex justify-between text-[9px] mb-2"><span class="lbl">SYNTAX_STABILITY</span><span class="text-cyan-400">92%</span></div>
-                                <div class="bar-bg h-1 bg-cyan-950"><div class="bar-val h-full bg-cyan-500 shadow-cyan" style="width: 92%"></div></div>
-                            </div>
-                            <div class="bar-row">
-                                <div class="flex justify-between text-[9px] mb-2"><span class="lbl">VOID_LEAKAGE</span><span class="text-red-500">CRITICAL</span></div>
-                                <div class="bar-bg h-1 bg-cyan-950"><div class="bar-val h-full bg-red-600 shadow-red" style="width: 98%"></div></div>
+                    <!-- PROJECT FOLDER 1 (Right) -->
+                    <div class="col-span-4 col-start-9 torn-paper project-folder z-30" style="transform: rotate(2deg);">
+                        <div class="folder-tab">FILE_001</div>
+                        <div class="suture-pin"></div>
+                        <div>
+                            <h4 class="font-black text-2xl uppercase tracking-widest text-teal-700 mb-4">// THE APPARATUS</h4>
+                            <p class="font-mono text-sm text-slate-700 font-bold mb-6">Brass transit device utilizing Cesium-137 for narrative anchoring. Restricted access.</p>
+                            <span class="text-[9px] font-bold text-red-500 uppercase tracking-widest">[ Metadata: Volatile ]</span>
+                        </div>
+                        <a href="https://deon-wal.github.io/The-Apparatus/" class="btn-protocol">Access Protocol</a>
+                    </div>
+
+                    <!-- RIFT SCANNER (Center) -->
+                    <div class="col-start-4 col-span-6 torn-paper p-4 z-20" style="transform: rotate(-0.5deg);">
+                        <div class="suture-pin"></div>
+                        <div class="h-[550px] bg-black relative overflow-hidden border-4 border-slate-900 group">
+                            <canvas id="rift-canvas"></canvas>
+                            <div class="absolute inset-0 bg-gradient-to-b from-teal-500/10 to-transparent pointer-events-none"></div>
+                            <div class="absolute top-8 left-8 font-mono text-[11px] text-teal-400 font-black tracking-widest bg-black/80 p-4 border border-teal-900/50">
+                                SCAN_CORE: OMEGA_74<br>
+                                STATUS: CRITICAL_SHIFT<br>
+                                DEPTH: -4.02ms
                             </div>
                         </div>
+                        <div class="evidence-caption mt-6 font-black text-sm uppercase tracking-[0.5em]">Figure 03: Narrative Singularity Visualization</div>
                     </div>
+
+                    <!-- PROJECT FOLDER 2 (Left Lower) -->
+                    <div class="col-span-4 torn-paper project-folder z-30" style="transform: rotate(-1deg);">
+                        <div class="folder-tab">FILE_002</div>
+                        <div class="suture-pin"></div>
+                        <div>
+                            <h4 class="font-black text-2xl uppercase tracking-widest text-teal-700 mb-4">// SUBSTRATE PROTOCOL</h4>
+                            <p class="font-mono text-sm text-slate-700 font-bold mb-6">Hierarchical spatial mapping of the Syth-fold. Used for agent orientation in vacuum states.</p>
+                        </div>
+                        <a href="https://deon-wal.github.io/Substrate-Protocol/" class="btn-protocol">Access Protocol</a>
+                    </div>
+
+                    <!-- SCREAM MONITOR (Right Lower) -->
+                    <div class="col-span-5 col-start-8 bg-slate-900 p-12 z-20 shadow-2xl border-t-8 border-teal-600" style="transform: rotate(0.2deg);">
+                        <div class="suture-pin" style="left: auto; right: 20px;"></div>
+                        <h4 class="font-black text-[12px] uppercase mb-6 text-teal-400 tracking-[0.4em] flex items-center gap-5">
+                            <span class="w-3 h-3 rounded-full bg-red-600 shadow-[0_0_15px_#ff0000] animate-pulse"></span>
+                            AUDITORY_FEEDBACK: THE SCREAM
+                        </h4>
+                        <div class="oscilloscope">
+                            <div class="screaming-pulse"></div>
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/criss-cross.png')] opacity-20"></div>
+                        </div>
+                        <div class="flex justify-between mt-8 font-mono text-[11px] font-black text-teal-500 uppercase tracking-widest">
+                            <span>Resonance: 19.4KHz</span>
+                            <span>Tear: Level 3</span>
+                        </div>
+                    </div>
+
+                    <!-- PROJECT FOLDER 3 (Bottom Left) -->
+                    <div class="col-span-4 col-start-2 torn-paper project-folder z-30" style="transform: rotate(1.5deg);">
+                        <div class="folder-tab">FILE_003</div>
+                        <div class="suture-pin"></div>
+                        <div>
+                            <h4 class="font-black text-2xl uppercase tracking-widest text-teal-700 mb-4">// D.U.E. ARCHIVE</h4>
+                            <p class="font-mono text-sm text-slate-700 font-bold mb-6">Master chronological vault containing every purged timeline since Bureau inception.</p>
+                        </div>
+                        <a href="https://deon-wal.github.io/Department-Of-Unfinished-Events-DUE/" class="btn-protocol">Access Protocol</a>
+                    </div>
+
+                    <!-- BRASS PLAQUE (BOTTOM CENTER) -->
+                    <div class="col-start-4 col-span-6 flex justify-center mt-32">
+                        <div class="brass-plaque px-32 py-12 border-b-8 border-black/40">
+                            <div class="w-6 h-6 rounded-full bg-black/60 absolute left-8 top-1/2 -translate-y-1/2 shadow-inner"></div>
+                            <div class="w-6 h-6 rounded-full bg-black/60 absolute right-8 top-1/2 -translate-y-1/2 shadow-inner"></div>
+                            <h3 class="font-serif font-black text-[#1a140f] text-3xl tracking-[0.4em] text-center leading-tight">
+                                ZONE 03: CORRECTION<br>
+                                <span class="text-[12px] font-sans font-black tracking-[1em] text-black/50">OFFICIAL ATLAS // BUREAU_STATION_04</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <!-- THE ASH PILE -->
+                    <div class="col-start-10 col-span-3 flex flex-col items-end mt-20 pr-10">
+                        <div class="ash-pile w-64 h-40 opacity-80"></div>
+                        <div class="bg-white px-10 py-5 border-8 border-black font-black text-2xl uppercase tracking-[0.4em] shadow-2xl -mt-12">
+                            VOID.
+                        </div>
+                        <span class="annotation mt-6 text-right">"Residue collected from Site-03."</span>
+                    </div>
+
                 </div>
-
-                <section class="storm-log mb-24">
-                    <div class="flex items-center gap-6 mb-12">
-                        <h2 class="section-title text-2xl font-black text-red-500 uppercase tracking-tighter">Atmospheric Processing Errors</h2>
-                        <div class="flex-1 h-[1px] bg-red-900/30"></div>
-                    </div>
-                    <div class="card-row grid md:grid-cols-3 gap-8">
-                        <div class="storm-card p-10 border border-red-900/20 bg-red-950/5 hover:bg-red-950/10 transition-all">
-                            <div class="icon-wrap mb-6">
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-red-700 animate-pulse"><path d="M12 2L2 22H22L12 2Z" stroke-width="2"/></svg>
-                            </div>
-                            <h4 class="text-red-400 font-bold uppercase text-xs mb-4 tracking-widest">Red Triangles</h4>
-                            <p class="text-[11px] text-red-900 leading-relaxed">Massive geometric artifacts appearing over Sector 7. Collision with clouds causes pixelated rainfall. Do not observe with naked eye.</p>
-                        </div>
-                        <div class="storm-card p-10 border border-red-900/20 bg-red-950/5">
-                            <div class="icon-wrap mb-6">
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-red-700 animate-spin-slow"><path d="M5 3H19L12 12L19 21H5L12 12L5 3Z" stroke-width="2"/></svg>
-                            </div>
-                            <h4 class="text-red-400 font-bold uppercase text-xs mb-4 tracking-widest">Hourglass Stalls</h4>
-                            <p class="text-[11px] text-red-900 leading-relaxed">30-meter tall spinning cursors that freeze local time for pedestrians within a 500m radius. Currently 4 active in CBD.</p>
-                        </div>
-                        <div class="storm-card p-10 border border-red-900/20 bg-red-950/5">
-                            <div class="icon-wrap mb-6">
-                                <div class="w-10 h-2 bg-red-900/50 rounded-full relative overflow-hidden">
-                                    <div class="absolute inset-0 bg-red-500 animate-[load-pulse_2s_infinite]" style="width: 88%"></div>
-                                </div>
-                            </div>
-                            <h4 class="text-red-400 font-bold uppercase text-xs mb-4 tracking-widest">The Horizon Bar</h4>
-                            <p class="text-[11px] text-red-900 leading-relaxed">A pink line of light spanning the eastern horizon. When the progress bar fills, the next hour of history is compiled.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="data-table-wrapper mb-24 overflow-x-auto">
-                    <h3 class="text-[10px] font-black text-cyan-800 tracking-widest uppercase mb-8">Sector Stability Matrix</h3>
-                    <table class="diagnostic-table w-full text-left font-mono text-[10px] border-collapse">
-                        <thead>
-                            <tr class="border-b border-cyan-900 text-cyan-600">
-                                <th class="py-4 px-6 uppercase tracking-widest">Sector_ID</th>
-                                <th class="py-4 px-6 uppercase tracking-widest">Local_Variance</th>
-                                <th class="py-4 px-6 uppercase tracking-widest">Status</th>
-                                <th class="py-4 px-6 uppercase tracking-widest">Stability</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-cyan-400/80">
-                            <tr class="border-b border-cyan-900/20 hover:bg-cyan-500/5">
-                                <td class="py-4 px-6">SEC_001 (Market District)</td>
-                                <td class="py-4 px-6">+0.002%</td>
-                                <td class="py-4 px-6 text-green-500 font-bold">READY</td>
-                                <td class="py-4 px-6">0.998</td>
-                            </tr>
-                            <tr class="border-b border-cyan-900/20 hover:bg-cyan-500/5">
-                                <td class="py-4 px-6">SEC_007 (Industrial Docks)</td>
-                                <td class="py-4 px-6">-1.420%</td>
-                                <td class="py-4 px-6 text-yellow-500">BUFFERING</td>
-                                <td class="py-4 px-6">0.712</td>
-                            </tr>
-                            <tr class="border-b border-cyan-900/20 hover:bg-cyan-500/5">
-                                <td class="py-4 px-6">SEC_010 (The Spire)</td>
-                                <td class="py-4 px-6">+0.420%</td>
-                                <td class="py-4 px-6 text-green-500 font-bold">READY</td>
-                                <td class="py-4 px-6">0.991</td>
-                            </tr>
-                            <tr class="alert-row bg-red-500/5 text-red-400 border-b border-red-900/30">
-                                <td class="py-4 px-6 font-bold">SEC_013 (Void Point)</td>
-                                <td class="py-4 px-6">ERROR</td>
-                                <td class="py-4 px-6 text-red-600 animate-pulse font-black">FAILED</td>
-                                <td class="py-4 px-6">0.000</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </section>
-
-                <section class="ticker-box border border-cyan-900/40 bg-black/80 p-10 mb-24 relative overflow-hidden">
-                    <h3 class="ticker-label text-[10px] font-black text-cyan-600 mb-8 uppercase tracking-widest border-b border-cyan-900/40 pb-4">Live Anomaly Feed [V4.2.0]</h3>
-                    <div class="ticker-scroll grid md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-12 h-64 overflow-y-auto pr-4" id="ticker-target">
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 01: Gravity inversion (Sector 7)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 02: Deja vu loop detected (14s)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 03: Colors bleeding to grayscale</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 04: Spontaneous architecture detected</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 05: Time dilation (+0.04s/cycle)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 06: NPC pathfinding error (S4)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 07: Audio desync in commercial</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 08: Sun texture placeholder visible</div>
-                        <div class="ticker-item text-[9px] font-mono text-red-600 font-bold">ERR 09: Reflections detached from sources</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 10: Ocean rendered as static plane</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 11: Unscheduled upward rain</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 12: Memory leak (Amnesia)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 13: Collision mesh failed (SEC_02)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 14: Shadows rendering pink</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 15: Day/Night cycle stutter</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 16: Monolith entity spawned</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 17: Localized syntax error</div>
-                        <div class="ticker-item text-[9px] font-mono text-yellow-600">ERR 18: Pigeons stuck in T-pose</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 19: Horizon clipping geometry</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 20: Unregistered thoughts (Leak)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 21: Physics engine crash</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 22: Matter phasing detected</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 23: Nostalgia overflow (1980s)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 24: Billboard: "OBEY_NULL"</div>
-                        <div class="ticker-item text-[9px] font-mono text-red-600 font-bold">ERR 25: 12ft Humanoid (Out of Bounds)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 26: Frame rate drop in CBD</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 27: Texture Z-fighting (Roads)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 28: Unprompted eclipse (2.1s)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 29: Hexagonal clouds</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 30: Sector 2 Plaza duplication</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 31: OST audible in public space</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 32: Micro-gravity pocket (S5)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 33: Spatial recursion loop</div>
-                        <div class="ticker-item text-[9px] font-mono text-yellow-600">ERR 34: Flora in wireframe</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 35: History rewrite blocked</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 36: Missing bridge texture</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 37: Impossible geometry (Penrose)</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 38: Wind vectors inverted</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-800">ERR 39: Nighttime shaders offline</div>
-                        <div class="ticker-item text-[9px] font-mono text-cyan-400 font-bold">ERR 40: Station altitude dropping</div>
-                    </div>
-                </section>
-
-                <section class="manual-section mb-24 grid lg:grid-cols-2 gap-16">
-                    <div class="lore-content">
-                        <h3 class="text-xl font-black text-cyan-500 uppercase mb-8">Observation Deck Manual</h3>
-                        <div class="space-y-6 text-[11px] leading-relaxed text-cyan-900 font-serif">
-                            <p>Personnel assigned to the God-Eye are reminded that the balcony is not a physical space, but a conceptual interface. If you feel a "draft," it is likely a leak in the Substrate protocol. Report all tactile sensations to Section 2 immediately.</p>
-                            <p>The "City" below is a rendered aggregate of all unfinished events currently processed by the D.U.E. Engine. Do not attempt to throw physical objects over the railing. They will not fall; they will simply be deleted from the local cache.</p>
-                            <p>Warning: Prolonged exposure to the God-Eye has been known to cause "Post-Reality Syncing," where observers begin to see wireframes in their own homes. Rotation shifts are limited to 4 hours per day.</p>
-                        </div>
-                    </div>
-                    <div class="lore-controls bg-cyan-950/10 p-10 border border-cyan-900/30">
-                        <h4 class="text-[10px] font-black text-cyan-700 uppercase mb-8 tracking-widest">Manual Override Terminal</h4>
-                        <div class="space-y-8">
-                            <div class="control-node flex justify-between items-center">
-                                <span class="text-[9px] font-bold">THREAD_DIVERGENCE</span>
-                                <input type="checkbox" id="thread-opt" class="accent-cyan-500">
-                            </div>
-                            <div class="control-node flex justify-between items-center">
-                                <span class="text-[9px] font-bold">GHOST_ENTITIES</span>
-                                <input type="checkbox" id="ghost-opt" class="accent-cyan-500">
-                            </div>
-                            <div class="control-node flex justify-between items-center">
-                                <span class="text-[9px] font-bold">MATTE_CEILING_SYNC</span>
-                                <input type="checkbox" id="sync-opt" class="accent-cyan-500">
-                            </div>
-                            <button class="panic-btn w-full py-4 bg-red-950 border border-red-900 text-red-500 text-[9px] font-black uppercase hover:bg-red-500 hover:text-black transition-all">Emergency_Cache_Flush</button>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="canvas-panel border border-cyan-900/30 bg-black h-80 relative overflow-hidden group rounded-lg">
-                    <canvas id="anomaly-viz" class="w-full h-full opacity-60 group-hover:opacity-100 transition-opacity"></canvas>
-                    <div class="canvas-overlay absolute top-6 left-6 flex items-center gap-3">
-                        <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-                        <span class="text-[9px] font-black text-cyan-500 tracking-widest uppercase">Live_Feed // Matte_Ceiling_Leak</span>
-                    </div>
-                </section>
-
             </div>
-
-            <footer class="global-footer pb-24 text-center">
-                <div class="footer-decal mb-6 flex justify-center items-center gap-10">
-                    <div class="h-[1px] w-20 bg-cyan-950"></div>
-                    <div class="text-[10px] font-mono text-cyan-900 uppercase tracking-[1em]">Station_End</div>
-                    <div class="h-[1px] w-20 bg-cyan-950"></div>
-                </div>
-                <div class="text-[8px] font-mono text-cyan-950">© 2026 // DEPARTMENT OF UNREAL ENTITIES // ALL REALITY RESERVED</div>
-            </footer>
         </div>
     </main>
 
+    <!-- FOOTER STABILITY BAR -->
+    <footer class="bg-white border-t-8 border-black py-8 px-12 flex justify-between items-center fixed bottom-0 w-full z-[400] shadow-[0_-20px_50px_rgba(0,0,0,0.1)]">
+        <div class="flex gap-12 items-center">
+            <div class="tracking-[1em] text-black font-black text-[14px] uppercase opacity-30">Bureau_Archive_S4</div>
+            <div class="flex items-center gap-4 bg-red-50 px-4 py-2 border border-red-200">
+                <div class="h-3 w-3 rounded-full bg-red-600 animate-ping"></div>
+                <span class="text-[10px] font-black text-red-700 tracking-widest">RADIATION DETECTED</span>
+            </div>
+        </div>
+        <div id="stability-display" class="font-mono text-slate-900 text-2xl font-black tracking-tighter">
+            SIGNAL_STABILITY: <span class="text-teal-600" id="stability-val">99.98%</span>
+        </div>
+    </footer>
+
     <script>
-        // Nixie Randomization
-        const nixie = document.getElementById('dist-nixie');
+        // 1. NIXIE & SIGNAL JITTER
         setInterval(() => {
-            const val = (99 + Math.random()).toFixed(2);
-            nixie.innerText = val + '%';
-        }, 3000);
-
-        // System Time
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('system-time').innerText = now.toLocaleTimeString();
-        }, 1000);
-
-        // Anomaly Canvas Logic
-        const cvs = document.getElementById('anomaly-viz');
-        const ctx = cvs.getContext('2d');
-        function draw() {
-            cvs.width = cvs.parentElement.offsetWidth;
-            cvs.height = cvs.parentElement.offsetHeight;
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0,0,cvs.width,cvs.height);
-            for(let i=0; i<100; i++) {
-                ctx.fillStyle = Math.random() > 0.95 ? '#f00' : '#083344';
-                ctx.fillRect(Math.random()*cvs.width, Math.random()*cvs.height, 2, 2);
+            const val = (99.98 + (Math.random() * 0.02)).toFixed(3);
+            document.getElementById('dist-nixie').innerText = val + "%";
+            document.getElementById('stability-val').innerText = val + "%";
+            
+            if (Math.random() > 0.99) {
+                document.getElementById('erasure-flash').style.opacity = 0.4;
+                setTimeout(() => document.getElementById('erasure-flash').style.opacity = 0, 80);
             }
-            requestAnimationFrame(draw);
+        }, 200);
+
+        // 2. DUST PARTICLES
+        const dCanvas = document.getElementById('dust-canvas');
+        const dCtx = dCanvas.getContext('2d');
+        let particles = [];
+        function initDust() {
+            dCanvas.width = window.innerWidth; dCanvas.height = window.innerHeight;
+            for(let i=0; i<150; i++) {
+                particles.push({
+                    x: Math.random() * dCanvas.width,
+                    y: Math.random() * dCanvas.height,
+                    s: Math.random() * 2.5,
+                    v: Math.random() * 0.4 + 0.1
+                });
+            }
         }
-        draw();
+        function drawDust() {
+            dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
+            dCtx.fillStyle = '#999';
+            particles.forEach(p => {
+                dCtx.beginPath(); dCtx.arc(p.x, p.y, p.s, 0, Math.PI*2); dCtx.fill();
+                p.y -= p.v; if(p.y < -10) p.y = dCanvas.height + 10;
+            });
+            requestAnimationFrame(drawDust);
+        }
+
+        // 3. INVESTIGATION LENS & PARALLAX
+        const lens = document.getElementById('uv-lens');
+        document.addEventListener('mousemove', (e) => {
+            lens.style.display = 'block';
+            lens.style.left = (e.clientX - 175) + 'px';
+            lens.style.top = (e.clientY - 175) + 'px';
+
+            // Parallax Documents
+            document.querySelectorAll('.torn-paper').forEach(paper => {
+                const rect = paper.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const moveX = (e.clientX - centerX) / 60;
+                const moveY = (e.clientY - centerY) / 60;
+                
+                const baseRot = parseFloat(paper.style.transform.match(/rotate\((.*)deg\)/)?.[1] || 0);
+                paper.style.transform = `rotateX(${-moveY}deg) rotateY(${moveX}deg) rotate(${baseRot}deg)`;
+            });
+        });
+
+        // 4. THREE.JS GLITCH RIFT
+        function initRift() {
+            const canvas = document.getElementById('rift-canvas');
+            const renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true});
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth/canvas.clientHeight, 0.1, 1000);
+            camera.position.z = 2.5;
+
+            const geometry = new THREE.IcosahedronGeometry(1.2, 15);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0x14b8a6,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+            const rift = new THREE.Mesh(geometry, material);
+            scene.add(rift);
+
+            const light = new THREE.PointLight(0xffffff, 2, 50);
+            light.position.set(5, 5, 5);
+            scene.add(light);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                rift.rotation.x += 0.003;
+                rift.rotation.y += 0.004;
+                
+                if(Math.random() > 0.985) {
+                    rift.scale.set(1.5, 0.7, 1.3);
+                    material.opacity = 1;
+                } else {
+                    rift.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+                    material.opacity = 0.6;
+                }
+                renderer.render(scene, camera);
+            }
+            animate();
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        }
+
+        window.onload = () => {
+            initRift();
+            initDust();
+            drawDust();
+        };
+
+        // 5. CLEARANCE TOGGLE
+        document.getElementById('clearance-toggle').onchange = (e) => {
+            if(e.target.checked) {
+                document.body.style.filter = "contrast(1.2) brightness(1.1)";
+                document.querySelectorAll('[data-redacted]').forEach(el => el.style.background = 'transparent');
+            } else {
+                document.body.style.filter = "none";
+                document.querySelectorAll('[data-redacted]').forEach(el => el.style.background = '#000');
+            }
+        };
     </script>
 </body>
 </html>
