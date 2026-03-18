@@ -3,508 +3,694 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUE // STATION_04 - Zone 3: Correction Chambers (The White-Out)</title>
+    <title>D.U.E // STATION_04 - Zone 3: Correction Chambers</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;700;900&family=Homemade+Apple&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --brass: #c5a059;
-            --brass-dim: #5c4a1e;
-            --paper: #fdfcf8;
-            --ink: #1a1a1a;
-            --alert-red: #d9381e;
-            --clinical-blue: #d1d9e0;
-            --phosphor: #00ff41;
-            --surgical-teal: #14b8a6;
+            --blinding-white: #ffffff;
+            --clinical-grey: #f1f5f9;
+            --mercury-light: #e2e8f0;
+            --mercury-dark: #94a3b8;
+            --void-black: #0f172a;
+            --suture-gold: #D4AF37;
+            --blood-red: #991b1b;
+            --scream-cyan: #0ea5e9;
         }
 
         * { box-sizing: border-box; cursor: crosshair; }
         
         body {
-            background-color: #cbd5e0;
-            color: var(--ink);
+            background-color: var(--clinical-grey);
+            color: var(--void-black);
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            transition: background 1s ease;
+            overflow-x: hidden; 
         }
 
-        /* --- THE WHITE-OUT BOARD --- */
-        .clinical-void-board {
-            background-color: var(--clinical-blue);
-            background-image: 
-                radial-gradient(circle at center, rgba(255,255,255,0.95) 0%, transparent 100%),
-                url('https://www.transparenttextures.com/patterns/dark-wood.png');
-            box-shadow: inset 0 0 300px rgba(255,255,255,1);
-            position: relative;
-            border: 30px solid #91a2b5;
-            outline: 2px solid rgba(0,0,0,0.1);
-            perspective: 1200px;
+        /* --- GLOBAL OVERLAYS --- */
+        .white-out-vignette {
+            position: fixed; inset: 0; pointer-events: none; z-index: 999;
+            background: radial-gradient(circle at center, transparent 20%, rgba(255, 255, 255, 1) 100%);
         }
 
-        /* TACTILE PAPER EFFECT */
-        .torn-paper {
-            background-color: var(--paper);
-            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-            box-shadow: 2px 8px 25px rgba(0,0,0,0.1), 0 0 40px rgba(255,255,255,0.3);
-            border-radius: 2px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.15s ease-out, box-shadow 0.3s ease;
-        }
-        .torn-paper:hover {
-            box-shadow: 15px 40px 70px rgba(0,0,0,0.25);
-            z-index: 200 !important;
-        }
-
-        /* SURGICAL SUTURE PIN */
-        .suture-pin {
-            position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-            width: 22px; height: 22px;
-            background: radial-gradient(circle at 35% 35%, #f2d06b, #3d2e14);
-            border-radius: 50%;
-            box-shadow: -3px 5px 8px rgba(0,0,0,0.5), inset -1px 1px 2px rgba(255,255,255,0.4);
-            z-index: 110;
-        }
-
-        /* PROJECT FOLDER STYLING */
-        .project-folder {
-            border-left: 12px solid var(--surgical-teal);
-            padding: 30px;
-            min-height: 240px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .folder-tab {
-            position: absolute; top: -25px; left: 0;
-            background: var(--surgical-teal); color: white;
-            padding: 5px 25px; font-family: 'Space Mono';
-            font-size: 10px; font-weight: 900;
-            clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
-            box-shadow: 0 -5px 10px rgba(0,0,0,0.05);
-        }
-
-        /* OSCILLOSCOPE */
-        .oscilloscope {
-            width: 100%; height: 180px;
-            background: #020502;
-            border: 6px solid #1e2530;
-            border-radius: 8px;
-            position: relative; overflow: hidden;
-            box-shadow: inset 0 0 40px rgba(0, 255, 65, 0.3);
-        }
-        .screaming-pulse {
-            position: absolute; top: 50%; left: 0; width: 200%; height: 3px;
-            background: var(--phosphor);
-            box-shadow: 0 0 20px var(--phosphor);
-            animation: scream-wave 0.8s infinite linear;
-        }
-
-        /* INVESTIGATION LENS EFFECT */
-        #uv-lens {
-            position: fixed; width: 350px; height: 350px;
-            background: radial-gradient(circle, rgba(20, 184, 166, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 500;
+        .glare-overlay {
+            position: fixed; inset: 0; pointer-events: none; z-index: 998;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, transparent 40%, rgba(255,255,255,0.5) 100%);
             mix-blend-mode: overlay;
-            display: none;
         }
 
-        /* HANDWRITTEN ANNOTATIONS */
-        .annotation {
-            font-family: 'Homemade Apple', cursive;
-            color: var(--alert-red);
-            font-size: 14px;
-            pointer-events: none;
-            opacity: 0.7;
+        /* LIQUID LOGIC FLOOR (FROZEN MERCURY) */
+        .liquid-mercury {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background: linear-gradient(45deg, var(--mercury-light), var(--clinical-grey));
+            filter: url(#mercury-filter);
+            opacity: 0.6;
         }
 
-        /* DUST & SCROLLING */
-        #dust-canvas {
-            position: fixed; inset: 0;
-            pointer-events: none; z-index: 55; opacity: 0.3;
+        /* --- UI ELEMENTS --- */
+        .font-deco { font-family: 'Cinzel', serif; }
+        .font-data { font-family: 'Space Mono', monospace; }
+
+        .clinical-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            box-shadow: 0 10px 30px rgba(148, 163, 184, 0.2);
+            position: relative;
+            overflow: hidden;
         }
 
-        .film-grain {
-            position: fixed; inset: 0;
-            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.05; pointer-events: none; z-index: 1000;
+        .surgical-table {
+            background: linear-gradient(to bottom, #ffffff, #e2e8f0);
+            border: 2px solid var(--mercury-dark);
+            box-shadow: 
+                inset 0 0 50px rgba(148, 163, 184, 0.5),
+                0 20px 40px rgba(15, 23, 42, 0.1);
         }
 
-        [data-redacted] {
-            background: #000; color: #000; transition: 1.5s;
-        }
-        [data-redacted]:hover { background: transparent; color: inherit; }
-
-        .brass-plaque {
-            background: linear-gradient(135deg, #e2b04a 0%, #f2d06b 40%, #a67c00 100%);
-            border: 2px solid #3d2e14;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .btn-protocol {
-            background: #1a1a1a; color: white;
-            padding: 12px 25px; font-family: 'Space Mono';
-            font-size: 11px; font-weight: 900;
-            text-transform: uppercase; letter-spacing: 2px;
-            transition: 0.3s;
-            position: relative; overflow: hidden;
-            display: inline-block;
-            text-align: center;
-        }
-        .btn-protocol:hover { background: var(--surgical-teal); box-shadow: 0 0 20px var(--surgical-teal); color: white; }
-
-        .bureau-stamp {
-            position: absolute; font-family: 'Space Mono'; font-weight: 900;
-            padding: 10px 20px; border: 4px double currentColor;
-            text-transform: uppercase; mix-blend-mode: multiply; opacity: 0.6;
-            pointer-events: none;
-        }
-
-        /* NAVIGATION TABS ACTIVE STATE */
+        /* Navigation */
         .nav-tab {
             transition: 0.3s;
-            border-right: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(148, 163, 184, 0.3);
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #64748b;
+            background: rgba(255,255,255,0.5);
         }
-        .nav-tab:hover {
-            background: rgba(255,255,255,0.05);
-            opacity: 1 !important;
-        }
+        .nav-tab:hover { background: rgba(255,255,255,0.9); color: var(--void-black); }
         .nav-tab.active {
-            background: var(--surgical-teal) !important;
-            color: white !important;
-            opacity: 1 !important;
+            background: var(--blinding-white) !important;
+            color: var(--void-black) !important;
+            border-bottom: 3px solid var(--suture-gold);
+            box-shadow: 0 -5px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        /* --- HAZARDS & EFFECTS --- */
+
+        /* 1. Shadow Loss Effect */
+        .shadow-loss-container {
+            position: relative;
+            transition: all 0.5s ease;
+        }
+        .shadow-loss-target {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        .detached-shadow {
+            content: ''; position: absolute; inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            filter: blur(8px);
+            z-index: 5;
+            transition: all 3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            transform: translate(10px, 10px);
+        }
+        .shadow-loss-container:hover .detached-shadow {
+            transform: translate(80px, 50px) skewX(-20deg) scaleY(0.5);
+            opacity: 0;
+            filter: blur(25px);
+        }
+
+        /* 2. Temporal Suture Animation */
+        .suture-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            transition: stroke-dashoffset 1.5s ease-in-out;
+        }
+        .suture-line.active {
+            stroke-dashoffset: 0;
+            animation: gold-pulse 2s infinite;
+        }
+        @keyframes gold-pulse {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(212,175,55,0.5)); }
+            50% { filter: drop-shadow(0 0 15px rgba(212,175,55,1)); }
+        }
+
+        /* 3. The Scream (Screen Flash) */
+        @keyframes scream-flash {
+            0% { filter: invert(1) contrast(200%); transform: scale(1.02); }
+            10% { filter: invert(0) contrast(100%); transform: scale(0.98); }
+            20% { filter: invert(1) hue-rotate(180deg); transform: scale(1.01); }
+            30% { filter: invert(0); transform: scale(1); }
+        }
+        .scream-active {
+            animation: scream-flash 0.4s ease-out;
+        }
+
+        /* 4. Moving SVG Animations */
+        .spin-slow { animation: spin 20s linear infinite; }
+        .spin-slow-reverse { animation: spin 15s linear infinite reverse; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .dash-flow {
+            stroke-dasharray: 10 20;
+            animation: flow 1s linear infinite;
+        }
+        @keyframes flow { to { stroke-dashoffset: -30; } }
+
+        .scanner-beam {
+            animation: scan 3s ease-in-out infinite alternate;
+        }
+        @keyframes scan {
+            0% { transform: translateY(-100%); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100%); opacity: 0; }
+        }
+
+        /* Images */
+        .clinical-image {
+            filter: grayscale(100%) contrast(150%) brightness(120%);
+            mix-blend-mode: multiply;
+        }
+
+        /* Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--mercury-dark); border-radius: 4px;}
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--void-black); }
+
+        /* Buttons */
+        .btn-suture {
+            background: var(--blinding-white);
+            border: 2px solid var(--suture-gold);
+            color: var(--void-black);
+            padding: 12px 24px;
+            font-family: 'Space Mono';
+            font-size: 12px;
             font-weight: 900;
+            transition: all 0.3s;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+        }
+        .btn-suture:hover {
+            background: var(--suture-gold);
+            color: white;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
         }
     </style>
 </head>
-<body class="flex flex-col bg-slate-200">
+<body class="flex flex-col min-h-screen" id="app-body">
 
-    <div class="film-grain"></div>
-    <div id="uv-lens"></div>
-    <div id="erasure-flash" class="fixed inset-0 bg-white z-[10000] pointer-events-none opacity-0"></div>
-    <canvas id="dust-canvas"></canvas>
-    
-    <!-- BUREAU HEADER -->
-    <header class="bg-white/95 border-b-4 border-black relative z-[300] px-12 py-6 flex justify-between items-center shadow-xl">
+    <!-- SVG FILTERS (LIQUID MERCURY) -->
+    <svg style="width:0;height:0;position:absolute;">
+        <filter id="mercury-filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise" />
+            <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="highContrast" />
+            <feDisplacementMap in="SourceGraphic" in2="highContrast" scale="30" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
+
+    <!-- OVERLAYS -->
+    <div class="liquid-mercury"></div>
+    <div class="white-out-vignette"></div>
+    <div class="glare-overlay"></div>
+
+    <!-- HEADER -->
+    <header class="bg-white/90 border-b border-gray-300 relative z-[300] px-12 py-6 flex justify-between items-center shadow-lg backdrop-blur-xl">
         <div class="flex items-center gap-12">
-            <div class="font-black text-6xl tracking-tighter text-slate-900 leading-none">
-                D.U.E.
-                <span class="block text-[9px] tracking-[1.2em] opacity-40 font-bold uppercase mt-2">Investigation // Station_04</span>
+            <div>
+                <div class="text-5xl lg:text-6xl font-black tracking-tighter text-gray-900 drop-shadow-[0_0_10px_white]">D.U.E.</div>
+                <div class="text-xs uppercase tracking-[0.4em] text-gray-500 font-black mt-2">CORRECTION_CHAMBERS // ZONE_03</div>
             </div>
-            <div class="h-16 w-px bg-slate-300"></div>
-            <div class="text-[12px] opacity-80 leading-tight uppercase font-black tracking-[0.2em]">
-                Zone: <span class="text-teal-600">CORRECTION_CHAMBERS</span><br>
-                Protocol: <span class="text-red-600 animate-pulse">WHITE_OUT</span><br>
-                User: <span class="text-slate-500">DEON_WAL // OMEGA</span>
+            <div class="h-16 w-px bg-gray-300 hidden md:block"></div>
+            <div class="text-sm font-data text-gray-600 leading-relaxed font-bold">
+                ENV: <span class="text-blue-500">LIQUID_LOGIC</span><br>
+                SHADOW: <span class="text-red-500">DETACHING</span><br>
+                STATUS: <span class="text-gray-900 font-black">SURGICAL</span>
             </div>
         </div>
         
-        <div class="flex items-center gap-12">
-            <div class="bg-slate-100 p-4 border-2 border-slate-300 flex flex-col items-center justify-center group cursor-pointer hover:bg-teal-50 hover:border-teal-400 transition-colors">
-                <a href="extractor.html" class="flex flex-col items-center">
-                    <span class="text-[9px] uppercase font-black tracking-widest text-slate-400 group-hover:text-teal-600">System Tool</span>
-                    <span class="text-[12px] font-bold text-slate-900">EXTRACTOR.EXE</span>
-                </a>
+        <div class="hidden md:flex items-center gap-14">
+            <div class="flex flex-col items-end font-data">
+                <span class="text-xs uppercase font-black text-gray-400 mb-2 tracking-widest">Cohesion Index</span>
+                <div id="cohesion-nixie" class="text-5xl md:text-6xl tabular-nums tracking-tight text-gray-800 font-light">99.99%</div>
             </div>
-            <div class="flex flex-col items-end">
-                <span class="text-[10px] uppercase font-bold opacity-50 mb-1">Reality Consistency</span>
-                <div id="dist-nixie" class="font-mono text-4xl font-black text-slate-900 tracking-tighter border-b-2 border-slate-100">99.982%</div>
-            </div>
-            <div class="bg-slate-50 p-4 border-2 border-slate-200 flex items-center gap-4 shadow-sm">
-                <span class="text-[10px] uppercase font-black tracking-widest text-slate-400">Clearance</span>
-                <input type="checkbox" id="clearance-toggle" class="w-8 h-8 accent-red-600 cursor-pointer">
+            <div class="h-16 w-px bg-gray-300"></div>
+            <div class="flex flex-col items-center">
+                <div class="w-4 h-4 rounded-full bg-[#D4AF37] shadow-[0_0_15px_#D4AF37] animate-pulse mb-2"></div>
+                <span class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Sterile</span>
             </div>
         </div>
     </header>
 
-    <main id="main-scroll-container" class="relative z-20 overflow-y-auto pt-10">
+    <main class="relative z-20 flex-1 flex flex-col pt-8 pb-32">
         
         <!-- HERO TITLING -->
-        <section class="h-[25vh] flex flex-col items-center justify-center text-center relative mb-10">
-            <h1 class="text-[12rem] font-black tracking-[3rem] text-slate-900 opacity-5 mb-2 uppercase select-none absolute">Zone 3</h1>
-            <div class="relative">
-                <p class="text-xl md:text-2xl tracking-[1.2rem] text-slate-900 uppercase font-black bg-white/95 px-16 py-6 border-8 border-black shadow-[30px_30px_0_rgba(0,0,0,0.05)]">
-                    Evidence Atlas
+        <section class="h-[18vh] flex flex-col items-center justify-center text-center relative pointer-events-none mb-6">
+            <h1 class="text-[8rem] lg:text-[14rem] font-black tracking-[2rem] lg:tracking-[5rem] text-gray-300 opacity-30 mb-2 uppercase absolute select-none mix-blend-overlay">SURGERY</h1>
+            <div class="relative bg-white/95 px-20 py-8 border border-gray-200 backdrop-blur-md shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
+                <p class="text-3xl md:text-5xl tracking-[1rem] text-gray-900 uppercase font-black font-deco">
+                    Correction Chambers
                 </p>
-                <span class="annotation absolute -bottom-8 -right-12" style="transform: rotate(5deg);">"Decisions are permanent."</span>
+                <div class="mt-4 text-sm font-data tracking-[0.5em] text-gray-500 uppercase font-bold">
+                    (The White-Out)
+                </div>
             </div>
         </section>
 
-        <!-- MAIN INVESTIGATION BOARD -->
-        <div class="w-full max-w-[1900px] mx-auto pb-48 px-12 relative z-20">
-            <div class="bg-[#fcfcfc] border-8 border-black shadow-2xl overflow-hidden">
+        <!-- MAIN LAYOUT WRAPPER -->
+        <div class="w-full max-w-[2200px] mx-auto px-6 lg:px-12 flex-1 flex flex-col gap-8">
+            
+            <!-- NAVIGATION TABS -->
+            <nav class="flex border-b border-gray-300 bg-white/70 shrink-0 flex-wrap border-x rounded-t-lg backdrop-blur-xl shadow-md">
+                <a href="index.html" class="tab-btn px-10 py-5 opacity-50">01. Archive</a>
+                <a href="zone2.html" class="tab-btn px-10 py-5 opacity-50">02. Field Ops</a>
+                <a href="zone3.html" class="tab-btn px-10 py-5 active">03. Correction Chambers</a>
+                <a href="zone4.html" class="nav-tab px-10 py-5 opacity-50">04. Observation</a>
+                <a href="zone5.html" class="nav-tab px-10 py-5 opacity-50">05. Directorate Core</a>
+                <a href="zone6.html" class="tab-btn px-10 py-5 opacity-50">06. Projection Booth</a>
+            </nav>
+
+            <!-- 3-COLUMN CONTENT GRID -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 font-data">
                 
-                <!-- NAVIGATION TABS - WORKING LINKS TO YOUR FILES -->
-                <nav class="flex border-b-4 border-black bg-slate-900 text-white font-mono text-[11px] uppercase overflow-x-auto">
-                    <a href="index.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">01. Spire</a>
-                    <a href="zone2.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">02. Market</a>
-                    <a href="zone3.html" class="nav-tab px-10 py-8 active">03. Correction</a>
-                    <a href="zone4.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">04. Observatory</a>
-                    <a href="zone5.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100 border-r border-white/10">05. Sync</a>
-                    <a href="zone6.html" class="nav-tab px-10 py-8 opacity-40 hover:opacity-100">06. Root</a>
-                    <div class="flex-1 flex justify-end items-center px-12">
-                        <span class="font-black text-red-500 animate-pulse tracking-[0.4em]">STATION_04_ARCHIVE</span>
-                    </div>
-                </nav>
-
-                <!-- THE BOARD -->
-                <div id="zone3-board" class="p-24 clinical-void-board grid grid-cols-12 gap-10 min-h-[2400px]">
+                <!-- LEFT COLUMN: ENVIRONMENT & LORE -->
+                <div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
                     
-                    <!-- CENTRAL BIBLE OBJECT -->
-                    <div class="col-start-4 col-span-6 flex justify-center py-20 relative">
-                        <div class="bureau-stamp text-red-600 top-0 left-0 -rotate-12 border-red-600">Confidential</div>
-                        <div class="leather-book w-[500px] h-[750px] relative z-40 flex flex-col items-center justify-center p-16 text-center" style="transform: rotate(0.8deg);">
-                            <div class="brass-clasp absolute right-[-18px] top-[45%] w-[40px] h-[80px] rounded-r-lg"></div>
-                            <div class="w-40 h-40 mb-16 opacity-30 invert">
-                                <svg viewBox="0 0 100 100" class="text-white fill-none stroke-current stroke-1">
-                                    <circle cx="50" cy="50" r="48"/>
-                                    <path d="M50 5 L53 47 L95 50 L53 53 L50 95 L47 53 L5 50 L47 47 Z" fill="white"/>
-                                </svg>
-                            </div>
-                            <h2 class="font-serif text-[#d4af37] text-6xl font-black uppercase tracking-[0.1em] leading-tight text-shadow-xl">D.U.E.<br>BIBLE</h2>
-                            <div class="mt-16 w-full border-t border-[#d4af37]/30 pt-8">
-                                <span class="font-mono text-[14px] text-[#d4af37] tracking-[0.6em] uppercase font-bold">Volume_03: Correction</span>
-                            </div>
+                    <!-- Core Concept -->
+                    <div class="clinical-panel p-8">
+                        <h3 class="font-deco text-2xl text-gray-900 border-b border-gray-200 pb-3 mb-4 uppercase tracking-widest font-black">Clinical Mandate</h3>
+                        <div class="w-full h-32 mb-4 overflow-hidden relative border border-gray-200">
+                            <!-- Visual placeholder for a blinding white clinical setting -->
+                            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover clinical-image" alt="Clinical Hallway">
+                            <div class="absolute inset-0 bg-white/40"></div>
                         </div>
-                    </div>
-
-                    <!-- CLINICAL REPORT (Left) -->
-                    <div class="col-span-4 torn-paper p-16 z-30" style="transform: rotate(-1.5deg);">
-                        <div class="suture-pin"></div>
-                        <h4 class="font-black text-3xl uppercase tracking-tighter border-b-8 border-black/5 mb-8 pb-4">The Theory</h4>
-                        <p class="font-mono text-base font-bold text-black/80 leading-relaxed mb-10 italic">
-                            Reality in Zone 3 is <span data-redacted>fluid but finite</span>. We are surgeons removing the weight of failed human timelines.
+                        <p class="text-sm text-gray-600 leading-relaxed font-serif font-medium mb-4">
+                            The Department's most feared location. This is a shadowless, blinding white void where agents do not fix reality; they <strong class="text-gray-900">force an ending</strong>.
                         </p>
-                        <div class="bg-black text-white p-8 font-black text-2xl uppercase text-center mb-10 leading-tight border-l-[12px] border-teal-600">
-                            "WE FORCE THE ENDING."
-                        </div>
-                        <span class="annotation">"Director Aldersyth's notes - 1982"</span>
+                        <p class="text-xs text-gray-500 uppercase tracking-widest p-3 bg-gray-100 border-l-4 border-gray-400">
+                            "We are narrative executioners. We cut the fraying threads and stitch the wound."
+                        </p>
                     </div>
 
-                    <!-- PROJECT FOLDER 1 (Right) -->
-                    <div class="col-span-4 col-start-9 torn-paper project-folder z-30" style="transform: rotate(2deg);">
-                        <div class="folder-tab">FILE_001</div>
-                        <div class="suture-pin"></div>
-                        <div>
-                            <h4 class="font-black text-2xl uppercase tracking-widest text-teal-700 mb-4">// THE APPARATUS</h4>
-                            <p class="font-mono text-sm text-slate-700 font-bold mb-6">Brass transit device utilizing Cesium-137 for narrative anchoring. Restricted access.</p>
-                            <span class="text-[9px] font-bold text-red-500 uppercase tracking-widest">[ Metadata: Volatile ]</span>
-                        </div>
-                        <a href="https://deon-wal.github.io/The-Apparatus/" class="btn-protocol">Access Protocol</a>
-                    </div>
-
-                    <!-- RIFT SCANNER (Center) -->
-                    <div class="col-start-4 col-span-6 torn-paper p-4 z-20" style="transform: rotate(-0.5deg);">
-                        <div class="suture-pin"></div>
-                        <div class="h-[550px] bg-black relative overflow-hidden border-4 border-slate-900 group">
-                            <canvas id="rift-canvas"></canvas>
-                            <div class="absolute inset-0 bg-gradient-to-b from-teal-500/10 to-transparent pointer-events-none"></div>
-                            <div class="absolute top-8 left-8 font-mono text-[11px] text-teal-400 font-black tracking-widest bg-black/80 p-4 border border-teal-900/50">
-                                SCAN_CORE: OMEGA_74<br>
-                                STATUS: CRITICAL_SHIFT<br>
-                                DEPTH: -4.02ms
+                    <!-- Liquid Logic Flow Monitor (Moving SVG) -->
+                    <div class="clinical-panel p-8">
+                        <h3 class="font-deco text-lg text-gray-900 border-b border-gray-200 pb-3 mb-4 uppercase tracking-widest font-black">Liquid Logic Viscosity</h3>
+                        <div class="w-full h-24 bg-gray-50 border border-gray-200 relative overflow-hidden flex items-center justify-center mb-4">
+                            <svg viewBox="0 0 200 100" class="w-full h-full opacity-50">
+                                <path class="dash-flow" d="M0,50 Q25,20 50,50 T100,50 T150,50 T200,50" fill="none" stroke="#0ea5e9" stroke-width="2"/>
+                                <path class="dash-flow" d="M0,60 Q25,90 50,60 T100,60 T150,60 T200,60" fill="none" stroke="#94a3b8" stroke-width="1" style="animation-direction: reverse; animation-duration: 2s;"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-12 h-12 border-2 border-dashed border-[#0ea5e9] rounded-full spin-slow"></div>
                             </div>
                         </div>
-                        <div class="evidence-caption mt-6 font-black text-sm uppercase tracking-[0.5em]">Figure 03: Narrative Singularity Visualization</div>
-                    </div>
-
-                    <!-- PROJECT FOLDER 2 (Left Lower) -->
-                    <div class="col-span-4 torn-paper project-folder z-30" style="transform: rotate(-1deg);">
-                        <div class="folder-tab">FILE_002</div>
-                        <div class="suture-pin"></div>
-                        <div>
-                            <h4 class="font-black text-2xl uppercase tracking-widest text-teal-700 mb-4">// SUBSTRATE PROTOCOL</h4>
-                            <p class="font-mono text-sm text-slate-700 font-bold mb-6">Hierarchical spatial mapping of the Syth-fold. Used for agent orientation in vacuum states.</p>
-                        </div>
-                        <a href="https://deon-wal.github.io/Substrate-Protocol/" class="btn-protocol">Access Protocol</a>
-                    </div>
-
-                    <!-- SCREAM MONITOR (Right Lower) -->
-                    <div class="col-span-5 col-start-8 bg-slate-900 p-12 z-20 shadow-2xl border-t-8 border-teal-600" style="transform: rotate(0.2deg);">
-                        <div class="suture-pin" style="left: auto; right: 20px;"></div>
-                        <h4 class="font-black text-[12px] uppercase mb-6 text-teal-400 tracking-[0.4em] flex items-center gap-5">
-                            <span class="w-3 h-3 rounded-full bg-red-600 shadow-[0_0_15px_#ff0000] animate-pulse"></span>
-                            AUDITORY_FEEDBACK: THE SCREAM
-                        </h4>
-                        <div class="oscilloscope">
-                            <div class="screaming-pulse"></div>
-                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/criss-cross.png')] opacity-20"></div>
-                        </div>
-                        <div class="flex justify-between mt-8 font-mono text-[11px] font-black text-teal-500 uppercase tracking-widest">
-                            <span>Resonance: 19.4KHz</span>
-                            <span>Tear: Level 3</span>
+                        <div class="flex justify-between text-xs text-gray-500 uppercase tracking-widest font-bold">
+                            <span>Flow Rate</span>
+                            <span class="text-[#0ea5e9]">Optimal (Frozen)</span>
                         </div>
                     </div>
 
-                    <!-- PROJECT FOLDER 3 (Bottom Left) -->
-                    <div class="col-span-4 col-start-2 torn-paper project-folder z-30" style="transform: rotate(1.5deg);">
-                        <div class="folder-tab">FILE_003</div>
-                        <div class="suture-pin"></div>
-                        <div>
-                            <h4 class="font-black text-2xl uppercase tracking-widest text-teal-700 mb-4">// D.U.E. ARCHIVE</h4>
-                            <p class="font-mono text-sm text-slate-700 font-bold mb-6">Master chronological vault containing every purged timeline since Bureau inception.</p>
+                    <!-- Hazard: Shadow Loss -->
+                    <div class="shadow-loss-container mt-auto">
+                        <div class="detached-shadow"></div>
+                        <div class="shadow-loss-target clinical-panel border-l-4 border-red-500">
+                            <h4 class="text-red-600 font-black uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                Hazard: Shadow-Loss
+                            </h4>
+                            <p class="text-xs text-gray-600 font-serif mb-3">
+                                In the shadowless void, an agent's shadow may spontaneously detach. <span class="font-bold text-gray-900">Hover cursor over this panel to observe detachment.</span>
+                            </p>
+                            <div class="text-[9px] bg-red-50 text-red-700 p-2 uppercase font-bold tracking-widest border border-red-100">
+                                Warning: Without a shadow, resolution back into D.U.E. is impossible.
+                            </div>
                         </div>
-                        <a href="https://deon-wal.github.io/Department-Of-Unfinished-Events-DUE/" class="btn-protocol">Access Protocol</a>
                     </div>
 
-                    <!-- BRASS PLAQUE (BOTTOM CENTER) -->
-                    <div class="col-start-4 col-span-6 flex justify-center mt-32">
-                        <div class="brass-plaque px-32 py-12 border-b-8 border-black/40">
-                            <div class="w-6 h-6 rounded-full bg-black/60 absolute left-8 top-1/2 -translate-y-1/2 shadow-inner"></div>
-                            <div class="w-6 h-6 rounded-full bg-black/60 absolute right-8 top-1/2 -translate-y-1/2 shadow-inner"></div>
-                            <h3 class="font-serif font-black text-[#1a140f] text-3xl tracking-[0.4em] text-center leading-tight">
-                                ZONE 03: CORRECTION<br>
-                                <span class="text-[12px] font-sans font-black tracking-[1em] text-black/50">OFFICIAL ATLAS // BUREAU_STATION_04</span>
+                </div>
+
+                <!-- CENTER COLUMN: THE OPERATING TABLE -->
+                <div class="col-span-12 lg:col-span-6 flex flex-col relative gap-6">
+                    <div class="clinical-panel surgical-table p-8 flex flex-col relative overflow-hidden z-10 min-h-[500px]">
+                        
+                        <!-- Header -->
+                        <div class="flex justify-between items-end border-b border-gray-300 pb-4 mb-6 relative z-20">
+                            <div>
+                                <h2 class="font-deco text-3xl text-gray-900 font-black uppercase tracking-widest">Surgical Layout</h2>
+                                <p class="text-xs text-gray-500 uppercase tracking-widest mt-2 font-bold">Unfinished Events Prepped for Forced Resolution</p>
+                            </div>
+                            <button id="btn-suture" class="btn-suture flex items-center gap-2 z-30" onclick="applySuture()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 2-6 6-6-6"/><path d="M12 22v-8"/></svg>
+                                Apply Temporal Suture
+                            </button>
+                        </div>
+
+                        <!-- The "Event" Canvas (Visualizer) -->
+                        <div class="flex-1 bg-gray-100/80 border border-gray-300 rounded relative overflow-hidden flex items-center justify-center shadow-inner mb-6">
+                            
+                            <!-- Background Grid & Moving Scanner -->
+                            <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px); background-size: 30px 30px;"></div>
+                            <div class="absolute left-0 right-0 h-1 bg-cyan-400/50 shadow-[0_0_20px_cyan] scanner-beam z-20 pointer-events-none"></div>
+                            
+                            <!-- The "Wound" (Unfinished Event SVG) -->
+                            <svg class="w-full h-full absolute inset-0 z-10" viewBox="0 0 800 400">
+                                <!-- Base pulsing anomaly -->
+                                <circle cx="400" cy="200" r="150" fill="none" stroke="#cbd5e1" stroke-width="1" class="spin-slow" stroke-dasharray="20 10"/>
+                                <circle cx="400" cy="200" r="100" fill="none" stroke="#94a3b8" stroke-width="2" class="spin-slow-reverse" stroke-dasharray="5 15"/>
+                                
+                                <!-- The tear in reality -->
+                                <path d="M150,200 Q250,50 400,200 T650,200" fill="none" stroke="#e2e8f0" stroke-width="60" stroke-linecap="round" filter="blur(12px)"/>
+                                <path d="M150,200 Q250,50 400,200 T650,200" fill="none" stroke="#0f172a" stroke-width="2" stroke-dasharray="10 20"/>
+                                
+                                <!-- The Gold Sutures (Hidden initially, revealed via JS class) -->
+                                <g id="suture-group" stroke="#D4AF37" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path class="suture-line" d="M180,150 L220,250 M220,250 L260,130 M260,130 L300,240 M300,240 L340,110 M340,110 L380,260 M380,260 L420,120" />
+                                    <path class="suture-line" d="M420,120 L460,250 M460,250 L500,140 M500,140 L540,240 M540,240 L580,160 M580,160 L620,230" />
+                                    <!-- Needle tips -->
+                                    <circle class="suture-line" cx="180" cy="150" r="4" fill="#D4AF37"/>
+                                    <circle class="suture-line" cx="620" cy="230" r="4" fill="#D4AF37"/>
+                                </g>
+                            </svg>
+
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-30" id="suture-status-text">
+                                <div class="text-lg font-black text-gray-500 tracking-[1em] uppercase mb-3 drop-shadow-md">Subject: Event #404-X</div>
+                                <div class="text-xs text-red-600 bg-red-50/90 px-4 py-2 font-black tracking-widest border border-red-200 shadow-lg">STATUS: HEMORRHAGING REALITY</div>
+                            </div>
+                        </div>
+
+                        <!-- Auditory Feedback Monitor -->
+                        <div class="h-32 bg-[#0f172a] rounded border-2 border-gray-800 p-4 relative overflow-hidden shadow-inner">
+                            <div class="scanlines opacity-40"></div>
+                            <div class="flex justify-between items-center mb-2 relative z-10">
+                                <span class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Auditory Feedback // Reality Frequency</span>
+                                <span id="scream-label" class="text-[10px] text-[#0ea5e9] font-black uppercase tracking-widest">Nominal</span>
+                            </div>
+                            
+                            <!-- Waveform Canvas -->
+                            <canvas id="waveform-canvas" class="w-full h-16 relative z-10"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Event Queue (New Section) -->
+                    <div class="clinical-panel p-6">
+                        <div class="flex justify-between items-center border-b border-gray-200 pb-2 mb-4">
+                            <h3 class="text-xs font-black text-gray-900 uppercase tracking-widest">Event Termination Queue</h3>
+                            <span class="text-[9px] text-red-500 font-bold uppercase bg-red-50 px-2 py-1">Backlog: 8,492</span>
+                        </div>
+                        <div class="space-y-2 text-[10px] font-mono uppercase tracking-widest text-gray-600">
+                            <div class="flex justify-between p-2 bg-gray-50 border border-gray-100">
+                                <span class="font-bold text-gray-900">#404-X (Active)</span> <span class="text-amber-500 animate-pulse">Prepping Suture</span>
+                            </div>
+                            <div class="flex justify-between p-2">
+                                <span>#405-Y</span> <span class="text-gray-400">Awaiting Table</span>
+                            </div>
+                            <div class="flex justify-between p-2">
+                                <span>#406-Z</span> <span class="text-gray-400">Awaiting Table</span>
+                            </div>
+                            <div class="flex justify-between p-2">
+                                <span>#399-A</span> <span class="text-green-600">Terminated</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: TEMPORAL BLEED & TOOLS -->
+                <div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
+                    
+                    <div class="clinical-panel flex-1 flex flex-col overflow-hidden">
+                        <div class="p-6 border-b border-gray-200 bg-white relative z-20">
+                            <h3 class="font-deco text-xl text-gray-900 mb-1 uppercase tracking-widest font-black flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                Temporal Bleed
                             </h3>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Echoes from forced futures.</p>
                         </div>
-                    </div>
 
-                    <!-- THE ASH PILE -->
-                    <div class="col-start-10 col-span-3 flex flex-col items-end mt-20 pr-10">
-                        <div class="ash-pile w-64 h-40 opacity-80"></div>
-                        <div class="bg-white px-10 py-5 border-8 border-black font-black text-2xl uppercase tracking-[0.4em] shadow-2xl -mt-12">
-                            VOID.
+                        <!-- Visual representation of Bleed -->
+                        <div class="w-full h-32 border-b border-gray-200 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover grayscale contrast-200 brightness-150 opacity-40 mix-blend-multiply" alt="Static Overlay">
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-50 to-transparent"></div>
                         </div>
-                        <span class="annotation mt-6 text-right">"Residue collected from Site-03."</span>
+                        
+                        <div class="flex-1 p-6 relative bg-gray-50/50">
+                            <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #cbd5e1 0, #cbd5e1 1px, transparent 1px, transparent 10px);"></div>
+                            
+                            <div class="h-full overflow-y-auto custom-scrollbar pr-4 space-y-6" id="bleed-feed">
+                                <!-- Pre-populated Bleed Logs -->
+                                <div class="bleed-entry border-l-2 border-gray-300 pl-4 transition-all duration-1000">
+                                    <div class="text-[9px] text-gray-400 font-bold mb-1 tracking-widest">T-MINUS 04:12</div>
+                                    <p class="font-serif text-sm text-gray-700 italic font-bold">"I don't understand, the wedding was supposed to be tomorrow... why is the church gone?"</p>
+                                </div>
+                                <div class="bleed-entry border-l-2 border-gray-300 pl-4 transition-all duration-1000 opacity-60">
+                                    <div class="text-[9px] text-gray-400 font-bold mb-1 tracking-widest">T-MINUS 12:44</div>
+                                    <p class="font-serif text-sm text-gray-700 italic font-bold">"Mom, is the sky supposed to look like static?"</p>
+                                </div>
+                                <div class="bleed-entry border-l-2 border-gray-300 pl-4 transition-all duration-1000 opacity-40">
+                                    <div class="text-[9px] text-gray-400 font-bold mb-1 tracking-widest">T-MINUS 18:02</div>
+                                    <p class="font-serif text-sm text-gray-700 italic font-bold">"But I just saw him! He just walked out the door, he can't be... he can't be erased."</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-t border-gray-200 bg-white text-[9px] text-gray-500 uppercase tracking-widest font-bold text-center border-l-4 border-l-red-500">
+                            Voices belong to individuals from timelines that will now never occur. Do not engage.
+                        </div>
                     </div>
 
                 </div>
             </div>
+
+            <!-- BOTTOM: OPERATIONAL RECORDS & LORE (EXPANDED) -->
+            <div class="mt-8 clinical-panel p-8 lg:p-12 mb-12">
+                <div class="flex items-center gap-6 mb-8">
+                    <h2 class="font-data text-xl text-gray-900 font-black uppercase tracking-[0.4em] whitespace-nowrap">Operational Archival</h2>
+                    <div class="h-px bg-gray-300 flex-1"></div>
+                    <span class="font-data text-[10px] text-gray-400 uppercase tracking-widest font-bold">Classified Alpha</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 font-data">
+                    
+                    <!-- Record 1 -->
+                    <div class="bg-white border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col">
+                        <div class="h-24 w-full bg-gray-100 mb-4 overflow-hidden border border-gray-200">
+                            <img src="https://images.unsplash.com/photo-1584362917165-526a968579e8?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover clinical-image sepia-[0.5] hue-rotate-30" alt="Gold Sutures">
+                        </div>
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-3 border-b border-gray-100 pb-2 font-bold">Tool: Gold Needles</div>
+                        <p class="text-xs text-gray-700 leading-relaxed font-serif italic mb-4">
+                            "The Temporal Sutures are not metaphor. They are physical, macroscopic needles made of dense, cold gold. You must physically pierce the torn narrative and pull it shut. The resistance feels like tearing through raw meat."
+                        </p>
+                        <div class="mt-auto text-[9px] text-[#D4AF37] font-black uppercase bg-yellow-50 inline-block px-2 py-1 self-start">Standard Protocol</div>
+                    </div>
+
+                    <!-- Record 2 -->
+                    <div class="bg-white border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col">
+                        <div class="h-24 w-full bg-gray-100 mb-4 overflow-hidden border border-gray-200">
+                            <div class="w-full h-full flex items-center justify-center bg-[#0f172a] relative">
+                                <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(255,255,255,0.1)_2px,rgba(255,255,255,0.1)_4px)]"></div>
+                                <span class="text-white/20 font-black text-2xl tracking-[1em] uppercase filter blur-[2px]">VOID</span>
+                            </div>
+                        </div>
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-3 border-b border-gray-100 pb-2 font-bold">Subject: Agent V.</div>
+                        <p class="text-xs text-gray-700 leading-relaxed font-serif italic mb-4">
+                            "He hesitated during the suturing of Event 44. Said the Temporal Bleed sounded like his daughter. He stepped off the Liquid Logic mat, and his shadow detached completely. He is still standing in Room 3."
+                        </p>
+                        <div class="mt-auto text-[9px] text-red-500 font-black uppercase bg-red-50 inline-block px-2 py-1 self-start">Resolution: Failed</div>
+                    </div>
+
+                    <!-- Record 3 -->
+                    <div class="bg-white border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col">
+                        <div class="h-24 w-full bg-gray-100 mb-4 overflow-hidden border border-gray-200">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover clinical-image opacity-70" alt="Liquid Logic">
+                        </div>
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-3 border-b border-gray-100 pb-2 font-bold">Subject: The Scream</div>
+                        <p class="text-xs text-gray-700 leading-relaxed font-serif italic mb-4">
+                            "When you force a future that reality rejects, the room screams. It's not a sound you hear; it's a high-frequency vibration you feel in your teeth. Your ears bleed, but the monitors show complete silence."
+                        </p>
+                        <div class="mt-auto text-[9px] text-[#0ea5e9] font-black uppercase bg-blue-50 inline-block px-2 py-1 self-start">Notice: Earpro Req.</div>
+                    </div>
+
+                    <!-- Record 4 -->
+                    <div class="bg-white border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-shadow flex flex-col">
+                        <div class="h-24 w-full bg-gray-100 mb-4 overflow-hidden border border-gray-200 flex items-center justify-center">
+                            <svg viewBox="0 0 100 100" class="w-16 h-16 opacity-30 spin-slow">
+                                <polygon points="50,10 90,90 10,90" fill="none" stroke="#0f172a" stroke-width="4"/>
+                                <circle cx="50" cy="65" r="10" fill="#0f172a"/>
+                            </svg>
+                        </div>
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-3 border-b border-gray-100 pb-2 font-bold">Subject: White Blindness</div>
+                        <p class="text-xs text-gray-700 leading-relaxed font-serif italic mb-4">
+                            "Extended exposure to the shadowless void causes permanent optical erasure. Agents begin to see the 'white' bleeding into their peripheral vision even when off-duty. Eventually, it consumes their entire visual cortex."
+                        </p>
+                        <div class="mt-auto text-[9px] text-purple-600 font-black uppercase bg-purple-50 inline-block px-2 py-1 self-start">Medical Alert</div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     </main>
 
-    <!-- FOOTER STABILITY BAR -->
-    <footer class="bg-white border-t-8 border-black py-8 px-12 flex justify-between items-center fixed bottom-0 w-full z-[400] shadow-[0_-20px_50px_rgba(0,0,0,0.1)]">
-        <div class="flex gap-12 items-center">
-            <div class="tracking-[1em] text-black font-black text-[14px] uppercase opacity-30">Bureau_Archive_S4</div>
-            <div class="flex items-center gap-4 bg-red-50 px-4 py-2 border border-red-200">
-                <div class="h-3 w-3 rounded-full bg-red-600 animate-ping"></div>
-                <span class="text-[10px] font-black text-red-700 tracking-widest">RADIATION DETECTED</span>
-            </div>
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-300 py-6 px-12 flex justify-between items-center relative z-[400] shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+        <div class="flex gap-8 items-center">
+            <div class="tracking-[0.8em] text-gray-400 font-black text-xs uppercase font-data">STATION_04_LINK</div>
+            <div class="h-3 w-3 bg-gray-800 rounded-full shadow-inner"></div>
+            <div class="text-[10px] text-gray-500 font-data font-bold tracking-widest">STATE: [ STERILE ]</div>
         </div>
-        <div id="stability-display" class="font-mono text-slate-900 text-2xl font-black tracking-tighter">
-            SIGNAL_STABILITY: <span class="text-teal-600" id="stability-val">99.98%</span>
+        <div class="flex items-center gap-10 hidden md:flex">
+            <div class="font-serif text-gray-400 text-sm font-bold tracking-[0.2em] uppercase italic">
+                "We force the ending."
+            </div>
         </div>
     </footer>
 
     <script>
-        // 1. NIXIE & SIGNAL JITTER
-        setInterval(() => {
-            const val = (99.98 + (Math.random() * 0.02)).toFixed(3);
-            document.getElementById('dist-nixie').innerText = val + "%";
-            document.getElementById('stability-val').innerText = val + "%";
+        // 1. WAVEFORM CANVAS (Auditory Feedback)
+        let waveCtx, waveCanvas, waveWidth, waveHeight;
+        let isScreaming = false;
+        let time = 0;
+
+        function initWaveform() {
+            waveCanvas = document.getElementById('waveform-canvas');
+            waveCtx = waveCanvas.getContext('2d');
             
-            if (Math.random() > 0.99) {
-                document.getElementById('erasure-flash').style.opacity = 0.4;
-                setTimeout(() => document.getElementById('erasure-flash').style.opacity = 0, 80);
+            function resize() {
+                waveWidth = waveCanvas.width = waveCanvas.parentElement.clientWidth - 32; // padding
+                waveHeight = waveCanvas.height = 64;
             }
-        }, 200);
-
-        // 2. DUST PARTICLES
-        const dCanvas = document.getElementById('dust-canvas');
-        const dCtx = dCanvas.getContext('2d');
-        let particles = [];
-        function initDust() {
-            dCanvas.width = window.innerWidth; dCanvas.height = window.innerHeight;
-            for(let i=0; i<150; i++) {
-                particles.push({
-                    x: Math.random() * dCanvas.width,
-                    y: Math.random() * dCanvas.height,
-                    s: Math.random() * 2.5,
-                    v: Math.random() * 0.4 + 0.1
-                });
-            }
-        }
-        function drawDust() {
-            dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
-            dCtx.fillStyle = '#999';
-            particles.forEach(p => {
-                dCtx.beginPath(); dCtx.arc(p.x, p.y, p.s, 0, Math.PI*2); dCtx.fill();
-                p.y -= p.v; if(p.y < -10) p.y = dCanvas.height + 10;
-            });
-            requestAnimationFrame(drawDust);
+            window.addEventListener('resize', resize);
+            resize();
+            drawWaveform();
         }
 
-        // 3. INVESTIGATION LENS & PARALLAX
-        const lens = document.getElementById('uv-lens');
-        document.addEventListener('mousemove', (e) => {
-            lens.style.display = 'block';
-            lens.style.left = (e.clientX - 175) + 'px';
-            lens.style.top = (e.clientY - 175) + 'px';
+        function drawWaveform() {
+            waveCtx.clearRect(0, 0, waveWidth, waveHeight);
+            waveCtx.beginPath();
+            waveCtx.moveTo(0, waveHeight / 2);
 
-            // Parallax Documents
-            document.querySelectorAll('.torn-paper').forEach(paper => {
-                const rect = paper.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                const moveX = (e.clientX - centerX) / 60;
-                const moveY = (e.clientY - centerY) / 60;
+            waveCtx.strokeStyle = isScreaming ? '#ef4444' : '#0ea5e9'; // Red if screaming, Cyan if nominal
+            waveCtx.lineWidth = isScreaming ? 3 : 2;
+
+            for (let i = 0; i < waveWidth; i++) {
+                // Nominal baseline noise
+                let noise = Math.sin(i * 0.05 + time) * 5 + Math.cos(i * 0.1 - time) * 3;
                 
-                const baseRot = parseFloat(paper.style.transform.match(/rotate\((.*)deg\)/)?.[1] || 0);
-                paper.style.transform = `rotateX(${-moveY}deg) rotateY(${moveX}deg) rotate(${baseRot}deg)`;
-            });
-        });
-
-        // 4. THREE.JS GLITCH RIFT
-        function initRift() {
-            const canvas = document.getElementById('rift-canvas');
-            const renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true});
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth/canvas.clientHeight, 0.1, 1000);
-            camera.position.z = 2.5;
-
-            const geometry = new THREE.IcosahedronGeometry(1.2, 15);
-            const material = new THREE.MeshPhongMaterial({
-                color: 0x14b8a6,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.6,
-                blending: THREE.AdditiveBlending
-            });
-            const rift = new THREE.Mesh(geometry, material);
-            scene.add(rift);
-
-            const light = new THREE.PointLight(0xffffff, 2, 50);
-            light.position.set(5, 5, 5);
-            scene.add(light);
-
-            function animate() {
-                requestAnimationFrame(animate);
-                rift.rotation.x += 0.003;
-                rift.rotation.y += 0.004;
-                
-                if(Math.random() > 0.985) {
-                    rift.scale.set(1.5, 0.7, 1.3);
-                    material.opacity = 1;
-                } else {
-                    rift.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
-                    material.opacity = 0.6;
+                // If suturing, introduce massive chaotic spikes
+                if (isScreaming) {
+                    noise += (Math.random() - 0.5) * 60; 
                 }
-                renderer.render(scene, camera);
+
+                waveCtx.lineTo(i, (waveHeight / 2) + noise);
             }
-            animate();
-            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            waveCtx.stroke();
+
+            time += 0.1;
+            requestAnimationFrame(drawWaveform);
         }
 
-        window.onload = () => {
-            initRift();
-            initDust();
-            drawDust();
-        };
+        // 2. TEMPORAL SUTURE MECHANIC
+        function applySuture() {
+            if (isScreaming) return; // Prevent spamming
 
-        // 5. CLEARANCE TOGGLE
-        document.getElementById('clearance-toggle').onchange = (e) => {
-            if(e.target.checked) {
-                document.body.style.filter = "contrast(1.2) brightness(1.1)";
-                document.querySelectorAll('[data-redacted]').forEach(el => el.style.background = 'transparent');
-            } else {
-                document.body.style.filter = "none";
-                document.querySelectorAll('[data-redacted]').forEach(el => el.style.background = '#000');
+            const sutureLines = document.querySelectorAll('.suture-line');
+            const statusText = document.getElementById('suture-status-text');
+            const screamLabel = document.getElementById('scream-label');
+            const btn = document.getElementById('btn-suture');
+            const body = document.getElementById('app-body');
+
+            // 1. UI Updates
+            btn.innerHTML = 'SUTURING...';
+            btn.style.opacity = '0.5';
+            btn.style.pointerEvents = 'none';
+            statusText.innerHTML = `
+                <div class="text-lg font-black text-gray-800 tracking-[1em] uppercase mb-3 drop-shadow-md">Subject: Event #404-X</div>
+                <div class="text-xs text-[#D4AF37] bg-yellow-50 px-4 py-2 font-black border border-yellow-200 tracking-widest shadow-lg">FORCING RESOLUTION</div>
+            `;
+            screamLabel.innerText = "CRITICAL FREQUENCY // SCREAM";
+            screamLabel.className = "text-[10px] text-red-500 font-black uppercase tracking-widest animate-pulse";
+            
+            // 2. Trigger Animations
+            isScreaming = true;
+            body.classList.add('scream-active');
+            
+            sutureLines.forEach(line => {
+                line.classList.add('active');
+            });
+
+            // 3. Trigger new Bleed Log
+            triggerBleedLog();
+
+            // 4. Reset after 3 seconds
+            setTimeout(() => {
+                isScreaming = false;
+                body.classList.remove('scream-active');
+                screamLabel.innerText = "Nominal";
+                screamLabel.className = "text-[10px] text-[#0ea5e9] font-black uppercase tracking-widest";
+                
+                statusText.innerHTML = `
+                    <div class="text-lg font-black text-gray-500 tracking-[1em] uppercase mb-3 drop-shadow-md">Subject: Event #404-X</div>
+                    <div class="text-xs text-green-600 bg-green-50 px-4 py-2 font-bold border border-green-200 shadow-lg tracking-widest uppercase">Status: Resolved & Sealed</div>
+                `;
+
+                btn.innerHTML = 'OPERATION COMPLETE';
+                
+                // Update queue UI
+                const queueItem = document.querySelector('.clinical-panel .bg-gray-50 span.text-amber-500');
+                if(queueItem) {
+                    queueItem.className = 'text-green-600 font-bold';
+                    queueItem.innerText = 'Sealed';
+                }
+            }, 3000);
+        }
+
+        // 3. TEMPORAL BLEED GENERATOR
+        const bleedQuotes = [
+            "Wait, put the gun down, we can talk about—",
+            "The test results came back negative! We're clear!",
+            "I swear I locked the door before I left...",
+            "Happy birthday, sweetheart. Make a wish.",
+            "They're inside the wire. Repeat, they are inside the—",
+            "I said yes! Oh my god, I said yes!",
+            "Please, I just want to go home...",
+            "It's a boy! Look, he has your eyes..."
+        ];
+
+        function triggerBleedLog() {
+            const feed = document.getElementById('bleed-feed');
+            const quote = bleedQuotes[Math.floor(Math.random() * bleedQuotes.length)];
+            
+            const entry = document.createElement('div');
+            entry.className = "bleed-entry border-l-2 border-gray-300 pl-4 opacity-0 transition-all duration-500";
+            entry.innerHTML = `
+                <div class="text-[9px] text-gray-400 font-bold mb-1 tracking-widest text-red-500">T-MINUS 00:00 [SEVERED]</div>
+                <p class="font-serif text-sm text-gray-900 font-bold italic">"${quote}"</p>
+            `;
+            
+            feed.prepend(entry);
+            
+            // Fade in
+            setTimeout(() => entry.classList.remove('opacity-0'), 50);
+
+            // Fade old entries
+            const entries = feed.children;
+            for(let i=0; i<entries.length; i++) {
+                if (i > 0) entries[i].classList.add('opacity-50');
+                if (i > 1) entries[i].classList.add('opacity-30');
+                if (i > 2) entries[i].classList.add('opacity-10');
+                if (i > 3) entries[i].style.display = 'none';
             }
-        };
+        }
+
+        // 4. JITTER TELEMETRY
+        function initTelemetry() {
+            setInterval(() => {
+                const cohesion = (99.90 + (Math.random() * 0.09)).toFixed(2);
+                document.getElementById('cohesion-nixie').innerText = `${cohesion}%`;
+            }, 1000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initWaveform();
+            initTelemetry();
+        });
     </script>
 </body>
 </html>
