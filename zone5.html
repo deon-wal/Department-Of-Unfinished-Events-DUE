@@ -1,144 +1,405 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUE // STATION_04 - Zone 5: Directorate Core (The Concrete Heart)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body class="flex flex-col bg-black text-[#a3a3a3]">
+import React, { useState, useEffect } from 'react';
+import { 
+  Zap, 
+  AlertTriangle, 
+  Book, 
+  Database, 
+  Wind, 
+  RotateCcw, 
+  Activity, 
+  EyeOff, 
+  Lock,
+  Ghost,
+  Eraser,
+  Camera,
+  Layers,
+  ShieldAlert
+} from 'lucide-react';
 
-    <div id="erasure-flash"></div>
-    <div id="scanlines" style="opacity: 0.8;"></div>
-    <div id="crt-flicker"></div>
-    
-    <div class="fixed inset-0 z-[1] pointer-events-none" style="box-shadow: inset 0 0 150px 100px #000;"></div>
+const App = () => {
+  const [isRewinding, setIsRewinding] = useState(false);
+  const [corruption, setCorruption] = useState(99.02);
+  const [erasedNames, setErasedNames] = useState(new Set());
+  const [glitchTrigger, setGlitchTrigger] = useState(false);
+  const [systemTemp, setSystemTemp] = useState(-196.2);
+  const [spoolSpeed, setSpoolSpeed] = useState(1);
 
-    <header class="bg-[#050505] border-b border-[#333] relative z-30">
-        <div class="flex items-center gap-6">
-            <div class="font-black text-3xl tracking-tighter text-[#555]">D.U.E.</div>
-            <div class="text-[8px] opacity-40 leading-tight uppercase font-bold border-l border-[#333] pl-4 text-[#777]">
-                Workstation_04<br>
-                Total_Recovery_V5.0<br>
-                Status: Rewinding
+  // Mock Ledger Data
+  const initialNames = [
+    { id: 1, name: "Arthur P. Vance", role: "Field Agent", status: "Active" },
+    { id: 2, name: "Elias Thorne", role: "Archivist", status: "Active" },
+    { id: 3, name: "Sarah Miller", role: "Directorate Liaison", status: "Active" },
+    { id: 4, name: "Unknown Subject-04", role: "Containment", status: "Active" },
+    { id: 5, name: "Marcus Vale", role: "Senior Director", status: "Immune" },
+    { id: 6, name: "Elena Rossi", role: "Temporal Mechanic", status: "Active" },
+    { id: 7, name: "Thomas Beckett", role: "Surveillance", status: "Active" },
+  ];
+
+  // Simulations
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCorruption(prev => +(prev + (Math.random() - 0.5) * 0.01).toFixed(2));
+      
+      if (Math.random() > 0.97) {
+        setGlitchTrigger(true);
+        setTimeout(() => setGlitchTrigger(false), 200);
+      }
+
+      setSystemTemp(prev => +(-196.2 + (Math.random() * 0.4)).toFixed(1));
+      setSpoolSpeed(isRewinding ? -20 : 1 + Math.random());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isRewinding]);
+
+  const handleErasure = (id) => {
+    if (initialNames.find(n => n.id === id).status === "Immune") return;
+    setErasedNames(prev => new Set(prev).add(id));
+  };
+
+  const triggerRewind = () => {
+    setIsRewinding(true);
+    setTimeout(() => setIsRewinding(false), 4000);
+  };
+
+  return (
+    <div className={`min-h-screen bg-[#050505] text-[#a3a3a3] font-mono selection:bg-amber-500/30 overflow-hidden relative ${glitchTrigger ? 'brightness-125 saturate-200' : ''}`}>
+      
+      {/* BACKGROUND TEXTURE: CONCRETE & BLEEDING */}
+      <div className="fixed inset-0 pointer-events-none opacity-20">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <filter id="noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#noise)" opacity="0.4" />
+          {/* Blood-like cracks */}
+          <path d="M400,0 Q410,200 390,400 T410,800" stroke="#7f1d1d" strokeWidth="1" fill="none" className="animate-pulse" />
+          <path d="M100,0 Q120,300 80,600" stroke="#7f1d1d" strokeWidth="0.5" fill="none" opacity="0.3" />
+        </svg>
+      </div>
+
+      {/* CRT OVERLAYS */}
+      <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.05] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,118,0.06))] bg-[length:100%_3px,3px_100%] shadow-[inset_0_0_150px_rgba(0,0,0,1)]"></div>
+      
+      {/* HEADER: D.U.E. STATION INTERFACE */}
+      <header className="h-16 border-b-2 border-[#1a1a1a] bg-[#080808] flex justify-between items-center px-6 relative z-40">
+        <div className="flex items-center gap-8">
+          <div className="flex flex-col leading-none">
+            <span className="text-2xl font-black tracking-tighter text-white/90">D.U.E. STATION_04</span>
+            <span className="text-[9px] text-amber-500/60 font-bold tracking-[0.4em] mt-1 uppercase">Directorate Core Node</span>
+          </div>
+          <div className="hidden md:flex items-center gap-4 border-l border-white/10 pl-6 h-8">
+            <div className="flex flex-col">
+              <span className="text-[8px] text-white/40 uppercase font-bold">Protocol</span>
+              <span className="text-[10px] text-green-500 font-bold">TOTAL_RECOVERY_V5</span>
             </div>
+            <div className="flex flex-col">
+              <span className="text-[8px] text-white/40 uppercase font-bold">Clearance</span>
+              <span className="text-[10px] text-red-500 font-bold">DIRECTOR_ONLY</span>
+            </div>
+          </div>
         </div>
-        <div class="flex items-center gap-8">
-            <div id="dist-nixie" class="nixie-tube !text-[#ffaa00] !border-[#ffaa00]/30 !text-shadow-none animate-pulse">ERR: 99% CORRUPT</div>
-            <div class="flex items-center gap-3 bg-black px-4 py-2 rounded border border-[#333]">
-                <span class="text-[7px] uppercase font-bold tracking-widest text-[#777]">Clearance Mode</span>
-                <input type="checkbox" id="clearance-toggle" class="w-4 h-4 accent-[#ffaa00] cursor-pointer" disabled>
-            </div>
-        </div>
-    </header>
 
-    <main id="main-scroll-container" class="z-20">
-        <section class="h-[40vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
-            <div class="z-20">
-                <h1 class="text-4xl md:text-6xl font-black tracking-[0.5rem] md:tracking-[1rem] text-[#888] opacity-90 mb-4 uppercase">Zone 5 — Directorate Core</h1>
-                <p class="text-[12px] md:text-[14px] tracking-[0.8rem] text-[#ffaa00] uppercase font-bold">(The Concrete Heart)</p>
+        <div className="flex items-center gap-10">
+          <div className="flex flex-col items-end">
+            <span className="text-[9px] text-red-500/70 font-bold uppercase tracking-widest mb-1">Reality Corruption</span>
+            <div className="flex items-center gap-3">
+              <div className="w-32 h-2 bg-red-950/30 rounded-full overflow-hidden border border-red-900/20">
+                <div className="h-full bg-red-600 animate-pulse" style={{ width: `${corruption}%` }} />
+              </div>
+              <span className="text-lg font-black text-red-600 leading-none">{corruption}%</span>
             </div>
+          </div>
+          <button 
+            onClick={triggerRewind}
+            className={`h-10 px-8 border-2 transition-all flex items-center gap-3 font-bold text-xs uppercase tracking-[0.2em] ${
+              isRewinding ? 'bg-amber-600 border-amber-600 text-black scale-95' : 'bg-transparent border-white/10 hover:border-amber-500 hover:text-amber-500'
+            }`}
+          >
+            <RotateCcw size={16} className={isRewinding ? 'animate-spin' : ''} />
+            {isRewinding ? 'Rewinding Reality...' : 'Manual Rewind'}
+          </button>
+        </div>
+      </header>
+
+      {/* MAIN CONSOLE AREA */}
+      <main className="grid grid-cols-12 h-[calc(100vh-104px)] overflow-hidden">
+        
+        {/* LEFT COLUMN: Industrial Sensors */}
+        <aside className="col-span-3 border-r-2 border-[#1a1a1a] bg-[#050505]/80 backdrop-blur-sm p-6 flex flex-col gap-8">
+          
+          {/* Liquid Nitrogen Cooling */}
+          <div className="space-y-4">
+            <h3 className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-bold flex items-center gap-2">
+              <Wind size={12} className="text-blue-400" /> LN2 Cooling Intake
+            </h3>
+            <div className="p-4 bg-black border border-blue-900/30 rounded flex flex-col gap-1 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors" />
+              <div className="flex justify-between items-end relative z-10">
+                <span className="text-3xl font-black text-blue-400 tracking-tighter">{systemTemp}°C</span>
+                <div className="flex flex-col items-end">
+                  <Activity size={24} className="text-blue-500/20 mb-1" />
+                  <span className="text-[8px] text-blue-400/50 uppercase font-black">Hissing - Nominal</span>
+                </div>
+              </div>
+              <div className="h-1 w-full bg-blue-950/20 mt-3 overflow-hidden">
+                <div className="h-full bg-blue-500/40 w-1/3 animate-[shimmer_3s_infinite]" />
+              </div>
+            </div>
+          </div>
+
+          {/* Brass Plaque Asset */}
+          <div className="bg-[#1a1610] border-2 border-[#3d3222] p-4 rounded-sm shadow-xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.05),transparent)] pointer-events-none" />
+            <h4 className="text-[#a88a5e] text-[10px] font-black tracking-[0.2em] text-center mb-1">DUE COMPASS / ANCHOR</h4>
+            <div className="w-full h-px bg-[#3d3222] mb-3" />
+            <p className="text-[#7a6545] text-[9px] text-center font-bold leading-tight uppercase italic">
+              "Dedicated to the preservation <br/> of the concrete record."
+            </p>
+            <div className="absolute bottom-1 right-2 text-[8px] text-[#3d3222] font-black">ST-04</div>
+          </div>
+
+          {/* Polaroid Model-T Asset */}
+          <div className="bg-white/5 border border-white/10 p-2 rounded relative group cursor-crosshair">
+            <div className="bg-[#0a0a0a] aspect-square flex items-center justify-center overflow-hidden border border-white/5">
+               <Camera size={48} className="text-white/5 group-hover:text-amber-500/20 transition-colors" />
+               <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1590487988256-9ed24133863e?auto=format&fit=crop&q=80&w=400')] bg-cover opacity-30 grayscale group-hover:opacity-50 transition-all" />
+               <div className="absolute top-2 left-2 px-1 bg-black/60 text-[8px] text-white/60 font-bold">MODEL-T SCAN</div>
+            </div>
+            <div className="mt-3 px-1">
+              <span className="text-[10px] text-white/30 uppercase font-bold tracking-widest block">World-Drive Status</span>
+              <p className="text-[9px] text-amber-500 font-bold italic mt-1 leading-tight">Subject: Continuous Rec. Failure</p>
+            </div>
+          </div>
+
+          {/* Status Indicators */}
+          <div className="flex-1 border-t border-white/5 pt-6 space-y-3">
+             <div className="flex items-center justify-between text-[9px] font-black">
+                <span className="text-white/30 uppercase tracking-widest">Windows</span>
+                <span className="text-red-600 bg-red-950/20 px-2 py-0.5 rounded">NULL_NONE</span>
+             </div>
+             <div className="flex items-center justify-between text-[9px] font-black">
+                <span className="text-white/30 uppercase tracking-widest">Chronometry</span>
+                <span className="text-red-600 bg-red-950/20 px-2 py-0.5 rounded">VOID_CLOCKLESS</span>
+             </div>
+             <div className="flex items-center justify-between text-[9px] font-black">
+                <span className="text-white/30 uppercase tracking-widest">Medium</span>
+                <span className="text-amber-500">MAGNETIC_TAPE</span>
+             </div>
+          </div>
+        </aside>
+
+        {/* CENTER COLUMN: The World-Drive Viewport */}
+        <section className="col-span-5 bg-[#020202] relative overflow-hidden flex flex-col border-r-2 border-[#1a1a1a]">
+          
+          {/* TAPE PATH VISUALS */}
+          <div className="absolute top-0 bottom-0 left-12 w-px bg-white/5" />
+          <div className="absolute top-0 bottom-0 right-12 w-px bg-white/5" />
+          
+          <div className="flex-1 flex flex-col items-center justify-center p-12 gap-12 relative z-10">
+            {/* Massive Magnetic Reels */}
+            <div className="flex gap-12 md:gap-20">
+              {[1, 2].map(reel => (
+                <div key={reel} className={`relative w-48 h-48 md:w-64 md:h-64 rounded-full border-8 border-[#1a1a1a] flex items-center justify-center bg-black transition-transform duration-100 ${isRewinding ? 'animate-[spin_0.8s_linear_infinite_reverse]' : 'animate-[spin_12s_linear_infinite]'}`}>
+                  <div className="absolute inset-4 rounded-full border border-white/5 border-dashed" />
+                  <div className="w-12 h-12 rounded-full bg-[#111] border-2 border-white/5 flex items-center justify-center">
+                    <div className="w-2 h-2 rounded-full bg-white/10" />
+                  </div>
+                  {[0, 45, 90, 135, 180, 225, 270, 315].map(deg => (
+                    <div key={deg} className="absolute w-0.5 h-24 bg-white/5" style={{ transform: `rotate(${deg}deg) translateY(-40px)` }} />
+                  ))}
+                  <div className="absolute inset-0 bg-[conic-gradient(from_0deg,transparent,rgba(255,170,0,0.03),transparent)]" />
+                </div>
+              ))}
+            </div>
+
+            {/* Read Head Calibration */}
+            <div className="w-full max-w-lg bg-[#080808] border border-white/10 p-6 rounded relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-1 h-full bg-amber-500 animate-pulse" />
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-amber-500 font-black uppercase tracking-widest">Signal // Read-Head_01</span>
+                  <span className="text-[8px] text-white/30 font-bold uppercase mt-1">S/N: 982-VALE-CORE</span>
+                </div>
+                <div className="text-[10px] font-black text-white/60">SPOOL: {spoolSpeed.toFixed(2)}x</div>
+              </div>
+
+              <div className="grid grid-cols-12 gap-1.5 h-16">
+                {[...Array(24)].map((_, i) => (
+                  <div 
+                    key={i} 
+                    className={`h-full rounded-sm transition-all duration-300 ${
+                      isRewinding 
+                        ? (i % 2 === 0 ? 'bg-amber-600' : 'bg-red-950/20')
+                        : (Math.random() > 0.8 ? 'bg-white/40' : 'bg-white/5')
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <div className="mt-6 flex items-center justify-center gap-4">
+                 <div className="h-px flex-1 bg-white/5" />
+                 <ShieldAlert size={14} className="text-red-800" />
+                 <div className="h-px flex-1 bg-white/5" />
+              </div>
+            </div>
+          </div>
+
+          {/* Environmental Tag */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center">
+            <div className="text-[10px] font-black tracking-[1.5em] text-white/20 uppercase whitespace-nowrap mb-2">ZONE_05_DIRECTORATE_CORE</div>
+            <div className="text-[8px] text-amber-500/40 font-bold uppercase tracking-widest">(THE CONCRETE HEART)</div>
+          </div>
         </section>
 
-        <div class="max-w-6xl mx-auto px-6 pb-32 relative z-20">
-            <div class="bg-[#020202] border-2 border-[#1a1a1a] shadow-2xl relative">
-                
-                <nav class="flex border-b border-[#1a1a1a] flex-wrap text-xs md:text-sm bg-[#050505]">
-                    <a href="index.html" class="tab-btn">01. Zone 1</a>
-                    <a href="zone2.html" class="tab-btn">02. Zone 2</a>
-                    <a href="zone3.html" class="tab-btn">03. Zone 3</a>
-                    <a href="zone4.html" class="tab-btn">04. Zone 4</a>
-                    <a href="zone5.html" class="tab-btn active" style="color: #ffaa00; border-bottom: 2px solid #ffaa00; background: #0a0a0a;">05. Zone 5</a>
-                    <a href="zone6.html" class="tab-btn">06. Zone 6</a>
-                </nav>
-
-                <div id="zone5" class="tab-content active p-10 md:p-16">
-                    
-                    <div class="mb-12 border-b border-[#1a1a1a] pb-8 text-center relative overflow-hidden">
-                        <p class="text-sm md:text-base leading-relaxed text-[#666] font-serif italic max-w-3xl mx-auto">
-                            The absolute center of the Department. A windowless, clockless vault operating in total sensory deprivation. There is no natural light, and no markers of time. Only the sound of the Drive.
-                        </p>
-                    </div>
-
-                    <div class="grid md:grid-cols-2 gap-8 mb-8">
-                        
-                        <div class="border border-[#1a1a1a] p-8 relative overflow-hidden bg-[#050505]">
-                            <div class="absolute top-2 right-4 text-[8px] text-[#444] font-bold">ASSET // THE_MEDIUM</div>
-                            <h3 class="text-[#888] font-black text-xl mb-6 tracking-tighter uppercase border-b border-[#1a1a1a] pb-2">The Magnetic Record</h3>
-                            
-                            <ul class="space-y-6">
-                                <li>
-                                    <strong class="text-[#aaa] uppercase tracking-widest block text-xs mb-1">Miles of Tape</strong>
-                                    <p class="text-xs leading-relaxed text-[#666]">
-                                        The physical manifestation of existence. Millions of miles of magnetic tape stretching endlessly into the darkness, hissing with the friction of uncompressed reality.
-                                    </p>
-                                </li>
-                                <li>
-                                    <strong class="text-[#ffaa00] uppercase tracking-widest block text-xs mb-1">The World-Drive</strong>
-                                    <p class="text-xs leading-relaxed text-[#666]">
-                                        A massive, continuous recording device designed to capture the progression of reality in real-time. It is the heart of the Department. And it is failing.
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="border border-red-900/20 p-8 relative overflow-hidden bg-[#0a0000]">
-                            <div class="absolute top-2 right-4 text-[8px] text-red-500/40 font-bold">SYSTEM_CRITICAL // CORRUPTION</div>
-                            <h3 class="text-red-500/80 font-black text-xl mb-6 tracking-tighter uppercase border-b border-red-900/20 pb-2">The Failure State</h3>
-                            
-                            <div class="space-y-6">
-                                <div>
-                                    <strong class="text-red-400 uppercase tracking-widest block text-xs mb-1">Constant Rewind</strong>
-                                    <p class="text-xs leading-relaxed text-[#777]">
-                                        Because the universe is <span class="text-red-500 font-bold">99% corrupted</span>, the system cannot commit new data to permanent storage. The World-Drive is forced to constantly rewind in a desperate search for a stable "save point."
-                                    </p>
-                                </div>
-                                
-                                <div class="border-l-2 border-red-600 pl-4 py-1">
-                                    <strong class="text-[#ffaa00] uppercase tracking-widest block text-[10px] mb-1 glitch-text">The Result: The Loops</strong>
-                                    <p class="text-[10px] leading-relaxed text-[#777]">
-                                        This mechanical rewinding is the direct cause of the recurring events and narrative repetition experienced by agents in the field. When the tape snaps back, so does reality.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-12 border border-[#1a1a1a] bg-[#020202] p-4 relative overflow-hidden h-32 flex flex-col justify-center">
-                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;utf8,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22 opacity=%220.05%22/%3E%3C/svg%3E')] pointer-events-none"></div>
-                        <div class="text-[8px] text-[#ffaa00] uppercase font-mono tracking-widest absolute top-2 left-4 opacity-50 z-10">WORLD_DRIVE // SPOOL_STATUS: REWINDING</div>
-                        
-                        <div class="w-full h-12 relative flex items-center tape-rewind-container overflow-hidden opacity-80">
-                            <div class="tape-track h-0.5 bg-[#ffaa00] absolute w-[200%] top-2"></div>
-                            <div class="tape-track h-1 bg-[#333] absolute w-[200%] top-5"></div>
-                            <div class="tape-track h-0.5 bg-[#ffaa00] absolute w-[200%] bottom-2"></div>
-                            
-                            <div class="tape-data flex gap-4 absolute w-[200%]">
-                                <div class="h-8 w-2 bg-[#ffaa00] opacity-40"></div>
-                                <div class="h-8 w-6 bg-[#ffaa00] opacity-20"></div>
-                                <div class="h-8 w-1 bg-red-600 opacity-60"></div>
-                                <div class="h-8 w-12 bg-[#ffaa00] opacity-10"></div>
-                                <div class="h-8 w-3 bg-[#ffaa00] opacity-30"></div>
-                                <div class="h-8 w-2 bg-red-600 opacity-80"></div>
-                                <div class="h-8 w-8 bg-[#ffaa00] opacity-20"></div>
-                                <div class="h-8 w-4 bg-[#ffaa00] opacity-40"></div>
-                                <div class="h-8 w-1 bg-red-600 opacity-60"></div>
-                                <div class="h-8 w-12 bg-[#ffaa00] opacity-10"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+        {/* RIGHT COLUMN: The Master Ledger */}
+        <aside className="col-span-4 bg-[#080808] flex flex-col relative">
+          
+          <div className="p-8 border-b-2 border-[#1a1a1a] bg-[#0a0a0a]">
+            <div className="flex items-center gap-4 mb-2">
+              <Book className="text-amber-500" size={24} />
+              <h2 className="text-xl font-black text-white/90 tracking-tighter">THE MASTER LEDGER</h2>
             </div>
+            <p className="text-[10px] text-white/30 uppercase font-bold tracking-[0.2em] leading-tight">
+              True Names & Existential Anchorage. Managed by Director Vale.
+            </p>
+          </div>
+
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-8 space-y-6">
+            {initialNames.map((person) => (
+              <div 
+                key={person.id}
+                className={`group relative border-2 transition-all duration-700 ${
+                  erasedNames.has(person.id) 
+                    ? 'border-red-900/40 bg-red-950/10 opacity-40 grayscale' 
+                    : 'border-white/5 bg-black/40 hover:border-amber-500/30'
+                }`}
+              >
+                {/* Entry Header */}
+                <div className="p-4 flex justify-between items-start">
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2">
+                       <span className={`text-base font-black tracking-tight ${erasedNames.has(person.id) ? 'line-through decoration-red-600 decoration-2 italic' : 'text-white/90'}`}>
+                         {person.name}
+                       </span>
+                       {person.status === "Immune" && <Lock size={12} className="text-amber-500" />}
+                    </div>
+                    <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest mt-1">{person.role}</span>
+                  </div>
+                  
+                  {!erasedNames.has(person.id) && person.status !== "Immune" && (
+                    <button 
+                      onClick={() => handleErasure(person.id)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-red-500/20 rounded text-red-600 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
+                    >
+                      <Eraser size={16} /> Rub Out
+                    </button>
+                  )}
+
+                  {erasedNames.has(person.id) && (
+                    <div className="flex flex-col items-end">
+                      <span className="text-red-600 text-[10px] font-black uppercase italic flex items-center gap-2">
+                        <EyeOff size={12} /> ERASURE_COMPLETE
+                      </span>
+                      <span className="text-[8px] text-red-800 font-bold uppercase mt-1">Existence Nullified</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Simulated Redacted Record Lines */}
+                <div className="px-4 pb-4 space-y-2 opacity-30">
+                  <div className="h-1 bg-white/20 rounded-full w-full" />
+                  <div className="h-1 bg-white/20 rounded-full w-2/3" />
+                  {erasedNames.has(person.id) && (
+                    <div className="absolute inset-0 bg-red-900/10 mix-blend-multiply backdrop-blur-[1px]" />
+                  )}
+                </div>
+
+                {/* Ledger Texture Overlays */}
+                <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/old-mathematics.png')]" />
+              </div>
+            ))}
+          </div>
+
+          {/* Ledger Footer */}
+          <div className="p-6 bg-black/80 border-t-2 border-[#1a1a1a]">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 text-white/50 text-[10px] font-black">
+                <Ghost size={14} className="text-red-600" />
+                ERASURE PROTOCOL: STANDBY
+              </div>
+              <span className="text-amber-600 text-[10px] font-black animate-pulse">VALE_AUTHENTICATED</span>
+            </div>
+            <div className="flex items-center gap-4 text-[9px] text-white/20 leading-tight border-l-2 border-red-900/40 pl-4 uppercase font-bold italic">
+              "Director Vale rubs names out of the Ledger; existence ceases. The tape is forced to rewind."
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      {/* FOOTER: Global Status Bar */}
+      <footer className="h-10 bg-[#080808] border-t-2 border-[#1a1a1a] flex items-center px-6 text-[10px] font-black tracking-[0.2em] relative z-40">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 text-green-500/80">
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
+            STATION_04_LINK: ACTIVE
+          </div>
+          <div className="h-4 w-px bg-white/10" />
+          <div className="text-white/30">LOCATION: ZONE_05 (THE_CONCRETE_HEART)</div>
         </div>
-    </main>
+        <div className="flex-1" />
+        <div className="flex items-center gap-6">
+          <span className="text-red-700 flex items-center gap-2">
+            <ShieldAlert size={12} /> SIGNAL_STABILITY: 0.01%
+          </span>
+          <div className="h-4 w-px bg-white/10" />
+          <span className="text-amber-500/60 uppercase">No Windows. Only Tape. Miles of it.</span>
+        </div>
+      </footer>
 
-    <footer class="bg-[#020202] border-t border-[#1a1a1a] text-[#555]">
-        <div class="tracking-widest opacity-40 uppercase font-bold">Location: Zone 5 — Directorate Core (The Concrete Heart)</div>
-        <div class="font-mono text-red-600 font-bold animate-pulse">SIGNAL_STABILITY: 0.01%</div>
-    </footer>
+      {/* FULLSCREEN REWIND OVERLAY */}
+      {isRewinding && (
+        <div className="fixed inset-0 z-[100] pointer-events-none flex flex-col items-center justify-center bg-amber-600/5 backdrop-blur-[4px]">
+          <div className="text-6xl font-black text-amber-500 tracking-[3rem] opacity-40 animate-pulse glitch-text">REWINDING</div>
+          <div className="mt-12 w-96 h-1 bg-amber-500/20 relative overflow-hidden">
+            <div className="absolute inset-0 bg-amber-500 -translate-x-full animate-[shimmer_1.5s_infinite_linear]" />
+          </div>
+          <div className="mt-4 text-amber-500/60 text-xs font-black uppercase tracking-[1em]">Searching for Save Point...</div>
+        </div>
+      )}
 
-    <script src="script.js"></script>
-</body>
-</html>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #050505;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #1a1a1a;
+          border-radius: 0px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #ffaa0044;
+        }
+        .glitch-text {
+          text-shadow: 4px 0 #7f1d1d, -4px 0 #0f172a;
+          animation: glitch 0.2s infinite linear alternate-reverse;
+        }
+        @keyframes glitch {
+          0% { transform: translate(0); text-shadow: 4px 0 #7f1d1d, -4px 0 #0f172a; }
+          25% { transform: translate(-2px, 2px); }
+          50% { transform: translate(2px, -2px); text-shadow: -4px 0 #7f1d1d, 4px 0 #0f172a; }
+          75% { transform: translate(-2px, -2px); }
+          100% { transform: translate(0); }
+        }
+      `}} />
+    </div>
+  );
+};
+
+export default App;
