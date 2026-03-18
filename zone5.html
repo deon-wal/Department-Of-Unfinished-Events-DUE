@@ -22,7 +22,7 @@
             background-color: var(--obsidian);
             color: #a3a3a3;
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden; /* Allowed vertical scroll */
+            overflow-x: hidden; 
         }
 
         /* --- THE HUD LAYER --- */
@@ -194,6 +194,13 @@
             background-size: 60px 60px;
             background-position: center center;
         }
+        
+        .manifest-row {
+            transition: 0.2s background-color;
+        }
+        .manifest-row:hover {
+            background-color: rgba(255, 170, 0, 0.1);
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -220,7 +227,7 @@
         <p class="mt-4 text-red-600 font-black tracking-widest uppercase text-xs">Corruption Threat Level: Maximum</p>
     </div>
     
-    <!-- ENHANCED HUD HEADER (LARGER TEXT) -->
+    <!-- ENHANCED HUD HEADER -->
     <header class="bg-black/95 border-b-2 border-[#1a1a1a] relative z-[300] px-12 py-6 flex justify-between items-center shadow-2xl backdrop-blur-md">
         <div class="flex items-center gap-12">
             <div>
@@ -274,14 +281,14 @@
         <div class="w-full max-w-[2000px] mx-auto px-12 flex-1">
             <div class="glass-panel border-2 border-[#1a1a1a] flex flex-col shadow-2xl">
                 
-                <!-- NAVIGATION TABS -->
+                <!-- WORKING NAVIGATION TABS -->
                 <nav class="flex border-b-2 border-[#1a1a1a] bg-black/60 shrink-0 flex-wrap">
-                    <a href="#" class="nav-tab px-10 py-6 opacity-40">01. Entry</a>
-                    <a href="#" class="nav-tab px-10 py-6 opacity-40">02. Archive</a>
-                    <a href="#" class="nav-tab px-10 py-6 opacity-40">03. Engine</a>
-                    <a href="#" class="nav-tab px-10 py-6 opacity-40">04. Observation</a>
-                    <a href="#" class="nav-tab px-10 py-6 active">05. Directorate Core</a>
-                    <a href="#" class="nav-tab px-10 py-6 opacity-40">06. Exit</a>
+                    <a href="index.html" class="nav-tab px-10 py-6 opacity-40">01. Entry</a>
+                    <a href="zone2.html" class="nav-tab px-10 py-6 opacity-40">02. Archive</a>
+                    <a href="zone3.html" class="nav-tab px-10 py-6 opacity-40">03. Engine</a>
+                    <a href="zone4.html" class="nav-tab px-10 py-6 opacity-40">04. Observation</a>
+                    <a href="zone5.html" class="nav-tab px-10 py-6 active">05. Directorate Core</a>
+                    <a href="zone6.html" class="nav-tab px-10 py-6 opacity-40">06. Exit</a>
                     <div class="flex-1 flex justify-end items-center px-12 hidden md:flex">
                         <span class="font-black text-amber-500/30 animate-pulse uppercase tracking-[0.5em] text-xs">SPOOL_ROOM_STATUS: LOCKED</span>
                     </div>
@@ -382,7 +389,7 @@
                             </div>
                         </div>
 
-                        <!-- Director Vale's Memo (Moved to center for flow) -->
+                        <!-- Director Vale's Memo -->
                         <div class="glass-panel p-8 border-2 border-amber-900/40 bg-amber-950/20 relative shadow-xl">
                             <div class="absolute top-0 right-0 p-4 text-[10px] font-black text-red-500/60 uppercase tracking-widest border-b border-l border-red-900/30">Classified // Level 5</div>
                             <h3 class="text-sm font-black text-amber-500 uppercase tracking-widest mb-6 flex items-center gap-3">
@@ -396,8 +403,8 @@
                     </div>
 
                     <!-- RIGHT SIDE: THE MASTER LEDGER -->
-                    <div class="col-span-12 lg:col-span-3 flex flex-col bg-[#080808] border-2 border-[#1a1a1a] shadow-2xl h-full">
-                        <div class="p-8 border-b-2 border-[#1a1a1a] bg-black">
+                    <div class="col-span-12 lg:col-span-3 flex flex-col bg-[#080808] border-2 border-[#1a1a1a] shadow-2xl h-full max-h-[1100px]">
+                        <div class="p-8 border-b-2 border-[#1a1a1a] bg-black shrink-0">
                             <h2 class="text-2xl font-black text-white tracking-tighter italic uppercase flex items-center gap-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M8 6h10"/><path d="M8 10h10"/><path d="M8 14h10"/></svg>
                                 Master Ledger
@@ -408,7 +415,7 @@
                         </div>
 
                         <!-- Loop Registry -->
-                        <div class="p-6 border-b-2 border-[#1a1a1a] bg-amber-950/10">
+                        <div class="p-6 border-b-2 border-[#1a1a1a] bg-amber-950/10 shrink-0">
                             <div class="flex items-center gap-3 mb-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
                                 <span class="text-xs text-amber-500 font-black uppercase tracking-widest">Rewind Registry</span>
@@ -420,11 +427,11 @@
                             </div>
                         </div>
 
-                        <div id="ledger-list" class="h-[500px] overflow-y-auto p-6 space-y-4 custom-scrollbar">
+                        <div id="ledger-list" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
                             <!-- JS Injected Ledger -->
                         </div>
 
-                        <div class="p-8 border-t-2 border-[#1a1a1a] bg-black/80 mt-auto">
+                        <div class="p-8 border-t-2 border-[#1a1a1a] bg-black/80 shrink-0">
                             <div class="text-[10px] text-white/30 leading-relaxed border-l-2 border-red-900/50 pl-4 uppercase font-bold italic mb-6">
                                 "Director Vale rubs names out of the Ledger; existence ceases. The tape is forced to rewind."
                             </div>
@@ -437,11 +444,107 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- NEW SECTION: NARRATIVE RUPTURE LOGS -->
-                <div class="p-12 bg-[#020202] flex flex-col gap-8 border-t border-black relative overflow-hidden">
+                <!-- MIDDLE SECTION: AUDIO TRANSCRIPT & TAPE MANIFEST -->
+                <div class="p-12 bg-black border-b-2 border-[#1a1a1a] grid grid-cols-1 lg:grid-cols-12 gap-12 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5 pointer-events-none"></div>
+
+                    <!-- Audio Transcript -->
+                    <div class="col-span-12 lg:col-span-4 flex flex-col h-full relative z-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-black text-white uppercase tracking-widest flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                                Intercepted Audio
+                            </h3>
+                            <span class="text-[10px] text-amber-500 bg-amber-900/20 px-2 py-1 font-bold tracking-widest uppercase">Live Playback</span>
+                        </div>
+                        <div class="bg-[#080808] border border-[#1a1a1a] p-6 flex-1 flex flex-col relative overflow-hidden">
+                            <!-- Visual Waveform -->
+                            <div class="flex items-end gap-1 h-12 mb-6 border-b border-white/5 pb-4 opacity-50" id="audio-waveform">
+                                <!-- Generated by JS -->
+                            </div>
+                            <div class="text-xs text-white/60 font-mono leading-loose space-y-4 h-48 overflow-y-auto custom-scrollbar pr-4" id="audio-transcript">
+                                <p><span class="text-amber-500 font-bold">VALE:</span> "Are we recording? Good. Sector 4 just reported another spatial inversion."</p>
+                                <p><span class="text-amber-500 font-bold">VALE:</span> "The concrete is bleeding again. The tape heads are overheating. We're running out of stable track."</p>
+                                <p><span class="text-amber-500 font-bold">VALE:</span> "If the drive fails, the loops get tighter. We've already had agents meet themselves in the hallway."</p>
+                                <p><span class="text-amber-500 font-bold">VALE:</span> "Prepare the Ledger for mass erasure. We need to lighten the load on the drive. Existence is too heavy."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spool Manifest -->
+                    <div class="col-span-12 lg:col-span-8 flex flex-col relative z-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-black text-white uppercase tracking-widest flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                                Physical Spool Manifest
+                            </h3>
+                            <span class="text-[10px] text-white/40 font-bold tracking-[0.2em] uppercase">Tape Degradation Tracking</span>
+                        </div>
+                        <div class="bg-[#080808] border border-[#1a1a1a] rounded overflow-hidden">
+                            <table class="w-full text-left font-mono text-xs">
+                                <thead class="bg-[#111] text-white/40 text-[10px] uppercase tracking-widest">
+                                    <tr>
+                                        <th class="p-4 border-b border-[#222]">Spool ID</th>
+                                        <th class="p-4 border-b border-[#222]">Assigned Sector</th>
+                                        <th class="p-4 border-b border-[#222]">Data Integrity</th>
+                                        <th class="p-4 border-b border-[#222]">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-white/70">
+                                    <tr class="border-b border-[#1a1a1a] manifest-row">
+                                        <td class="p-4 font-bold text-amber-500">MAG-01-A</td>
+                                        <td class="p-4">Observation Deck</td>
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-24 h-1.5 bg-white/10 rounded overflow-hidden"><div class="h-full bg-green-500 w-[92%]"></div></div>
+                                                <span>92%</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 text-green-500">Nominal</td>
+                                    </tr>
+                                    <tr class="border-b border-[#1a1a1a] manifest-row">
+                                        <td class="p-4 font-bold text-amber-500">MAG-01-B</td>
+                                        <td class="p-4">Directorate Vault</td>
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-24 h-1.5 bg-white/10 rounded overflow-hidden"><div class="h-full bg-amber-500 w-[64%]"></div></div>
+                                                <span>64%</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 text-amber-500">Fraying</td>
+                                    </tr>
+                                    <tr class="border-b border-[#1a1a1a] manifest-row bg-red-950/10">
+                                        <td class="p-4 font-bold text-red-500">MAG-02-C</td>
+                                        <td class="p-4">Engine Room</td>
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-24 h-1.5 bg-white/10 rounded overflow-hidden"><div class="h-full bg-red-600 w-[12%] animate-pulse"></div></div>
+                                                <span class="text-red-500 font-bold">12%</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 text-red-500 font-bold animate-pulse">CRITICAL RUPTURE</td>
+                                    </tr>
+                                    <tr class="manifest-row">
+                                        <td class="p-4 font-bold text-amber-500">MAG-03-A</td>
+                                        <td class="p-4">Entry Foyer</td>
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-24 h-1.5 bg-white/10 rounded overflow-hidden"><div class="h-full bg-green-500 w-[88%]"></div></div>
+                                                <span>88%</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 text-green-500">Nominal</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTTOM SECTION: NARRATIVE RUPTURE LOGS -->
+                <div class="p-12 bg-[#020202] flex flex-col gap-8 relative overflow-hidden">
                     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
                     
                     <div class="flex items-center justify-between mb-4 relative z-10">
@@ -463,7 +566,7 @@
                             <p class="text-sm text-white/50 leading-relaxed italic mb-6">
                                 "Agents reported entering Core Room 5, only to find the door leading back to the hallway they had just left. Upon the fourth attempt, the room geometry inverted. The tape spooled directly out of the floorboards."
                             </p>
-                            <button class="text-xs font-black text-amber-500 uppercase tracking-widest hover:text-white transition-colors">>> Read Full Report</button>
+                            <button onclick="corruptLink(this)" class="text-xs font-black text-amber-500 uppercase tracking-widest hover:text-white transition-colors">>> Read Full Report</button>
                         </div>
 
                         <!-- Rupture Card 2 -->
@@ -476,7 +579,7 @@
                             <p class="text-sm text-white/50 leading-relaxed italic mb-6">
                                 "Sector 4 bulkheads began to secrete a viscous red fluid. Analysis confirms it is identical in composition to the magnetic oxide coating of the World-Drive tapes. The bunker is literally sweating its own record."
                             </p>
-                            <button class="text-xs font-black text-amber-500 uppercase tracking-widest hover:text-white transition-colors">>> Read Full Report</button>
+                            <button onclick="corruptLink(this)" class="text-xs font-black text-amber-500 uppercase tracking-widest hover:text-white transition-colors">>> Read Full Report</button>
                         </div>
 
                         <!-- Rupture Card 3 -->
@@ -489,7 +592,7 @@
                             <p class="text-sm text-white/50 leading-relaxed italic mb-6">
                                 "A name appeared in the Master Ledger that no archivist entered. Attempts to 'rub out' the name resulted in severe burns to Director Vale's hands. The entity remains uncontained in the lower levels."
                             </p>
-                            <button class="text-xs font-black text-amber-500 uppercase tracking-widest hover:text-white transition-colors">>> Read Full Report</button>
+                            <button onclick="corruptLink(this)" class="text-xs font-black text-amber-500 uppercase tracking-widest hover:text-white transition-colors">>> Read Full Report</button>
                         </div>
                     </div>
                 </div>
@@ -511,12 +614,12 @@
                 STABILITY: 0.01%
             </div>
             <div class="h-8 w-px bg-[#222]"></div>
-            <div class="text-[10px] text-[#555] font-black tracking-[0.3em] uppercase italic">"No windows. Only tape. Miles of it."</div>
+            <div class="text-[10px] text-[#555] font-black tracking-[0.3em] uppercase italic hidden md:block">"No windows. Only tape. Miles of it."</div>
         </div>
     </footer>
 
     <script>
-        // 1. DATA INITIALIZATION
+        // 1. DATA INITIALIZATION (EXPANDED LEDGER)
         const names = [
             { id: 1, name: "Arthur P. Vance", role: "Field Agent", immune: false },
             { id: 2, name: "Elias Thorne", role: "Archivist", immune: false },
@@ -526,7 +629,12 @@
             { id: 6, name: "Elena Rossi", role: "Temporal Mechanic", immune: false },
             { id: 7, name: "Thomas Beckett", role: "Surveillance", immune: false },
             { id: 8, name: "Fint Legg", role: "Unknown Entity", immune: true },
-            { id: 9, name: "Maria Gonzalez", role: "Maintenance", immune: false }
+            { id: 9, name: "Maria Gonzalez", role: "Maintenance", immune: false },
+            { id: 10, name: "Dr. Aris Thorne", role: "Theoretical Physicist", immune: false },
+            { id: 11, name: "Unit 73", role: "Hazard Cleared", immune: false },
+            { id: 12, name: "O. Vance", role: "Anomalous Entity", immune: false },
+            { id: 13, name: "Subject 89", role: "Containment", immune: false },
+            { id: 14, name: "Director Silas", role: "Former Director", immune: false }
         ];
 
         let isRewinding = false;
@@ -563,6 +671,20 @@
                 document.body.style.filter = 'invert(1)';
                 setTimeout(() => document.body.style.filter = '', 100);
             }
+        }
+
+        // CORRUPT LINK BEHAVIOR
+        function corruptLink(btn) {
+            const originalText = btn.innerText;
+            btn.innerText = "ERR: FILE CORRUPTED";
+            btn.classList.add("text-red-500", "animate-pulse", "bg-red-950/30", "px-2", "py-1");
+            btn.classList.remove("text-amber-500", "hover:text-white");
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove("text-red-500", "animate-pulse", "bg-red-950/30", "px-2", "py-1");
+                btn.classList.add("text-amber-500", "hover:text-white");
+            }, 2500);
         }
 
         // 3. THREE.JS WORLD-DRIVE ENGINE
@@ -650,13 +772,30 @@
                 dataBars.appendChild(bar);
             }
 
+            // Audio waveform initialization
+            const audioWaveform = document.getElementById('audio-waveform');
+            for(let i=0; i<40; i++) {
+                const bar = document.createElement('div');
+                bar.style.width = '4px';
+                bar.style.backgroundColor = '#ffaa00';
+                bar.className = 'transition-all duration-100';
+                audioWaveform.appendChild(bar);
+            }
+
             setInterval(() => {
-                // Update Bars
+                // Update Drive Bars
                 const bars = dataBars.children;
                 for(let b of bars) {
                     const h = isRewinding ? Math.random() * 100 : Math.random() * 45;
                     b.style.height = h + '%';
                     b.style.backgroundColor = isRewinding ? '#ffaa00' : 'rgba(255,255,255,0.08)';
+                }
+
+                // Update Audio Waveform
+                const waveBars = audioWaveform.children;
+                for(let b of waveBars) {
+                    const h = 20 + Math.random() * 80;
+                    b.style.height = h + '%';
                 }
 
                 // Update Telemetry Text
