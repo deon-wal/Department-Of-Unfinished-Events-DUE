@@ -13,7 +13,7 @@
             --amber-core: #ffaa00;
             --alert-red: #ef4444;
             --concrete: #1a1a1a;
-            --glass: rgba(5, 5, 5, 0.85);
+            --glass: rgba(5, 5, 5, 0.95);
         }
 
         * { box-sizing: border-box; cursor: crosshair; }
@@ -22,7 +22,8 @@
             background-color: var(--obsidian);
             color: #a3a3a3;
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            overflow: hidden; /* Prevent body scroll, use panel scroll */
+            height: 100vh;
         }
 
         /* --- THE HUD LAYER --- */
@@ -173,9 +174,29 @@
             text-transform: uppercase;
             text-align: center;
         }
+
+        #boot-screen {
+            position: fixed; inset: 0;
+            background: black;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--amber-core);
+            font-family: 'Space Mono', monospace;
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
+
+    <div id="boot-screen">
+        <div class="text-2xl font-bold tracking-[0.5em] mb-4 animate-pulse uppercase">Initializing Core_05...</div>
+        <div class="w-64 h-1 bg-white/10 rounded-full overflow-hidden">
+            <div id="boot-progress" class="h-full bg-amber-500 w-0 transition-all duration-500"></div>
+        </div>
+        <div class="mt-4 text-[10px] opacity-40 uppercase tracking-widest">Concrete Heart Archive</div>
+    </div>
 
     <div class="hud-scanlines"></div>
     <div class="hud-vignette"></div>
@@ -183,7 +204,7 @@
 
     <!-- FULLSCREEN REWIND OVERLAY -->
     <div id="rewind-overlay">
-        <div class="glitch-text">REWINDING</div>
+        <div class="glitch-text text-center">REWINDING</div>
         <div class="mt-10 w-96 h-1 bg-amber-900/30 relative overflow-hidden">
             <div id="rewind-progress" class="absolute inset-0 bg-amber-500 -translate-x-full"></div>
         </div>
@@ -222,10 +243,10 @@
         </div>
     </header>
 
-    <main class="relative z-20 flex-1 flex flex-col pt-4">
+    <main class="relative z-20 flex-1 flex flex-col pt-4 overflow-hidden">
         
         <!-- HERO TITLING -->
-        <section class="h-[15vh] flex flex-col items-center justify-center text-center relative pointer-events-none">
+        <section class="h-[12vh] flex flex-col items-center justify-center text-center relative pointer-events-none">
             <h1 class="text-[12rem] font-black tracking-[4rem] text-white opacity-[0.02] mb-2 uppercase absolute select-none">CORE</h1>
             <div class="relative bg-black/40 px-16 py-6 border border-[#1a1a1a] backdrop-blur-sm">
                 <p class="text-xl md:text-2xl tracking-[1.5rem] text-amber-500 uppercase font-black">
@@ -236,11 +257,11 @@
             </div>
         </section>
 
-        <div class="w-full max-w-[1900px] mx-auto pb-20 px-10 flex-1">
-            <div class="glass-panel border-2 border-[#1a1a1a] min-h-[850px] flex flex-col">
+        <div class="w-full max-w-[1900px] mx-auto pb-20 px-10 flex-1 overflow-hidden">
+            <div class="glass-panel border-2 border-[#1a1a1a] h-full flex flex-col overflow-hidden">
                 
                 <!-- NAVIGATION TABS -->
-                <nav class="flex border-b border-[#1a1a1a] bg-black/40">
+                <nav class="flex border-b border-[#1a1a1a] bg-black/40 shrink-0">
                     <a href="#" class="nav-tab px-8 py-5 opacity-40">01. Entry</a>
                     <a href="#" class="nav-tab px-8 py-5 opacity-40">02. Archive</a>
                     <a href="#" class="nav-tab px-8 py-5 opacity-40">03. Engine</a>
@@ -253,10 +274,10 @@
                 </nav>
 
                 <!-- THE CONTENT GRID -->
-                <div class="p-10 grid grid-cols-12 gap-10 flex-1">
+                <div class="p-10 grid grid-cols-12 gap-10 flex-1 overflow-hidden">
                     
                     <!-- LEFT SIDE: INDUSTRIAL SENSORS -->
-                    <div class="col-span-12 lg:col-span-3 space-y-8">
+                    <div class="col-span-12 lg:col-span-3 space-y-8 h-full overflow-y-auto pr-4 custom-scrollbar">
                         
                         <!-- LN2 Pressure -->
                         <div class="glass-panel p-6 border border-blue-900/20 bg-blue-950/5">
@@ -330,15 +351,15 @@
                                     <span id="status-text" class="text-[9px] font-black text-white/40 uppercase tracking-widest">ACTIVE</span>
                                 </div>
                             </div>
-                            <div id="data-bars" class="grid grid-cols-24 gap-1 h-10">
+                            <div id="data-bars" class="flex items-end gap-1 h-10 overflow-hidden">
                                 <!-- JS injected bars -->
                             </div>
                         </div>
                     </div>
 
                     <!-- RIGHT SIDE: THE MASTER LEDGER -->
-                    <div class="col-span-12 lg:col-span-3 flex flex-col bg-[#080808] border border-[#1a1a1a]">
-                        <div class="p-8 border-b border-[#1a1a1a] bg-black">
+                    <div class="col-span-12 lg:col-span-3 flex flex-col bg-[#080808] border border-[#1a1a1a] h-full overflow-hidden">
+                        <div class="p-8 border-b border-[#1a1a1a] bg-black shrink-0">
                             <h2 class="text-xl font-black text-white tracking-tighter italic uppercase flex items-center gap-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M8 6h10"/><path d="M8 10h10"/><path d="M8 14h10"/></svg>
                                 The Master Ledger
@@ -348,11 +369,11 @@
                             </p>
                         </div>
 
-                        <div id="ledger-list" class="flex-1 overflow-y-auto p-6 space-y-4">
+                        <div id="ledger-list" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
                             <!-- JS Injected Ledger -->
                         </div>
 
-                        <div class="p-8 border-t border-[#1a1a1a] bg-black/60">
+                        <div class="p-8 border-t border-[#1a1a1a] bg-black/60 shrink-0">
                             <div class="text-[9px] text-white/20 leading-relaxed border-l-2 border-red-900/40 pl-4 uppercase font-bold italic mb-6">
                                 "Director Vale rubs names out of the Ledger; existence ceases. The tape is forced to rewind."
                             </div>
@@ -441,11 +462,16 @@
             const container = document.getElementById('drive-container');
             const canvas = document.getElementById('drive-canvas');
             
+            if (!container || !canvas) return;
+
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+
             renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setSize(w, h);
             
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
             camera.position.set(0, 0, 15);
 
             reelsGroup = new THREE.Group();
@@ -494,8 +520,11 @@
             animate();
 
             window.addEventListener('resize', () => {
-                renderer.setSize(container.clientWidth, container.clientHeight);
-                camera.aspect = container.clientWidth / container.clientHeight;
+                if (!container) return;
+                const newW = container.clientWidth;
+                const newH = container.clientHeight;
+                renderer.setSize(newW, newH);
+                camera.aspect = newW / newH;
                 camera.updateProjectionMatrix();
             });
         }
@@ -505,7 +534,10 @@
             const dataBars = document.getElementById('data-bars');
             for(let i=0; i<24; i++) {
                 const bar = document.createElement('div');
-                bar.className = 'bg-white/5 w-full transition-all duration-300';
+                bar.style.width = '10px';
+                bar.style.height = '0%';
+                bar.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                bar.className = 'transition-all duration-300';
                 dataBars.appendChild(bar);
             }
 
@@ -515,19 +547,24 @@
                 for(let b of bars) {
                     const h = isRewinding ? Math.random() * 100 : Math.random() * 40;
                     b.style.height = h + '%';
-                    b.style.backgroundColor = isRewinding ? '#ffaa00' : 'rgba(255,255,255,0.1)';
+                    b.style.backgroundColor = isRewinding ? '#ffaa00' : 'rgba(255,255,255,0.05)';
                 }
 
                 // Update Telemetry Text
                 const corruptionVal = (99.02 + (Math.random() * 0.02)).toFixed(2);
-                document.getElementById('corruption-nixie').innerText = corruptionVal + "%";
+                const nixie = document.getElementById('corruption-nixie');
+                if (nixie) nixie.innerText = corruptionVal + "%";
                 
                 const tempVal = (-196.2 + (Math.random() * 0.2)).toFixed(1);
-                document.getElementById('temp-val').innerText = tempVal + "°C";
+                const tempLabel = document.getElementById('temp-val');
+                if (tempLabel) tempLabel.innerText = tempVal + "°C";
 
                 const spoolVal = (isRewinding ? -30 : 1 + Math.random() * 0.1).toFixed(2);
-                document.getElementById('spool-val').innerText = spoolVal + "x";
-                document.getElementById('spool-rate-label').innerText = "SPOOL: " + spoolVal + "x";
+                const spoolLabel = document.getElementById('spool-val');
+                if (spoolLabel) spoolLabel.innerText = spoolVal + "x";
+                
+                const rateLabel = document.getElementById('spool-rate-label');
+                if (rateLabel) rateLabel.innerText = "SPOOL: " + spoolVal + "x";
             }, 500);
         }
 
@@ -542,33 +579,59 @@
             const statusLight = document.getElementById('status-light');
             const statusText = document.getElementById('status-text');
 
-            btn.classList.add('active');
-            overlay.style.display = 'flex';
-            statusLight.className = 'w-2 h-2 rounded-full bg-amber-500 animate-ping';
-            statusText.innerText = 'R_SPOOL';
-            statusText.style.color = '#ffaa00';
+            if (btn) btn.classList.add('active');
+            if (overlay) overlay.style.display = 'flex';
+            if (statusLight) statusLight.className = 'w-2 h-2 rounded-full bg-amber-500 animate-ping';
+            if (statusText) {
+                statusText.innerText = 'R_SPOOL';
+                statusText.style.color = '#ffaa00';
+            }
 
             // Progress bar animation
-            progress.style.transition = '5s linear';
-            progress.style.transform = 'translateX(0)';
+            if (progress) {
+                progress.style.transition = '5s linear';
+                progress.style.transform = 'translateX(0)';
+            }
 
             setTimeout(() => {
                 isRewinding = false;
-                btn.classList.remove('active');
-                overlay.style.display = 'none';
-                progress.style.transition = '0s';
-                progress.style.transform = 'translateX(-100%)';
-                statusLight.className = 'w-2 h-2 rounded-full bg-green-600 opacity-60';
-                statusText.innerText = 'ACTIVE';
-                statusText.style.color = 'rgba(255,255,255,0.4)';
+                if (btn) btn.classList.remove('active');
+                if (overlay) overlay.style.display = 'none';
+                if (progress) {
+                    progress.style.transition = '0s';
+                    progress.style.transform = 'translateX(-100%)';
+                }
+                if (statusLight) statusLight.className = 'w-2 h-2 rounded-full bg-green-600 opacity-60';
+                if (statusText) {
+                    statusText.innerText = 'ACTIVE';
+                    statusText.style.color = 'rgba(255,255,255,0.4)';
+                }
             }, 5000);
         }
 
-        window.onload = () => {
+        // BOOT SEQUENCE SIMULATION
+        function runBoot() {
+            const bootScreen = document.getElementById('boot-screen');
+            const bootProgress = document.getElementById('boot-progress');
+            
+            setTimeout(() => {
+                if (bootProgress) bootProgress.style.width = '40%';
+                setTimeout(() => {
+                    if (bootProgress) bootProgress.style.width = '100%';
+                    setTimeout(() => {
+                        if (bootScreen) bootScreen.style.display = 'none';
+                    }, 500);
+                }, 800);
+            }, 400);
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
             renderLedger();
             initDrive();
             initTelemetry();
-        };
+            runBoot();
+        });
     </script>
 </body>
 </html>
