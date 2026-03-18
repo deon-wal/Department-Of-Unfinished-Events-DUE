@@ -3,118 +3,704 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUE // STATION_04 - Zone 6 — The Projection Booth (The Silver Frame)</title>
+    <title>D.U.E // STATION_04 - Zone 6: The Projection Booth</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --obsidian: #050505;
+            --deco-gold: #D4AF37;
+            --deco-gold-dim: rgba(212, 175, 55, 0.3);
+            --silver-fog: #e0e0e0;
+            --pure-void: #000000;
+        }
+
+        * { box-sizing: border-box; cursor: crosshair; }
+        
+        body {
+            background-color: var(--obsidian);
+            color: var(--silver-fog);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; 
+            /* Subtle strobe across the whole body */
+            animation: master-flicker 10s infinite;
+        }
+
+        /* --- THE MEDIUM: FILM GRAIN & FOG --- */
+        .film-grain {
+            position: fixed; inset: 0; pointer-events: none; z-index: 1000;
+            background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.12"/%3E%3C/svg%3E');
+            animation: grain-jitter 0.2s steps(2) infinite;
+            mix-blend-mode: screen;
+        }
+
+        .film-scratches {
+            position: fixed; inset: 0; pointer-events: none; z-index: 999;
+            background: linear-gradient(90deg, transparent 50%, rgba(255,255,255,0.1) 50%, transparent 51%);
+            background-size: 100% 100%;
+            animation: scratch 4s infinite linear;
+            opacity: 0.3;
+        }
+
+        .vignette-heavy {
+            position: fixed; inset: 0; pointer-events: none; z-index: 998;
+            background: radial-gradient(circle at center, transparent 30%, var(--pure-void) 95%);
+        }
+
+        @keyframes grain-jitter {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-1%, -1%); }
+        }
+
+        @keyframes scratch {
+            0% { background-position: 150% 0; opacity: 0; }
+            10% { opacity: 0.5; }
+            20% { background-position: -50% 0; opacity: 0; }
+            100% { background-position: -50% 0; opacity: 0; }
+        }
+
+        @keyframes master-flicker {
+            0%, 95%, 98%, 100% { filter: brightness(1); }
+            96% { filter: brightness(0.8); }
+            97% { filter: brightness(1.2); }
+            99% { filter: brightness(0.5); }
+        }
+
+        /* --- ART DECO TYPOGRAPHY & ELEMENTS --- */
+        .font-deco { font-family: 'Cinzel', serif; }
+        .font-data { font-family: 'Space Mono', monospace; }
+
+        .deco-border {
+            border: 2px solid var(--deco-gold);
+            padding: 4px;
+            position: relative;
+        }
+        .deco-border::before {
+            content: ''; position: absolute; inset: 4px;
+            border: 1px solid var(--deco-gold-dim);
+            pointer-events: none;
+        }
+
+        .deco-hr {
+            height: 4px; width: 100%;
+            background: repeating-linear-gradient(90deg, var(--deco-gold), var(--deco-gold) 2px, transparent 2px, transparent 6px);
+        }
+
+        /* TAB NAVIGATION */
+        .nav-tab {
+            transition: 0.3s;
+            border-right: 1px solid var(--deco-gold-dim);
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #888;
+        }
+        .nav-tab:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .nav-tab.active {
+            background: rgba(212, 175, 55, 0.1) !important;
+            color: var(--deco-gold) !important;
+            border-bottom: 3px solid var(--deco-gold);
+        }
+
+        /* --- HAZARDS --- */
+        
+        /* Frame-Skip Hazard */
+        .hazard-frame-skip {
+            animation: frame-skip 6s infinite;
+            display: inline-block;
+        }
+        @keyframes frame-skip {
+            0%, 48%, 52%, 100% { transform: translateX(0) skewX(0); opacity: 1; filter: blur(0); }
+            49% { transform: translateX(15px) skewX(-10deg); opacity: 0.5; filter: blur(2px); color: white; }
+            50% { transform: translateX(-15px) skewX(10deg); opacity: 0; filter: blur(4px); }
+            51% { transform: translateX(5px) skewX(-5deg); opacity: 0.8; filter: blur(1px); }
+        }
+
+        /* Silver-Rot Hazard */
+        .hazard-silver-rot {
+            transition: all 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .hazard-silver-rot::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%);
+            transform: translateX(-100%);
+            transition: transform 1s;
+            mix-blend-mode: overlay;
+        }
+        .hazard-silver-rot:hover {
+            filter: grayscale(100%) contrast(150%) brightness(1.2);
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
+            background-color: #e0e0e0;
+            color: black !important;
+            transform: scale(0.98); /* Loss of depth */
+        }
+        .hazard-silver-rot:hover::after {
+            transform: translateX(100%);
+        }
+
+        /* The Director's Cut Hazard */
+        .cut-void {
+            background-color: var(--pure-void) !important;
+            color: var(--pure-void) !important;
+            border-color: var(--pure-void) !important;
+            pointer-events: none !important;
+            box-shadow: inset 0 0 50px black !important;
+            /* Jagged edges to look snipped */
+            clip-path: polygon(0% 0%, 5% 2%, 10% 0%, 15% 3%, 20% 0%, 25% 4%, 30% 0%, 35% 2%, 40% 0%, 45% 5%, 50% 0%, 55% 2%, 60% 0%, 65% 3%, 70% 0%, 75% 4%, 80% 0%, 85% 2%, 90% 0%, 95% 3%, 100% 0%, 100% 100%, 95% 98%, 90% 100%, 85% 97%, 80% 100%, 75% 96%, 70% 100%, 65% 98%, 60% 100%, 55% 95%, 50% 100%, 45% 98%, 40% 100%, 35% 96%, 30% 100%, 25% 98%, 20% 100%, 15% 95%, 10% 100%, 5% 98%, 0% 100%);
+        }
+
+        /* BOOT SCREEN */
+        #boot-screen {
+            position: fixed; inset: 0; background: var(--pure-void); z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .projector-canvas-container {
+            position: absolute; inset: 0; z-index: 0; pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--obsidian); border-left: 1px solid var(--deco-gold-dim); }
+        ::-webkit-scrollbar-thumb { background: var(--deco-gold); }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; border: none; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--deco-gold); }
+    </style>
 </head>
-<body class="flex flex-col">
+<body class="flex flex-col min-h-screen">
 
-    <div id="erasure-flash"></div>
-    <div id="scanlines"></div>
-    <div id="crt-flicker"></div>
-    <div id="silver-nitrate-fog"></div>
-    <canvas id="memory-mist-canvas"></canvas>
-    <div id="bg-skyline" class="parallax-layer grayscale opacity-40"></div>
+    <!-- BOOT SEQUENCE -->
+    <div id="boot-screen">
+        <div class="font-deco text-4xl text-white mb-8 tracking-[0.5em] uppercase hazard-frame-skip">Threading Reel...</div>
+        <div class="w-64 h-1 bg-white/20">
+            <div id="boot-progress" class="h-full bg-white w-0 transition-all duration-[2000ms] ease-out"></div>
+        </div>
+        <div class="mt-6 font-data text-xs text-white/50 tracking-widest uppercase">Projector Bay Initialization</div>
+    </div>
 
-    <header>
-        <div class="flex items-center gap-6">
-            <div class="font-black text-3xl tracking-tighter text-white">D.U.E.</div>
-            <div class="text-[8px] opacity-40 leading-tight uppercase font-bold border-l border-white/20 pl-4">
-                Workstation_04<br>
-                Total_Recovery_V5.0<br>
-                Status: Arrested
+    <!-- GLOBAL OVERLAYS -->
+    <div class="film-grain"></div>
+    <div class="film-scratches"></div>
+    <div class="hud-scanlines"></div>
+    <div class="vignette-heavy"></div>
+
+    <!-- HEADER -->
+    <header class="bg-[#050505] border-b-4 border-[#D4AF37] relative z-[300] px-12 py-6 flex justify-between items-center">
+        <div class="flex items-center gap-12">
+            <div class="deco-border bg-black px-6 py-2">
+                <div class="font-deco text-5xl font-black tracking-widest text-white">D.U.E.</div>
+            </div>
+            <div class="h-16 w-px bg-[#D4AF37]/30 hidden md:block"></div>
+            <div class="flex flex-col">
+                <span class="text-xs uppercase tracking-[0.5em] text-[#D4AF37] font-black mb-1">Station_04 // Zone 06</span>
+                <span class="font-deco text-xl text-white tracking-widest">The Projection Booth</span>
             </div>
         </div>
-        <div class="flex items-center gap-8">
-            <div id="dist-nixie" class="nixie-tube grayscale">99.99%</div>
-            <div class="flex items-center gap-3 bg-white/5 px-4 py-2 rounded">
-                <span class="text-[7px] uppercase font-bold tracking-widest opacity-60">Clearance Mode</span>
-                <input type="checkbox" id="clearance-toggle" class="w-4 h-4 accent-gray-400 cursor-pointer">
+        
+        <div class="hidden md:flex items-center gap-12">
+            <div class="flex flex-col items-end font-data">
+                <span class="text-[10px] uppercase font-bold opacity-50 mb-1 tracking-widest text-white">Reel Tension</span>
+                <span class="text-3xl text-white tracking-tighter hazard-frame-skip">104.2<span class="text-lg text-[#D4AF37]">kg</span></span>
+            </div>
+            
+            <div class="h-16 w-px bg-[#D4AF37]/30"></div>
+            
+            <div class="flex flex-col items-center">
+                <div class="w-6 h-6 border-2 border-[#D4AF37] rounded-full flex items-center justify-center mb-2">
+                    <div class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+                </div>
+                <span class="font-data text-[9px] font-black text-[#D4AF37] uppercase tracking-widest">Projecting</span>
             </div>
         </div>
     </header>
 
-    <main id="main-scroll-container">
-        <section class="h-[50vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
-            <div class="projector-beam" style="left: -10%; transform: rotate(15deg);"></div>
-            <div class="projector-beam" style="right: -10%; transform: rotate(-15deg); animation-delay: -2s;"></div>
+    <main class="relative z-20 flex-1 flex flex-col pt-8 pb-32">
+        
+        <!-- HERO / CANVAS AREA -->
+        <section class="h-[30vh] flex flex-col items-center justify-center text-center relative overflow-hidden mb-8 border-y-2 border-[#D4AF37]/20 bg-black">
+            <!-- CANVAS FOR LIGHT BEAMS -->
+            <div id="projector-canvas-container" class="projector-canvas-container">
+                <canvas id="light-canvas"></canvas>
+            </div>
             
-            <div id="hero-parallax" class="z-20">
-                <h1 class="text-4xl md:text-6xl font-black tracking-[0.5rem] md:tracking-[1rem] text-gray-200 opacity-90 mb-4 frame-skip uppercase">Zone 6 — The Projection Booth</h1>
-                <p class="text-[12px] md:text-[14px] tracking-[0.8rem] text-[#D4AF37] uppercase font-bold">(The Silver Frame)</p>
+            <div class="relative z-10 deco-border bg-black/80 px-24 py-10 backdrop-blur-sm shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+                <h1 class="font-deco text-4xl md:text-6xl tracking-[1.5rem] text-white uppercase font-black mb-4 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
+                    The Silver Frame
+                </h1>
+                <div class="deco-hr mb-4"></div>
+                <p class="font-data text-sm tracking-[0.8rem] text-[#D4AF37] uppercase font-bold hazard-frame-skip">
+                    Celluloid Light // Polished Shadow
+                </p>
             </div>
         </section>
 
-        <div class="max-w-6xl mx-auto px-6 pb-32 relative z-20">
-            <div class="bg-[#050505]/95 border-2 border-[#D4AF37]/30 backdrop-blur-md shadow-2xl relative">
+        <!-- MAIN LAYOUT WRAPPER -->
+        <div class="w-full max-w-[1800px] mx-auto px-8 flex-1 flex flex-col gap-10">
+            
+            <!-- CORE CONSOLE (TABS + 3 COLUMNS) -->
+            <div class="bg-black/90 border-2 border-[#D4AF37] flex flex-col shadow-[0_0_50px_rgba(212,175,55,0.1)] relative">
                 
-                <nav class="flex border-b-2 border-[#D4AF37]/30 flex-wrap">
-                    <a href="index.html" class="tab-btn">01. Monolith</a>
-                    <a href="archive.html" class="tab-btn">02. Archive Log</a>
-                    <a href="dossier.html" class="tab-btn">03. The Dossier</a>
-                    <a href="stacks.html" class="tab-btn">04. The Stacks</a>
-                    <a href="breach.html" class="tab-btn">05. Breach</a>
-                    <a href="zone6.html" class="tab-btn active" style="color: #D4AF37; border-bottom: 2px solid #D4AF37;">06. Zone 6 — The Projection Booth (The Silver Frame)</a>
+                <!-- NAVIGATION TABS -->
+                <nav class="flex border-b-2 border-[#D4AF37]/30 bg-[#0a0a0a] shrink-0 flex-wrap">
+                    <a href="index.html" class="nav-tab px-10 py-6 opacity-40">01. Entry</a>
+                    <a href="zone2.html" class="nav-tab px-10 py-6 opacity-40">02. Archive</a>
+                    <a href="zone3.html" class="nav-tab px-10 py-6 opacity-40">03. Engine</a>
+                    <a href="zone4.html" class="nav-tab px-10 py-6 opacity-40">04. Observation</a>
+                    <a href="zone5.html" class="nav-tab px-10 py-6 opacity-40">05. Directorate Core</a>
+                    <a href="zone6.html" class="nav-tab px-10 py-6 active">06. Projection Booth</a>
                 </nav>
 
-                <div id="zone6" class="tab-content active p-16 art-deco-bg">
+                <!-- 3-COLUMN CONTENT GRID -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 font-data">
                     
-                    <div class="mb-12 border-b border-[#D4AF37]/20 pb-8 text-center">
-                        <p class="text-sm md:text-base leading-relaxed text-gray-300 font-serif italic max-w-3xl mx-auto">
-                            Monochromatic Art Deco industrialism defined by polished obsidian hallways and geometric gold trim. The environment is heavily saturated in silver-nitrate fog, pierced only by flickering, high-contrast light beams that actively project "reality" into the void.
-                        </p>
+                    <!-- LEFT COLUMN: ATMOSPHERE & LORE -->
+                    <div class="col-span-12 lg:col-span-3 border-r-2 border-[#D4AF37]/20 p-8 flex flex-col bg-gradient-to-b from-[#111] to-black gap-8">
+                        
+                        <div>
+                            <h3 class="font-deco text-xl text-[#D4AF37] border-b border-[#D4AF37]/30 pb-3 mb-6 uppercase tracking-widest">Environmental Status</h3>
+                            <div class="mb-6">
+                                <div class="flex justify-between text-xs text-white/50 mb-2 uppercase tracking-widest">
+                                    <span>Silver-Nitrate Fog</span>
+                                    <span class="text-white hazard-frame-skip">Dense / Toxic</span>
+                                </div>
+                                <div class="h-2 w-full border border-white/20 p-[1px]">
+                                    <div class="h-full bg-white w-[85%]"></div>
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <div class="flex justify-between text-xs text-white/50 mb-2 uppercase tracking-widest">
+                                    <span>Lux (Reality Output)</span>
+                                    <span class="text-[#D4AF37]">Maximum</span>
+                                </div>
+                                <div class="h-2 w-full border border-[#D4AF37]/40 p-[1px]">
+                                    <div class="h-full bg-[#D4AF37] w-[98%] animate-pulse"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Projector Telemetry -->
+                        <div class="bg-white/5 border border-white/10 p-5 font-mono text-[10px] uppercase text-white/70 tracking-widest space-y-3">
+                            <h4 class="text-[#D4AF37] font-bold border-b border-white/10 pb-2 mb-3">Projector Array Alpha</h4>
+                            <div class="flex justify-between"><span>Arc Lamp Temp</span> <span class="text-red-400 animate-pulse">3200°C</span></div>
+                            <div class="flex justify-between"><span>Focal Distortion</span> <span>0.04%</span></div>
+                            <div class="flex justify-between"><span>Celluloid Friction</span> <span>Nominal</span></div>
+                            <div class="flex justify-between"><span>Frame Rate</span> <span class="hazard-frame-skip text-white">24 FPS</span></div>
+                        </div>
+
+                        <div class="deco-border p-6 bg-black mt-auto">
+                            <h4 class="font-deco text-lg text-white mb-4 uppercase tracking-widest border-b border-white/20 pb-2">The Medium</h4>
+                            <p class="text-xs text-white/60 leading-relaxed mb-4">
+                                Reality is projected onto the world as beams of intense celluloid light. The massive brass projectors above run continuously.
+                            </p>
+                            <p class="text-xs text-red-500 font-bold leading-relaxed uppercase border-l-2 border-red-500 pl-3">
+                                Warning: If you step into a shadow here, you physically cease to be visible to the system.
+                            </p>
+                        </div>
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-12">
+                    <!-- CENTER COLUMN: THE DIRECTOR's CUT (INTERACTIVE) -->
+                    <div class="col-span-12 lg:col-span-6 p-10 flex flex-col border-r-2 border-[#D4AF37]/20 relative overflow-hidden bg-black">
+                        <!-- BG Geometric Lines -->
+                        <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #D4AF37 0, #D4AF37 1px, transparent 1px, transparent 40px);"></div>
                         
-                        <div class="border border-[#D4AF37]/40 p-10 relative overflow-hidden group bg-gradient-to-b from-transparent to-white/5">
-                            <div class="absolute top-2 right-4 text-[8px] text-[#D4AF37] opacity-40 font-bold">ASSETS // PROJECTED</div>
-                            <h3 class="text-[#D4AF37] font-black text-2xl mb-6 tracking-tighter uppercase border-b border-[#D4AF37]/20 pb-2">Key Apparatus</h3>
-                            <ul class="space-y-6 text-sm leading-relaxed text-gray-400">
-                                <li>
-                                    <strong class="text-gray-200 uppercase tracking-widest block text-xs mb-1">Massive Brass Projectors</strong>
-                                    Heavy geometric machinery burning high-contrast realities into existence.
-                                </li>
-                                <li>
-                                    <strong class="text-gray-200 uppercase tracking-widest block text-xs mb-1">The Director's Scissors</strong>
-                                    Physical manifestations used to shear dead timelines from the master reel.
-                                </li>
-                                <li class="frame-skip">
-                                    <strong class="text-gray-200 uppercase tracking-widest block text-xs mb-1">Frame-Skip Ghosts</strong>
-                                    Erratic, stuttering echoes of actors trapped between the 24-frames-per-second.
-                                </li>
-                            </ul>
+                        <div class="flex justify-between items-end border-b-2 border-white/20 pb-4 mb-8 relative z-10">
+                            <h2 class="font-deco text-3xl text-white uppercase tracking-widest">Narrative Feed</h2>
+                            <button id="snipe-btn" onclick="triggerDirectorsCut()" class="border border-[#D4AF37] text-[#D4AF37] px-4 py-2 text-xs uppercase tracking-widest hover:bg-[#D4AF37] hover:text-black transition-colors font-bold flex items-center gap-2 group">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:rotate-45 transition-transform"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" x2="8.12" y1="4" y2="13.88"/><line x1="20" x2="8.12" y1="20" y2="10.12"/></svg>
+                                Execute Snipe
+                            </button>
                         </div>
 
-                        <div class="border border-[#D4AF37]/40 p-10 relative overflow-hidden bg-gradient-to-b from-transparent to-white/5">
-                            <div class="absolute top-2 right-4 text-[8px] text-red-500 opacity-40 font-bold">WARNING // COGNITIVE_HAZARD</div>
-                            <h3 class="text-gray-200 font-black text-2xl mb-6 tracking-tighter uppercase border-b border-[#D4AF37]/20 pb-2">Identified Hazards</h3>
+                        <!-- Scrollable Narrative Area -->
+                        <div class="space-y-6 text-sm text-white/80 leading-loose tracking-wide relative z-10 h-[600px] overflow-y-auto custom-scrollbar pr-6 font-serif">
+                            <div class="narrative-block p-6 border border-white/10 bg-white/5 transition-all duration-500 shadow-lg">
+                                "The agent moved through the obsidian corridor, the rhythmic click-clack of the projectors echoing off the polished walls. The scent of ozone and sharp chemical developer hung thick in the air, burning the lungs."
+                            </div>
                             
-                            <div class="silver-rot-trigger cursor-crosshair p-4 border-l-2 border-gray-600 mb-6 transition-all duration-700 bg-white/5">
-                                <strong class="text-white uppercase text-xs tracking-widest block mb-2">Silver-Rot (Hover to Inspect)</strong>
-                                <p class="text-xs text-gray-400">Physical transformation into reflective chrome. Results in a total loss of color and three-dimensional depth.</p>
+                            <div class="narrative-block p-6 border border-white/10 bg-white/5 transition-all duration-500 shadow-lg hazard-frame-skip" style="animation-delay: 1s;">
+                                "He looked down at his hands. The skin had begun to catch the harsh strobe light differently. It wasn't sweat. It was the early onset of Silver-Rot. He had to keep moving before the narrative flattened him completely."
+                            </div>
+                            
+                            <div class="narrative-block p-6 border border-white/10 bg-white/5 transition-all duration-500 shadow-lg">
+                                "Ahead, the architecture was perfectly geometric. Gold trim caught the projector beams, throwing sharp, unyielding shadows across the floor. He knew better than to step into the dark. In Zone 6, if the light doesn't touch you, you don't exist."
                             </div>
 
-                            <div class="directors-cut-container relative p-6 border border-gray-800">
-                                <div class="directors-cut-void absolute inset-0 z-10 flex items-center justify-center">
-                                    <span class="text-[8px] text-red-900 font-mono tracking-widest opacity-50">SCENE_MISSING</span>
+                            <div class="narrative-block p-6 border border-[#D4AF37]/20 bg-[#D4AF37]/5 transition-all duration-500 shadow-lg text-[#D4AF37]">
+                                "He tried to speak to command, but the sound was out of sync. His voice echoed a full second after his lips stopped moving. The projection was lagging behind the audio track."
+                            </div>
+
+                            <div class="narrative-block p-6 border border-[#D4AF37]/20 bg-[#D4AF37]/5 transition-all duration-500 shadow-lg text-[#D4AF37]">
+                                "A sudden, violent <em>SNIP</em> echoed from the unseen ceiling. It wasn't a sound, but a physical absence of sound. The invisible scissors of the Director."
+                            </div>
+                            
+                            <div class="narrative-block p-6 border border-white/10 bg-white/5 transition-all duration-500 shadow-lg">
+                                "A swath of the hallway ahead simply ceased to be. Where there was once a heavy brass door, there was now only a perfect, unyielding black void. A chunk of the timeline had been permanently sheared away."
+                            </div>
+                            
+                            <div class="narrative-block p-6 border border-white/10 bg-white/5 transition-all duration-500 shadow-lg">
+                                "He paused, watching a Frame-Skip Ghost of his partner continuously walk into the newly formed void, stuttering back three seconds, and repeating the action endlessly, like a broken film reel."
+                            </div>
+
+                            <div class="narrative-block p-6 border border-white/10 bg-white/5 transition-all duration-500 shadow-lg">
+                                "A massive brass gear groaned from the dark above. The strobe light intensified, washing out the obsidian walls into a blinding, featureless white. The world was overexposing."
+                            </div>
+
+                            <div class="narrative-block p-6 border border-red-900/30 bg-red-950/10 transition-all duration-500 shadow-lg text-red-200">
+                                "Then he saw it. The Director's shadow, stretching impossibly long across the floor. But there was no physical body casting it. Just the shadow, holding the shears."
+                            </div>
+
+                            <div class="narrative-block p-6 border border-white/10 bg-white/5 transition-all duration-500 shadow-lg hazard-frame-skip" style="animation-delay: 3s;">
+                                "He reached into his coat for his sidearm, but his fingers met flat, cold chrome. The Silver-Rot had taken his right side. He was becoming a 2D prop in someone else's movie."
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: HAZARDS & ROSTER -->
+                    <div class="col-span-12 lg:col-span-3 p-8 flex flex-col bg-gradient-to-b from-black to-[#111] gap-8">
+                        
+                        <div>
+                            <h3 class="font-deco text-xl text-white border-b border-white/30 pb-3 mb-6 uppercase tracking-widest">Active Cast</h3>
+                            <div class="space-y-3 font-mono text-[10px] tracking-widest uppercase h-[250px] overflow-y-auto custom-scrollbar pr-2">
+                                <div class="flex justify-between items-center p-2 bg-white/5 border border-white/10">
+                                    <span class="text-white">Agent_Vance</span>
+                                    <span class="text-amber-500 hazard-frame-skip">Ghosting</span>
                                 </div>
-                                <strong class="text-white uppercase text-xs tracking-widest block mb-2 opacity-20">The Director's Cut</strong>
-                                <p class="text-xs text-gray-400 opacity-20">Literal black voids in the environment where the narrative has been violently snipped.</p>
+                                <div class="flex justify-between items-center p-2 bg-white/5 border border-white/10">
+                                    <span class="text-white">Archivist_Thorne</span>
+                                    <span class="text-gray-400">Rot: Stage 2</span>
+                                </div>
+                                <div class="flex justify-between items-center p-2 bg-white/5 border border-white/10">
+                                    <span class="text-white">Subject_09</span>
+                                    <span class="text-green-500">Illuminated</span>
+                                </div>
+                                <div class="flex justify-between items-center p-2 bg-red-950/30 border border-red-900/50">
+                                    <span class="text-red-500 line-through">Liaison_Miller</span>
+                                    <span class="text-red-500 font-bold">Snipped</span>
+                                </div>
+                                <div class="flex justify-between items-center p-2 bg-white/5 border border-white/10">
+                                    <span class="text-white">Agent_Kael</span>
+                                    <span class="text-gray-600 font-bold">Rot: Stage 4</span>
+                                </div>
+                                <div class="flex justify-between items-center p-2 bg-white/5 border border-white/10">
+                                    <span class="text-white">Maint_Unit_12</span>
+                                    <span class="text-gray-700 italic">Lost in Shadow</span>
+                                </div>
+                                <div class="flex justify-between items-center p-2 border border-[#D4AF37]/30 bg-[#D4AF37]/10">
+                                    <span class="text-[#D4AF37] font-bold">Director_Vale</span>
+                                    <span class="text-[#D4AF37] animate-pulse">Projecting</span>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- Silver-Rot -->
+                        <div class="hazard-silver-rot border border-white/30 p-6 cursor-help">
+                            <div class="flex items-center gap-3 mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                <span class="font-bold text-white uppercase tracking-widest text-sm">Silver-Rot</span>
+                            </div>
+                            <p class="text-[10px] text-white/60 mb-4 leading-relaxed uppercase">Prolonged exposure hazard.</p>
+                            <div class="bg-black/50 p-3 text-[10px] text-white/80 border-l-2 border-white">
+                                [Hover to inspect physical transformation into reflective chrome; loss of depth.]
+                            </div>
+                        </div>
+
+                        <!-- Frame-Skip -->
+                        <div class="border border-[#D4AF37]/30 p-6 bg-[#D4AF37]/5 mt-auto">
+                            <div class="flex items-center gap-3 mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#D4AF37]"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" x2="19" y1="5" y2="19"/></svg>
+                                <span class="font-bold text-[#D4AF37] uppercase tracking-widest text-sm hazard-frame-skip">Frame-Skip</span>
+                            </div>
+                            <p class="text-[10px] text-white/60 leading-relaxed uppercase">
+                                Localized glitch. Agents lose 3 seconds of existence. Translucent ghosting occurs at previous physical coordinates.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- NEW SECTION: THE NITRATE VAULTS (ARCHIVED REELS) -->
+            <div class="mt-8">
+                <div class="flex items-center gap-6 mb-8">
+                    <h2 class="font-deco text-3xl text-[#D4AF37] uppercase tracking-[0.4em] whitespace-nowrap">The Nitrate Vaults</h2>
+                    <div class="h-1 bg-[#D4AF37]/30 flex-1 rounded"></div>
+                    <span class="font-data text-xs text-white/40 uppercase tracking-widest">Archived Cinematic Data</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- Reel Card 1 -->
+                    <div class="deco-border p-2 bg-black group hover:bg-[#D4AF37]/5 transition-colors cursor-pointer">
+                        <div class="h-48 bg-[#111] overflow-hidden relative mb-4">
+                            <div class="absolute inset-0 bg-cover bg-center grayscale contrast-150 opacity-60 group-hover:scale-105 transition-transform duration-700 mix-blend-luminosity" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80');"></div>
+                            <div class="absolute inset-0 border border-white/10 pointer-events-none"></div>
+                            <div class="absolute top-2 left-2 bg-black/80 px-2 py-1 font-data text-[8px] text-white tracking-widest border border-white/20">REEL: 001</div>
+                        </div>
+                        <div class="px-2 pb-2">
+                            <h4 class="font-deco text-lg text-white uppercase tracking-widest mb-1">The Monolith's Shadow</h4>
+                            <p class="font-data text-[10px] text-white/50 mb-3">Captured: Zone 01 // Entry Point</p>
+                            <div class="flex justify-between items-center font-data text-[9px] uppercase font-bold">
+                                <span class="text-white/40">Status:</span>
+                                <span class="text-red-400">Silver-Rot Detected</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reel Card 2 -->
+                    <div class="deco-border p-2 bg-black group hover:bg-[#D4AF37]/5 transition-colors cursor-pointer hazard-frame-skip" style="animation-delay: 1.5s;">
+                        <div class="h-48 bg-[#111] overflow-hidden relative mb-4">
+                            <div class="absolute inset-0 bg-cover bg-center grayscale contrast-150 opacity-60 group-hover:scale-105 transition-transform duration-700 mix-blend-luminosity" style="background-image: url('https://images.unsplash.com/photo-1590487988256-9ed24133863e?auto=format&fit=crop&w=600&q=80');"></div>
+                            <div class="absolute inset-0 border border-white/10 pointer-events-none"></div>
+                            <div class="absolute top-2 left-2 bg-black/80 px-2 py-1 font-data text-[8px] text-white tracking-widest border border-white/20">REEL: 009</div>
+                        </div>
+                        <div class="px-2 pb-2">
+                            <h4 class="font-deco text-lg text-white uppercase tracking-widest mb-1">Vance's Descent</h4>
+                            <p class="font-data text-[10px] text-white/50 mb-3">Captured: Zone 03 // Engine Room</p>
+                            <div class="flex justify-between items-center font-data text-[9px] uppercase font-bold">
+                                <span class="text-white/40">Status:</span>
+                                <span class="text-[#D4AF37]">Frame-Skipping</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reel Card 3 -->
+                    <div class="deco-border p-2 bg-black group hover:bg-[#D4AF37]/5 transition-colors cursor-pointer">
+                        <div class="h-48 bg-[#111] overflow-hidden relative mb-4">
+                            <div class="absolute inset-0 bg-cover bg-center grayscale contrast-200 brightness-50 opacity-80 group-hover:scale-105 transition-transform duration-700 mix-blend-luminosity" style="background-image: url('https://images.unsplash.com/photo-1601804245645-31295fc66380?auto=format&fit=crop&w=600&q=80');"></div>
+                            <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(0,0,0,0.8)_2px,rgba(0,0,0,0.8)_4px)] pointer-events-none"></div>
+                            <div class="absolute inset-0 border border-red-900/50 pointer-events-none"></div>
+                            <div class="absolute top-2 left-2 bg-red-950/80 px-2 py-1 font-data text-[8px] text-red-500 tracking-widest border border-red-900">REEL: 012</div>
+                        </div>
+                        <div class="px-2 pb-2">
+                            <h4 class="font-deco text-lg text-white uppercase tracking-widest mb-1">The Silent Floor</h4>
+                            <p class="font-data text-[10px] text-white/50 mb-3">Captured: Zone 05 // Directorate Core</p>
+                            <div class="flex justify-between items-center font-data text-[9px] uppercase font-bold">
+                                <span class="text-white/40">Status:</span>
+                                <span class="text-red-600 animate-pulse">Quarantined - Snipped</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- THE CUTTING ROOM FLOOR -->
+            <div class="mt-16 mb-12">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="h-px bg-white/20 flex-1"></div>
+                    <h2 class="font-deco text-2xl text-white uppercase tracking-[0.5em] text-center">The Cutting Room Floor</h2>
+                    <div class="h-px bg-white/20 flex-1"></div>
+                </div>
+                <p class="text-center text-xs text-white/40 font-data uppercase tracking-widest mb-10">Recovered fragments of deleted timelines.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 font-data">
+                    <!-- Fragment 1 -->
+                    <div class="p-6 bg-[#080808] border border-white/10 relative overflow-hidden group hover:border-red-500/50 transition-colors h-48 flex flex-col justify-center">
+                        <div class="absolute -top-10 -right-10 w-20 h-20 bg-red-900/20 rounded-full blur-xl group-hover:bg-red-500/20 transition-colors"></div>
+                        <span class="text-[9px] text-red-500 mb-2 tracking-widest uppercase block">Fragment #44-A</span>
+                        <p class="text-xs text-white/50 italic line-clamp-4">"...the door opened, revealing a sky made entirely of static. We weren't underground anymore, we were..."</p>
+                        <div class="mt-auto pt-4 border-t border-white/5 text-[8px] text-white/30 uppercase">Status: Snipped</div>
+                    </div>
+
+                    <!-- Fragment 2 -->
+                    <div class="p-6 bg-[#080808] border border-white/10 relative overflow-hidden group hover:border-red-500/50 transition-colors h-48 flex flex-col justify-center">
+                        <div class="absolute -top-10 -right-10 w-20 h-20 bg-red-900/20 rounded-full blur-xl group-hover:bg-red-500/20 transition-colors"></div>
+                        <span class="text-[9px] text-red-500 mb-2 tracking-widest uppercase block">Fragment #92-B</span>
+                        <p class="text-xs text-white/50 italic line-clamp-4">"...Miller touched the brass casing and immediately flattened into the wall. I couldn't pry her loose, she was just an image..."</p>
+                        <div class="mt-auto pt-4 border-t border-white/5 text-[8px] text-white/30 uppercase">Status: Snipped</div>
+                    </div>
+
+                    <!-- Fragment 3 -->
+                    <div class="p-6 bg-[#080808] border border-white/10 relative overflow-hidden group hover:border-red-500/50 transition-colors h-48 flex flex-col justify-center">
+                        <div class="absolute -top-10 -right-10 w-20 h-20 bg-red-900/20 rounded-full blur-xl group-hover:bg-red-500/20 transition-colors"></div>
+                        <span class="text-[9px] text-red-500 mb-2 tracking-widest uppercase block">Fragment #102-C</span>
+                        <p class="text-xs text-white/50 italic line-clamp-4">"...Director Vale was waiting. He held the scissors. They weren't metaphorical. They were ten feet long and made of dark matter..."</p>
+                        <div class="mt-auto pt-4 border-t border-white/5 text-[8px] text-white/30 uppercase">Status: Snipped</div>
+                    </div>
+
+                    <!-- Fragment 4 -->
+                    <div class="p-6 bg-[#080808] border border-white/10 relative overflow-hidden group hover:border-red-500/50 transition-colors h-48 flex flex-col justify-center">
+                        <div class="absolute -top-10 -right-10 w-20 h-20 bg-red-900/20 rounded-full blur-xl group-hover:bg-red-500/20 transition-colors"></div>
+                        <span class="text-[9px] text-red-500 mb-2 tracking-widest uppercase block">Fragment #115-D</span>
+                        <p class="text-xs text-white/50 italic line-clamp-4">"...the tape snapped. We all heard it. The entire universe shuddered, and then everything went b-"</p>
+                        <div class="mt-auto pt-4 border-t border-white/5 text-[8px] text-white/30 uppercase">Status: Snipped</div>
+                    </div>
+
+                    <!-- Fragment 5 -->
+                    <div class="p-6 bg-[#080808] border border-white/10 relative overflow-hidden group hover:border-red-500/50 transition-colors h-48 flex flex-col justify-center">
+                        <div class="absolute -top-10 -right-10 w-20 h-20 bg-red-900/20 rounded-full blur-xl group-hover:bg-red-500/20 transition-colors"></div>
+                        <span class="text-[9px] text-red-500 mb-2 tracking-widest uppercase block">Fragment #118-E</span>
+                        <p class="text-xs text-white/50 italic line-clamp-4">"...tried to grab the reel to stop it, but the celluloid was razor-sharp spinning that fast. It cut right through his hand and..."</p>
+                        <div class="mt-auto pt-4 border-t border-white/5 text-[8px] text-white/30 uppercase">Status: Snipped</div>
+                    </div>
+
+                    <!-- Fragment 6 -->
+                    <div class="p-6 bg-[#080808] border border-white/10 relative overflow-hidden group hover:border-red-500/50 transition-colors h-48 flex flex-col justify-center">
+                        <div class="absolute -top-10 -right-10 w-20 h-20 bg-red-900/20 rounded-full blur-xl group-hover:bg-red-500/20 transition-colors"></div>
+                        <span class="text-[9px] text-red-500 mb-2 tracking-widest uppercase block">Fragment #142-F</span>
+                        <p class="text-xs text-white/50 italic line-clamp-4">"...the monochrome broke for just a second. The colors came back. Oh god, the colors came back, it burned so bright..."</p>
+                        <div class="mt-auto pt-4 border-t border-white/5 text-[8px] text-white/30 uppercase">Status: Snipped</div>
+                    </div>
+
+                    <!-- Fragment 7 -->
+                    <div class="p-6 bg-[#080808] border border-white/10 relative overflow-hidden group hover:border-red-500/50 transition-colors h-48 flex flex-col justify-center hazard-frame-skip" style="animation-delay: 2s;">
+                        <div class="absolute -top-10 -right-10 w-20 h-20 bg-red-900/20 rounded-full blur-xl group-hover:bg-red-500/20 transition-colors"></div>
+                        <span class="text-[9px] text-red-500 mb-2 tracking-widest uppercase block">Fragment #200-G</span>
+                        <p class="text-xs text-white/50 italic line-clamp-4">"...I saw myself in the reflection of the brass projector. I was moving at 16 frames per second. The stutter is getting worse..."</p>
+                        <div class="mt-auto pt-4 border-t border-white/5 text-[8px] text-white/30 uppercase">Status: Snipped</div>
+                    </div>
+
+                    <!-- Fragment 8 -->
+                    <div class="p-6 bg-black border border-red-900/50 relative overflow-hidden group h-48 flex flex-col justify-center">
+                        <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(255,0,0,0.05)_2px,rgba(255,0,0,0.05)_4px)] pointer-events-none"></div>
+                        <span class="text-[9px] text-red-600 font-bold mb-2 tracking-widest uppercase block animate-pulse">Fragment #VOID</span>
+                        <p class="text-xs text-red-400/50 italic line-clamp-4 font-mono uppercase tracking-[0.2em] leading-loose">
+                            [NO AUDIO]<br>[NO VIDEO]<br>[NO CONCRETE]
+                        </p>
+                        <div class="mt-auto pt-4 border-t border-red-900/50 text-[8px] text-red-600 font-bold uppercase">Status: Absolute Zero</div>
                     </div>
                 </div>
             </div>
+
         </div>
     </main>
 
-    <footer>
-        <div class="tracking-widest opacity-40 uppercase font-bold text-[#D4AF37]">Location: Zone 6 — The Projection Booth (The Silver Frame)</div>
-        <div id="stability-display" class="font-mono grayscale">SIGNAL_STABILITY: 99.99%</div>
+    <!-- FOOTER -->
+    <footer class="bg-black border-t-4 border-[#D4AF37] py-6 px-12 flex justify-between items-center relative z-[400] shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
+        <div class="flex gap-8 items-center">
+            <div class="tracking-[0.8em] text-white font-black text-xs uppercase font-data">STATION_04_LINK</div>
+            <div class="h-3 w-3 bg-white animate-pulse shadow-[0_0_10px_white]"></div>
+            <div class="text-[10px] text-[#D4AF37] font-data font-bold tracking-widest">REEL: [ MSTR // 99.9 ]</div>
+        </div>
+        <div class="flex items-center gap-10">
+            <div class="font-deco text-white/40 text-sm font-bold tracking-[0.3em] uppercase italic">
+                "We project reality into the void."
+            </div>
+        </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // BOOT SEQUENCE SIMULATION
+        document.addEventListener('DOMContentLoaded', () => {
+            const bootScreen = document.getElementById('boot-screen');
+            const bootProgress = document.getElementById('boot-progress');
+            
+            setTimeout(() => {
+                bootProgress.style.width = '60%';
+                setTimeout(() => {
+                    bootProgress.style.width = '100%';
+                    setTimeout(() => {
+                        bootScreen.style.opacity = '0';
+                        bootScreen.style.transition = 'opacity 0.5s ease';
+                        setTimeout(() => bootScreen.style.display = 'none', 500);
+                        initCanvas(); // Start projector animation after boot
+                    }, 400);
+                }, 1000);
+            }, 500);
+        });
+
+        // THE DIRECTOR'S CUT MECHANIC
+        function triggerDirectorsCut() {
+            const blocks = document.querySelectorAll('.narrative-block:not(.cut-void)');
+            
+            if (blocks.length === 0) return;
+
+            // Pick a random block that hasn't been cut yet
+            const targetBlock = blocks[Math.floor(Math.random() * blocks.length)];
+            
+            // Apply the void class
+            targetBlock.classList.add('cut-void');
+            
+            // Screen flash effect
+            document.body.style.backgroundColor = "white";
+            setTimeout(() => document.body.style.backgroundColor = "var(--obsidian)", 50);
+            
+            // If that was the last block, disable the button
+            const remainingBlocks = document.querySelectorAll('.narrative-block:not(.cut-void)');
+            if(remainingBlocks.length === 0) {
+                const btn = document.getElementById('snipe-btn');
+                btn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                    TIMELINE DELETED
+                `;
+                btn.classList.add('opacity-30', 'pointer-events-none', 'border-red-500', 'text-red-500');
+                btn.classList.remove('border-[#D4AF37]', 'text-[#D4AF37]');
+            }
+        }
+
+        // HTML5 CANVAS: CELLULOID LIGHT BEAMS
+        function initCanvas() {
+            const canvas = document.getElementById('light-canvas');
+            const container = document.getElementById('projector-canvas-container');
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            let time = 0;
+
+            function drawBeam(originX, originY, angle, spread, intensity) {
+                const length = Math.max(canvas.width, canvas.height) * 1.5;
+                
+                ctx.save();
+                ctx.translate(originX, originY);
+                ctx.rotate(angle);
+
+                // Create a gradient that fades out into darkness
+                const gradient = ctx.createLinearGradient(0, 0, length, 0);
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${intensity})`);
+                gradient.addColorStop(0.5, `rgba(255, 255, 255, ${intensity * 0.3})`);
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                ctx.fillStyle = gradient;
+                
+                // Draw the cone shape
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(length, Math.tan(spread/2) * length);
+                ctx.lineTo(length, -Math.tan(spread/2) * length);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Strobe effect multiplier
+                const strobe = Math.random() > 0.95 ? 0.3 : 1;
+
+                // Left Projector
+                const angle1 = (Math.PI / 8) + Math.sin(time * 0.5) * 0.1;
+                drawBeam(canvas.width * 0.1, -100, angle1, 0.4, 0.6 * strobe);
+
+                // Right Projector
+                const angle2 = (Math.PI - Math.PI / 8) + Math.cos(time * 0.4) * 0.1;
+                drawBeam(canvas.width * 0.9, -100, angle2, 0.5, 0.5 * strobe);
+                
+                // Center sweeping projector
+                const angle3 = (Math.PI / 2) + Math.sin(time * 0.8) * 0.3;
+                drawBeam(canvas.width * 0.5, -50, angle3, 0.2, 0.8 * strobe);
+
+                time += 0.02;
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+    </script>
 </body>
 </html>
