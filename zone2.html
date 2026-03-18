@@ -3,225 +3,518 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUE // STATION_04 - Zone 2: Field Operations (Flickering Streets)</title>
+    <title>D.U.E // STATION_04 - Zone 2: Field Operations</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* --- ZONE 2 SPECIFIC STYLES --- */
-        .looper-stutter {
-            animation: looper-ghost 0.2s infinite alternate;
-            filter: grayscale(1) contrast(1.2);
-        }
-        @keyframes looper-ghost {
-            0% { transform: translateX(0); opacity: 1; }
-            50% { transform: translateX(5px); opacity: 0.5; filter: blur(1px) invert(0.1); }
-            100% { transform: translateX(-3px); opacity: 0.8; }
+        :root {
+            --slate-bg: #121820;
+            --terminal-green: #4ade80;
+            --alert-red: #ef4444;
+            --tape-color: rgba(230, 225, 210, 0.6);
+            --paper-color: #fdfaf0;
         }
 
-        .vellum-sheet {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+        * { box-sizing: border-box; cursor: crosshair; }
+        
+        body {
+            background-color: var(--slate-bg);
+            color: #8ba3ab;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; 
         }
 
-        .status-led {
-            width: 6px; height: 6px;
+        /* --- GLOBAL OVERLAYS --- */
+        .scanlines {
+            position: fixed; inset: 0; pointer-events: none; z-index: 1000;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            opacity: 0.2;
+        }
+
+        .vignette {
+            position: fixed; inset: 0; pointer-events: none; z-index: 999;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.9) 100%);
+        }
+
+        /* Static Fog Hazard */
+        .static-fog {
+            position: fixed; inset: -50%; pointer-events: none; z-index: 998;
+            background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.1"/%3E%3C/svg%3E');
+            animation: fog-drift 20s linear infinite;
+            mix-blend-mode: screen;
+            opacity: 0.4;
+        }
+
+        @keyframes fog-drift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(10%, 10%); }
+        }
+
+        /* --- UI & BOARD ELEMENTS --- */
+        .font-typewriter { font-family: 'Courier Prime', monospace; }
+        .font-data { font-family: 'Space Mono', monospace; }
+
+        .corkboard-bg {
+            background-color: #1a242f;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            box-shadow: inset 0 0 100px rgba(0,0,0,1);
+        }
+
+        /* Navigation */
+        .nav-tab {
+            transition: 0.3s;
+            border-right: 1px solid rgba(139, 163, 171, 0.2);
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #555;
+        }
+        .nav-tab:hover { background: rgba(139, 163, 171, 0.1); color: #8ba3ab; }
+        .nav-tab.active {
+            background: linear-gradient(to top, rgba(139, 163, 171, 0.15), transparent) !important;
+            color: #8ba3ab !important;
+            border-bottom: 3px solid #8ba3ab;
+        }
+
+        /* Paper Notes */
+        .note-paper {
+            background: var(--paper-color);
+            color: #1a1a1a;
+            padding: 1.5rem;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .note-paper::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: repeating-linear-gradient(transparent, transparent 23px, rgba(0,0,0,0.1) 23px, rgba(0,0,0,0.1) 24px);
+            pointer-events: none;
+        }
+        
+        .masking-tape {
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-2deg);
+            width: 80px; height: 25px;
+            background: var(--tape-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            backdrop-filter: blur(2px);
+            z-index: 10;
+        }
+
+        .photo-pin {
+            position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+            width: 12px; height: 12px;
+            background: radial-gradient(circle at 30% 30%, #a85d32, #2b0f0f);
             border-radius: 50%;
-            background: #00f2ff;
-            box-shadow: 0 0 10px #00f2ff;
-            animation: led-blink 1s infinite alternate;
-        }
-        @keyframes led-blink { from { opacity: 0.3; } to { opacity: 1; } }
-
-        /* The Board Texture */
-        .street-board {
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/dark-wood.png');
-            box-shadow: inset 0 0 150px #000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.6);
+            z-index: 10;
         }
 
-        /* Building Stutter Effect */
-        .building-jitter {
-            animation: building-shake 5s infinite;
+        .polaroid {
+            background: #fff;
+            padding: 10px 10px 30px 10px;
+            box-shadow: 8px 8px 20px rgba(0,0,0,0.6);
+            position: relative;
         }
-        @keyframes building-shake {
-            0%, 95% { transform: translate(0,0); }
-            96% { transform: translate(2px, -1px); }
-            97% { transform: translate(-2px, 1px); }
-            98% { transform: translate(1px, 2px); }
-            99% { transform: translate(-1px, -2px); }
+
+        /* --- ZONE 2 HAZARD EFFECTS --- */
+        
+        /* 1. Stuttering Render Effect */
+        .stutter-fx {
+            animation: render-stutter 4s infinite;
+        }
+        @keyframes render-stutter {
+            0%, 94% { transform: translate(0, 0) scale(1); filter: contrast(1); }
+            95% { transform: translate(-3px, 2px) scale(1.02); filter: contrast(1.5) grayscale(0.5); }
+            96% { transform: translate(2px, -1px) scale(0.98); }
+            97% { transform: translate(-1px, 3px) scale(1.01); filter: contrast(1.2); }
+            98% { transform: translate(0, 0) scale(1); }
+        }
+
+        /* 2. Looper Ghosting Effect */
+        .looper-ghosting {
+            position: relative;
+        }
+        .looper-ghosting::before, .looper-ghosting::after {
+            content: ''; position: absolute; inset: 0;
+            background: inherit; background-size: cover; background-position: center;
+            opacity: 0.4; mix-blend-mode: screen;
+            animation: ghost-trail 2s infinite alternate;
+        }
+        .looper-ghosting::after {
+            animation-delay: -1s;
+            animation-duration: 3s;
+            opacity: 0.2;
+            filter: blur(2px);
+        }
+        @keyframes ghost-trail {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(15px); }
+        }
+
+        /* 3. Gravity Well Pulse */
+        .gravity-well {
+            position: absolute; border-radius: 50%;
+            border: 2px solid var(--alert-red);
+            animation: well-pulse 2s infinite;
+        }
+        @keyframes well-pulse {
+            0% { transform: scale(0.8); opacity: 1; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.5); opacity: 0; box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.8); opacity: 0; }
+        }
+
+        /* Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #8ba3ab; }
+        
+        .brass-plaque {
+            background: linear-gradient(135deg, #453723 0%, #1a140d 100%);
+            border: 2px solid #5e4b2f;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.6);
+            color: #b59a6d;
         }
     </style>
 </head>
-<body class="flex flex-col bg-[#05080a] text-[#8ba3ab]">
+<body class="flex flex-col min-h-screen">
 
-    <div id="erasure-flash"></div>
-    <div id="scanlines"></div>
-    <div id="crt-flicker"></div>
-    
-    <header class="bg-[#050505]/95 border-b border-[#8ba3ab]/30 relative z-50 backdrop-blur-md">
-        <div class="flex items-center gap-8 py-4 px-8">
-            <div class="font-black text-4xl tracking-tighter text-white">D.U.E.</div>
-            <div class="text-[10px] md:text-xs opacity-60 leading-tight uppercase font-bold border-l border-[#8ba3ab] pl-6 text-gray-400">
-                Workstation_04<br>Field_Operations<br>Status: Signal_Drift
+    <!-- OVERLAYS -->
+    <div class="static-fog"></div>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <!-- HEADER -->
+    <header class="bg-[#080b0f]/95 border-b-2 border-[#8ba3ab]/30 relative z-[300] px-12 py-6 flex justify-between items-center shadow-2xl backdrop-blur-md">
+        <div class="flex items-center gap-12">
+            <div>
+                <div class="text-5xl lg:text-6xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(139,163,171,0.3)]">D.U.E.</div>
+                <div class="text-xs uppercase tracking-[0.4em] text-[#8ba3ab] font-black mt-2">FIELD_OPS // ZONE_02</div>
+            </div>
+            <div class="h-16 w-px bg-[#8ba3ab]/30 hidden md:block"></div>
+            <div class="text-sm font-data text-[#666] leading-relaxed font-bold">
+                RENDER_DIST: <span id="render-dist" class="text-red-400">FAILING</span><br>
+                BACK-FACES: <span class="text-red-400">MISSING</span><br>
+                SECTOR: <span class="text-white">FLICKERING_STREETS</span>
+            </div>
+            <div class="hidden lg:flex flex-col border-l-2 border-[#8ba3ab]/30 pl-8 h-12 justify-center">
+                <span class="text-xs text-white/40 uppercase font-black tracking-widest">Signal Drift</span>
+                <span class="text-sm text-red-500 font-black mt-1 animate-pulse">DETECTED</span>
             </div>
         </div>
-        <div class="flex items-center gap-8 pr-8">
-            <div id="dist-nixie" class="nixie-tube text-[#8ba3ab] text-xl border-[#8ba3ab]/40">SIGNAL: 64.12%</div>
-            <div class="flex items-center gap-4 bg-[#0a0a0a] px-6 py-3 rounded border border-[#8ba3ab]/20 shadow-inner">
-                <span class="text-[10px] uppercase font-bold tracking-widest opacity-60">Clearance Mode</span>
-                <input type="checkbox" id="clearance-toggle" class="w-5 h-5 accent-[#8ba3ab] cursor-pointer">
+        
+        <div class="hidden md:flex items-center gap-14">
+            <div class="flex flex-col items-end font-data">
+                <span class="text-xs uppercase font-black opacity-50 mb-2 tracking-widest text-[#8ba3ab]">System Stability</span>
+                <div id="stability-nixie" class="text-5xl md:text-6xl tabular-nums tracking-tight text-red-500" style="text-shadow: 0 0 15px red;">64.12%</div>
+            </div>
+            <div class="h-16 w-px bg-[#8ba3ab]/30"></div>
+            <div class="flex flex-col items-center">
+                <div class="w-4 h-4 rounded-full bg-[#8ba3ab] shadow-[0_0_15px_#8ba3ab] animate-pulse mb-2"></div>
+                <span class="text-[10px] font-black text-white uppercase tracking-widest">Active</span>
             </div>
         </div>
     </header>
 
-    <main id="main-scroll-container" class="z-20">
-        <section class="h-[30vh] flex flex-col items-center justify-center text-center relative overflow-hidden">
-            <h1 class="text-5xl md:text-7xl font-black tracking-[1rem] text-[#8ba3ab] opacity-90 mb-4 uppercase drop-shadow-[0_10px_20px_rgba(0,0,0,1)]">
-                Zone 2: Field Operations
-            </h1>
-            <p class="text-lg md:text-xl tracking-[0.8rem] text-gray-500 uppercase font-bold bg-black/60 px-6 py-2 border border-[#8ba3ab]/20 backdrop-blur-sm">
-                (Flickering Streets)
-            </p>
+    <main class="relative z-20 flex-1 flex flex-col pt-8 pb-32">
+        
+        <!-- HERO TITLING -->
+        <section class="h-[15vh] flex flex-col items-center justify-center text-center relative pointer-events-none mb-6">
+            <h1 class="text-[8rem] lg:text-[12rem] font-black tracking-[2rem] lg:tracking-[4rem] text-[#8ba3ab] opacity-[0.03] mb-2 uppercase absolute select-none">FIELD</h1>
+            <div class="relative bg-black/60 px-16 py-6 border border-[#8ba3ab]/40 backdrop-blur-md shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+                <p class="text-2xl md:text-4xl tracking-[1rem] text-white uppercase font-black">
+                    Field Operations
+                </p>
+                <div class="mt-2 text-sm font-data tracking-[0.5em] text-[#8ba3ab] uppercase font-bold">
+                    (The Flickering Streets)
+                </div>
+            </div>
         </section>
 
-        <div class="w-11/12 max-w-[1500px] mx-auto pb-32 relative z-20">
-            <div class="bg-[#050b0e]/95 border border-[#8ba3ab]/30 backdrop-blur-xl shadow-[0_0_80px_rgba(0,0,0,0.9)] relative overflow-hidden">
+        <!-- MAIN LAYOUT WRAPPER -->
+        <div class="w-full max-w-[1900px] mx-auto px-6 lg:px-12 flex-1 flex flex-col gap-6">
+            
+            <!-- NAVIGATION TABS -->
+            <nav class="flex border-b-2 border-[#8ba3ab]/30 bg-[#0a0f14] shrink-0 flex-wrap border-x-2 border-t-2 rounded-t-lg">
+                <a href="index.html" class="tab-btn px-10 py-5 opacity-40">01. Archive Floor</a>
+                <a href="zone2.html" class="tab-btn px-10 py-5 active">02. Field Ops</a>
+                <a href="zone3.html" class="nav-tab px-10 py-5 opacity-40">03. Engine Room</a>
+                <a href="zone4.html" class="nav-tab px-10 py-5 opacity-40">04. Observation</a>
+                <a href="zone5.html" class="nav-tab px-10 py-5 opacity-40">05. Directorate Core</a>
+                <a href="zone6.html" class="tab-btn px-10 py-5 opacity-40">06. Projection Booth</a>
+            </nav>
+
+            <!-- INVESTIGATIVE BOARD (THE CORE UI) -->
+            <div class="corkboard-bg border-4 border-[#0f141a] rounded-b-lg shadow-[0_30px_60px_rgba(0,0,0,0.9)] relative min-h-[900px] p-8 overflow-hidden flex flex-wrap lg:block">
                 
-                <nav class="flex border-b border-[#8ba3ab]/30 flex-wrap text-base bg-[#020202] relative z-50">
-                    <a href="index.html" class="tab-btn px-10 py-6">01. Zone 1</a>
-                    <a href="zone2.html" class="tab-btn active px-10 py-6" style="color: #8ba3ab; border-bottom: 2px solid #8ba3ab; background: rgba(139, 163, 171, 0.1);">02. Zone 2</a>
-                    <a href="zone3.html" class="tab-btn px-10 py-6">03. Zone 3</a>
-                    <a href="zone4.html" class="tab-btn px-10 py-6">04. Zone 4</a>
-                    <a href="zone5.html" class="tab-btn px-10 py-6">05. Zone 5</a>
-                    <a href="zone6.html" class="tab-btn px-10 py-6">06. Zone 6</a>
-                </nav>
+                <!-- CENTERPIECE: The Wet Street Visual -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[550px] z-10 hidden lg:block stutter-fx">
+                    <div class="polaroid w-full h-full p-4 pb-16">
+                        <div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?auto=format&fit=crop&q=80&w=1200')] bg-cover bg-center grayscale contrast-125 brightness-75"></div>
+                        <div class="absolute bottom-4 left-0 w-full text-center font-typewriter font-bold text-black/80 tracking-widest">INCIDENT #409: RENDER DISTANCE COLLAPSE</div>
+                        <!-- Masking tape over the photo -->
+                        <div class="masking-tape" style="top: -15px; left: 10%; width: 120px; transform: rotate(4deg);"></div>
+                        <div class="masking-tape" style="top: -10px; left: 90%; width: 100px; transform: rotate(-5deg);"></div>
+                    </div>
+                </div>
 
-                <div id="zone2-board" class="tab-content active p-12 street-board min-h-[1200px] relative">
+                <!-- NOTE 1: Core Concept -->
+                <div class="note-paper w-80 lg:absolute lg:top-12 lg:left-12 z-20 mb-8 transform -rotate-2">
+                    <div class="photo-pin"></div>
+                    <h3 class="font-black text-xl border-b-2 border-black/20 pb-2 mb-4 uppercase tracking-tighter">Core Concept</h3>
+                    <p class="font-typewriter text-sm font-bold leading-relaxed opacity-90">
+                        The front lines where agents encounter active narrative instability and localized reality glitches. 1970s urban sprawl experiencing severe technical degradation.
+                    </p>
+                </div>
+
+                <!-- NOTE 2: Environmental Effects -->
+                <div class="note-paper w-[350px] lg:absolute lg:top-72 lg:left-8 z-20 mb-8 transform rotate-1 bg-[#fffbe6]">
+                    <div class="masking-tape"></div>
+                    <h3 class="font-black text-lg border-b-2 border-black/20 pb-2 mb-4 uppercase tracking-tighter text-red-800">Environmental Effects</h3>
+                    <ul class="font-typewriter text-sm font-bold space-y-4 opacity-90">
+                        <li><strong>• Stasis:</strong> Streetlights freeze mid-flicker, stuck between frames.</li>
+                        <li><strong>• Hollow Shells:</strong> Buildings lack back-faces. Do not enter unrendered structures.</li>
+                        <li><strong>• Recursive Loops:</strong> Vehicles repeat the same turn indefinitely.</li>
+                    </ul>
+                </div>
+
+                <!-- POLAROID: Loopers -->
+                <div class="polaroid w-72 lg:absolute lg:top-12 lg:right-24 z-20 mb-8 transform rotate-3">
+                    <div class="photo-pin"></div>
+                    <div class="w-full h-64 bg-gray-900 overflow-hidden looper-ghosting relative" style="background-image: url('https://images.unsplash.com/photo-1555580399-4d8963952528?auto=format&fit=crop&q=80&w=400'); filter: grayscale(1) contrast(1.5);">
+                        <div class="absolute inset-0 bg-blue-900/20 mix-blend-multiply"></div>
+                    </div>
+                    <div class="mt-4 font-typewriter font-bold text-center text-sm text-black">SUBJECT: LOOPER</div>
+                    <p class="mt-2 text-[10px] text-black/60 font-data text-center uppercase tracking-widest leading-tight">Caught in behavioral cycle.<br>Repeats doorway entry.</p>
+                </div>
+
+                <!-- NOTE 3: Civilian Conditions -->
+                <div class="note-paper w-80 lg:absolute lg:top-1/2 lg:right-12 z-30 mb-8 transform -rotate-1 bg-[#f5f5f5]">
+                    <div class="masking-tape" style="width: 100px;"></div>
+                    <h3 class="font-black text-lg border-b-2 border-black/20 pb-2 mb-4 uppercase tracking-tighter">Civilian Conditions</h3>
+                    <div class="space-y-4 font-typewriter text-sm font-bold opacity-90">
+                        <div>
+                            <span class="bg-black text-white px-1">Flat-Face Syndrome</span>
+                            <p class="text-xs mt-1">Featureless facial topography caused by narrative erosion.</p>
+                        </div>
+                        <div>
+                            <span class="bg-black text-white px-1">Memory Drain</span>
+                            <p class="text-xs mt-1">The gradual leaching of personal history into the fog.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ARTIFACT: The Compass (Probability Puddles) -->
+                <div class="polaroid w-64 lg:absolute lg:bottom-12 lg:left-24 z-20 mb-8 transform -rotate-3">
+                    <div class="photo-pin"></div>
+                    <div class="w-full h-48 bg-black relative flex items-center justify-center">
+                        <img src="https://images.unsplash.com/photo-1501676491272-7df02b0c362d?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover sepia-[.8] contrast-125 brightness-75">
+                        <svg class="absolute text-amber-500/80 w-24 h-24 drop-shadow-[0_0_10px_rgba(245,158,11,1)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                    </div>
+                    <div class="mt-4 font-typewriter font-bold text-center text-sm text-black">PROBABILITY PUDDLES</div>
+                    <p class="mt-2 text-[9px] text-black/70 font-data text-center uppercase tracking-widest leading-tight">Intersections act as narrative gravity wells.</p>
+                </div>
+
+                <!-- ARTIFACT: The Map (Interference Zones) -->
+                <div class="note-paper w-[400px] lg:absolute lg:bottom-12 lg:right-32 z-20 p-2 transform rotate-2">
+                    <div class="masking-tape" style="top: -10px; left: 50%;"></div>
+                    <div class="w-full h-64 bg-[#d8d0c0] relative overflow-hidden border-2 border-black/10">
+                        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover opacity-50 grayscale mix-blend-multiply">
+                        <!-- Gravity Wells -->
+                        <div class="gravity-well w-16 h-16 top-1/4 left-1/4"></div>
+                        <div class="gravity-well w-24 h-24 top-1/2 right-1/4" style="animation-delay: 0.5s;"></div>
+                        <div class="gravity-well w-12 h-12 bottom-1/4 left-1/3" style="animation-delay: 1s;"></div>
+                        
+                        <div class="absolute bottom-2 left-2 bg-black/80 text-white font-data text-[8px] px-2 py-1 uppercase tracking-widest">High-Stress Narrative Zones</div>
+                    </div>
+                </div>
+
+                <!-- ARTIFACT: The World's Nervous System -->
+                <div class="polaroid w-56 lg:absolute lg:bottom-24 lg:left-1/3 z-30 mb-8 transform rotate-6">
+                    <div class="photo-pin"></div>
+                    <div class="w-full h-48 bg-[#111] flex items-center justify-center relative overflow-hidden">
+                        <!-- CSS Wire Spool -->
+                        <div class="w-24 h-32 relative flex flex-col items-center justify-between z-10">
+                            <div class="w-full h-4 bg-blue-900 rounded-full border border-black z-20"></div>
+                            <div class="w-20 h-full bg-[#8c4a23] absolute top-2 border-x border-black/50" style="background-image: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.5) 2px, rgba(0,0,0,0.5) 4px);"></div>
+                            <div class="w-full h-4 bg-blue-900 rounded-full border border-black z-20 mt-auto"></div>
+                        </div>
+                        <div class="absolute inset-0">
+                            <svg class="w-full h-full opacity-60" viewBox="0 0 100 100" stroke="#8ba3ab" stroke-width="1" fill="none">
+                                <path d="M10,50 Q40,10 50,50 T90,50" />
+                                <path d="M20,20 Q60,80 50,50 T80,20" />
+                                <path d="M10,80 Q30,40 50,50 T90,80" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 font-typewriter font-bold text-center text-[11px] text-black leading-tight">THE WORLD'S<br>NERVOUS SYSTEM</div>
+                </div>
+
+                <!-- Brass Plaque -->
+                <div class="brass-plaque absolute bottom-6 left-1/2 -translate-x-1/2 px-12 py-3 rounded-sm z-40 hidden lg:block">
+                    <div class="w-2 h-2 rounded-full bg-[#3d2e14] absolute left-3 top-1/2 -translate-y-1/2 shadow-inner"></div>
+                    <div class="w-2 h-2 rounded-full bg-[#3d2e14] absolute right-3 top-1/2 -translate-y-1/2 shadow-inner"></div>
+                    <div class="text-center font-serif">
+                        <div class="text-[9px] font-black tracking-[0.3em] mb-1">BIBLE ADDENDUM:</div>
+                        <div class="text-[7px] tracking-widest opacity-80 uppercase">Visual Atlas of the Five Zones</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TELEMETRY & FIELD REPORTS TERMINAL -->
+            <div class="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-6 h-[400px]">
+                
+                <!-- Live Telemetry Terminal -->
+                <div class="col-span-12 lg:col-span-4 bg-black border-2 border-[#1a242f] rounded flex flex-col shadow-[0_10px_30px_rgba(0,0,0,0.8)] overflow-hidden relative">
+                    <div class="scanlines"></div>
+                    <div class="bg-[#0f141a] border-b border-[#1a242f] p-3 flex justify-between items-center z-10">
+                        <span class="font-data text-[10px] text-[#8ba3ab] uppercase tracking-widest font-bold flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+                            Live Telemetry // Node 04
+                        </span>
+                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    </div>
+                    <div class="p-4 flex-1 overflow-hidden relative z-10">
+                        <div id="telemetry-feed" class="font-data text-[11px] text-green-400/80 uppercase tracking-widest space-y-2 absolute bottom-4 w-full">
+                            <!-- JS Injected Lines -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Field Reports Database -->
+                <div class="col-span-12 lg:col-span-8 bg-[#0a0f14] border-2 border-[#1a242f] rounded flex flex-col shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative z-10">
+                    <div class="bg-[#0f141a] border-b border-[#1a242f] p-4 flex justify-between items-center">
+                        <span class="font-data text-sm text-white uppercase tracking-[0.2em] font-bold">Field Agent Reports</span>
+                        <span class="font-data text-[10px] text-[#8ba3ab] bg-[#8ba3ab]/10 px-2 py-1 rounded">ACCESS: GRANTED</span>
+                    </div>
                     
-                    <div class="absolute left-1/2 top-[40%] -translate-x-1/2 -translate-y-1/2 w-[90%] h-[600px] shadow-2xl border-[12px] border-white/5 overflow-hidden z-0 opacity-40 building-jitter">
-                        <img src="https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?auto=format&fit=crop&q=80&w=1400" class="w-full h-full object-cover grayscale brightness-50" alt="Rainy Streets">
-                    </div>
-
-                    <div class="torn-paper absolute top-12 left-12 w-[450px] p-10 z-30 shadow-2xl" style="transform: rotate(-1.5deg);">
-                        <div class="photo-pin"></div>
-                        <h4 class="font-black text-xl uppercase tracking-tighter border-b-4 border-black/10 mb-4">Core Concept:</h4>
-                        <p class="font-mono text-sm font-bold text-black/90 leading-relaxed mb-6">
-                            The front lines where agents encounter active narrative instability and localized reality glitches.
-                        </p>
-                        <h4 class="font-black text-sm uppercase tracking-widest border-b-2 border-black/10 mb-3">Visual Report:</h4>
-                        <ul class="font-mono text-xs font-bold space-y-3 text-black/80">
-                            <li>• 1970s urban sprawl with failing render distance.</li>
-                            <li>• Buildings "stutter," shifting slightly every few seconds.</li>
-                            <li>• Architecture: Missing back-faces (hollow shells behind buildings).</li>
-                            <li class="text-red-700 underline">• HAZARD: Static Fog inhalation causes system amnesia.</li>
-                        </ul>
-                    </div>
-
-                    <div class="vellum-sheet absolute top-[42%] left-16 w-[400px] p-10 z-40" style="transform: rotate(1deg);">
-                        <div class="photo-pin"></div>
-                        <h4 class="font-black text-lg uppercase tracking-widest text-white border-b border-white/30 mb-6 text-center">Environmental Effects</h4>
-                        <div class="space-y-6">
-                            <div>
-                                <strong class="text-white uppercase text-xs tracking-widest block mb-1">Stasis:</strong>
-                                <p class="text-xs text-white/80 leading-relaxed font-mono">Streetlights freeze in mid-flicker, suspended indefinitely between light and dark.</p>
+                    <div class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+                        <!-- Report 1 -->
+                        <div class="border-l-2 border-red-500 pl-4">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="font-data text-[10px] text-red-400 font-bold uppercase tracking-widest">Subject: Static Fog Exposure</span>
+                                <span class="font-data text-[9px] text-[#555]">T-Minus 12:00</span>
                             </div>
-                            <div>
-                                <strong class="text-white uppercase text-xs tracking-widest block mb-1">Recursive Loops:</strong>
-                                <p class="text-xs text-white/80 leading-relaxed font-mono">Cars repeat the same turn indefinitely; pedestrians pass through the same doorway hundreds of times.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="torn-paper absolute top-12 right-12 w-[420px] p-10 z-30 shadow-2xl bg-[#f0ebd8]" style="transform: rotate(2deg);">
-                        <div class="photo-pin"></div>
-                        <h4 class="font-black text-xl uppercase tracking-tighter border-b-4 border-black/10 mb-4">Civilian Conditions:</h4>
-                        <div class="space-y-5 font-mono text-sm font-bold text-black/80">
-                            <div class="border-l-4 border-black/20 pl-4">
-                                <strong>Flat-Face Syndrome:</strong>
-                                <p class="text-xs mt-1 opacity-70">Featureless facial topography caused by narrative erosion. Blurred/incomplete features.</p>
-                            </div>
-                            <div class="border-l-4 border-black/20 pl-4">
-                                <strong>Loopers:</strong>
-                                <p class="text-xs mt-1 opacity-70">Individuals caught in a localized temporal or behavioral cycle.</p>
-                            </div>
-                            <div class="border-l-4 border-black/20 pl-4">
-                                <strong>Memory Drain:</strong>
-                                <p class="text-xs mt-1 opacity-70">The gradual leaching of personal history into the environment.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="evidence-photo absolute top-[40%] right-20 w-80 z-30" style="transform: rotate(-3deg);">
-                        <div class="photo-pin"></div>
-                        <div class="relative overflow-hidden looper-stutter">
-                            <img src="https://picsum.photos/seed/loop/500/400" alt="Looper Observation" style="filter: grayscale(1) contrast(1.5);">
-                        </div>
-                        <div class="evidence-caption text-lg">LOOPERS Observed</div>
-                    </div>
-
-                    <div class="vellum-sheet absolute bottom-32 left-1/2 -translate-x-1/2 w-[800px] p-12 z-40 flex flex-col md:flex-row gap-10 items-center border-t-4 border-[#22d3ee]/30">
-                        <div class="flex-1">
-                            <h3 class="text-[#22d3ee] font-black text-3xl mb-4 tracking-tighter uppercase text-center md:text-left">Probability Puddles</h3>
-                            <p class="text-base text-white/90 leading-relaxed font-mono">
-                                Agents identify specific intersections where events accumulate like **gravity wells**, drawing in coincidences and high-stakes narrative tension.
+                            <p class="font-serif text-sm text-gray-300 leading-relaxed italic">
+                                "We drove into a patch of Static Fog on 42nd street. The driver inhaled for maybe two seconds before the masks went on. He immediately forgot how to operate the transmission. System amnesia is instant. We had to abandon the vehicle and proceed on foot through the stuttering geometry."
                             </p>
                         </div>
-                        <div class="evidence-photo w-48 flex-shrink-0" style="transform: rotate(4deg);">
-                            <div class="photo-pin"></div>
-                            <img src="https://picsum.photos/seed/compass/300/300" alt="Gravity Well" style="filter: sepia(1) brightness(0.5) contrast(1.2);">
-                            <div class="evidence-caption text-[10px]">Intersections: Gravity Wells</div>
+                        
+                        <!-- Report 2 -->
+                        <div class="border-l-2 border-[#8ba3ab] pl-4">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="font-data text-[10px] text-[#8ba3ab] font-bold uppercase tracking-widest">Subject: Flat-Face Encounter</span>
+                                <span class="font-data text-[9px] text-[#555]">T-Minus 48:00</span>
+                            </div>
+                            <p class="font-serif text-sm text-gray-300 leading-relaxed italic">
+                                "Entered a diner in a Probability Puddle. Four civilians present. All exhibited advanced Flat-Face Syndrome. Their facial topography is just... smooth skin. No eyes, no mouths, but they continue to pantomime drinking coffee. The narrative erosion in this sector is accelerating."
+                            </p>
+                        </div>
+
+                        <!-- Report 3 -->
+                        <div class="border-l-2 border-amber-500 pl-4">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="font-data text-[10px] text-amber-500 font-bold uppercase tracking-widest">Subject: Hollow Architecture</span>
+                                <span class="font-data text-[9px] text-[#555]">T-Minus 72:00</span>
+                            </div>
+                            <p class="font-serif text-sm text-gray-300 leading-relaxed italic">
+                                "Warning to all units: Do not use alleyways in Sector 7. The buildings lack back-faces. I watched an agent step through a rear exit door and fall directly into the grey void underneath the city render. We couldn't pull him back up."
+                            </p>
                         </div>
                     </div>
-
-                    <div class="absolute bottom-12 right-12 flex items-end gap-10 z-50">
-                        <div class="w-64 h-48 bg-[#b0c4de]/60 p-2 border border-black/20 relative shadow-xl transform rotate-[-2deg] opacity-80">
-                            <div class="photo-pin"></div>
-                            <div class="w-full h-full border-2 border-red-700/30 relative">
-                                <div class="absolute top-1/2 left-1/4 w-8 h-8 rounded-full border-2 border-red-600 animate-ping"></div>
-                                <div class="p-2 font-mono text-[8px] text-black font-black uppercase">Sector_02<br>Hollow_Architecture_Map</div>
-                            </div>
-                        </div>
-
-                        <div class="relative flex flex-col items-center pb-4" style="transform: rotate(-15deg);">
-                            <svg width="80" height="80" viewBox="0 0 100 100" class="drop-shadow-2xl">
-                                <path d="M30,70 L50,50 L40,40 A15,15 0 1,1 60,60 L50,70 L40,80 Z" fill="#8a6b1c" stroke="#3d2e14"/>
-                            </svg>
-                            <div class="bg-[#d4af37] px-2 py-1 text-[8px] font-bold text-black border border-black/20 shadow-md">ID: SECTOR_02</div>
-                        </div>
-
-                        <div class="bg-[#1a1a1a] w-48 h-28 p-3 shadow-2xl border-2 border-[#333] flex flex-wrap gap-2 content-start" style="transform: rotate(4deg);">
-                            <div class="w-full flex justify-between px-1">
-                                <div class="status-led"></div>
-                                <div class="status-led" style="animation-delay: 0.5s; background: #ffaa00; box-shadow: 0 0 10px #ffaa00;"></div>
-                            </div>
-                            <div class="flex-1 space-y-2 pt-2 opacity-30">
-                                <div class="h-1 w-full bg-[#00f2ff]"></div>
-                                <div class="h-1 w-2/3 bg-[#00f2ff]"></div>
-                                <div class="h-1 w-full bg-[#00f2ff]"></div>
-                            </div>
-                            <div class="font-mono text-[8px] text-gray-500 w-full mt-2 text-right">STASIS_DIAGNOSTIC_V1</div>
-                        </div>
-                    </div>
-
-                    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-50">
-                        <div class="brass-plaque px-16 py-4 shadow-2xl relative">
-                            <div class="w-3 h-3 rounded-full bg-[#3d2e14] absolute left-3 top-1/2 -translate-y-1/2 shadow-inner"></div>
-                            <div class="w-3 h-3 rounded-full bg-[#3d2e14] absolute right-3 top-1/2 -translate-y-1/2 shadow-inner"></div>
-                            <h3 class="font-serif font-black text-[#3d2e14] text-xs tracking-[0.3em] text-center">BIBLE ADDENDUM:<br>VISUAL ATLAS OF THE FIVE ZONES</h3>
-                        </div>
-                    </div>
-
                 </div>
+
             </div>
         </div>
     </main>
 
-    <footer class="bg-[#020202] border-t border-[#8ba3ab]/30 py-6 px-10 flex justify-between items-center relative z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
-        <div class="tracking-widest opacity-60 uppercase font-bold text-[#8ba3ab] text-sm">Location: Zone 2 — Field Operations (Flickering Streets)</div>
-        <div id="stability-display" class="font-mono text-red-600 text-lg font-bold drop-shadow-[0_0_10px_rgba(255,0,0,0.5)]">SIGNAL_STABILITY: 64.12%</div>
+    <!-- FOOTER -->
+    <footer class="bg-[#05080a] border-t-2 border-[#8ba3ab]/30 py-6 px-12 flex justify-between items-center relative z-[400] shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
+        <div class="flex gap-8 items-center">
+            <div class="tracking-[0.8em] text-[#8ba3ab] font-black text-xs uppercase font-data">STATION_04_LINK</div>
+            <div class="h-3 w-3 bg-[#8ba3ab] rounded-full animate-pulse shadow-[0_0_10px_#8ba3ab]"></div>
+            <div class="text-[10px] text-[#555] font-data font-bold tracking-widest">SECTOR: [ 70s_SPRAWL ]</div>
+        </div>
+        <div class="flex items-center gap-10 hidden md:flex">
+            <div class="font-serif text-white/40 text-sm font-bold tracking-[0.2em] uppercase italic">
+                "The streets are forgetting themselves."
+            </div>
+        </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // 1. LIVE TELEMETRY FEED (TERMINAL)
+        function initTelemetry() {
+            const feed = document.getElementById('telemetry-feed');
+            const messages = [
+                "SCANNING SECTOR_02...",
+                "WARN: RENDER DISTANCE DROPPING.",
+                "HOLLOW ARCHITECTURE DETECTED: BLDG_409",
+                "STASIS EVENT: TRAFFIC_LIGHT_GRID_7",
+                "PROBABILITY PUDDLE FORMING AT INT_44",
+                "CIVILIAN EROSION: FLAT-FACE (n=12)",
+                "RECURSIVE LOOP IDENTIFIED. CAR_ID: 88A",
+                "WARN: STATIC FOG BANK APPROACHING.",
+                "PACKET LOSS IN NARRATIVE STREAM.",
+                "BACK-FACES MISSING IN ALLEY_12."
+            ];
+
+            function addLine() {
+                const line = document.createElement('div');
+                const msg = messages[Math.floor(Math.random() * messages.length)];
+                
+                // Color coding based on message type
+                if(msg.includes("WARN") || msg.includes("HOLLOW") || msg.includes("LOSS")) {
+                    line.className = "text-red-400";
+                } else if(msg.includes("STASIS") || msg.includes("PUDDLE")) {
+                    line.className = "text-amber-400";
+                } else {
+                    line.className = "text-green-400";
+                }
+
+                line.innerText = `> ${msg}`;
+                feed.appendChild(line);
+
+                if (feed.children.length > 10) {
+                    feed.removeChild(feed.firstChild);
+                }
+            }
+
+            // Initial lines
+            for(let i=0; i<5; i++) addLine();
+
+            // Add lines periodically
+            setInterval(() => {
+                if(Math.random() > 0.3) addLine();
+            }, 1200);
+        }
+
+        // 2. HUD STATS JITTER
+        function initStats() {
+            setInterval(() => {
+                // Signal Stability
+                const baseSignal = 64.0;
+                const jitter = (Math.random() * 0.5 - 0.25);
+                const currentSignal = (baseSignal + jitter).toFixed(2);
+                document.getElementById('stability-nixie').innerText = `${currentSignal}%`;
+
+                // Randomly flash "FAILING" text
+                const renderDist = document.getElementById('render-dist');
+                if(Math.random() > 0.9) {
+                    renderDist.style.opacity = '0.2';
+                    setTimeout(() => renderDist.style.opacity = '1', 100);
+                }
+            }, 500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTelemetry();
+            initStats();
+        });
+    </script>
 </body>
 </html>
